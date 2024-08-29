@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, CardContent, Typography, Stack, Box } from "@mui/material";
+import { Card, CardContent, Typography, Stack, Box, useTheme, useMediaQuery } from "@mui/material";
 
 type Props = {
   title?: string;
@@ -24,8 +24,11 @@ const DashboardCard = ({
   headsubtitle,
   middlecontent,
 }: Props) => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
   return (
-    <Card sx={{ padding: 0 }} elevation={9} variant={undefined}>
+    <Card sx={{ padding: 0, height: '100%' }} elevation={9} variant={undefined}>
       {cardheading ? (
         <CardContent>
           <Typography variant="h5">{headtitle}</Typography>
@@ -34,7 +37,7 @@ const DashboardCard = ({
           </Typography>
         </CardContent>
       ) : (
-        <CardContent sx={{ p: "30px" }}>
+        <CardContent sx={{ p: isMobile ? '16px' : '30px' }}>
           {title ? (
             <Stack
               direction="row"

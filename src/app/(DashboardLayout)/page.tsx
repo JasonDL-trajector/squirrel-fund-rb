@@ -1,6 +1,6 @@
 'use client';
 
-import { Grid, Box } from '@mui/material';
+import { Grid, Box, useTheme, useMediaQuery } from '@mui/material';
 import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
 // components
 import BalanceHistory from '@/app/(DashboardLayout)/components/dashboard/BalanceHistory';
@@ -13,18 +13,21 @@ import DailyDeposit from '@/app/(DashboardLayout)/components/dashboard/DailyDepo
 import TabularSummary from './components/dashboard/TabularSummary';
 
 const Dashboard = () => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
   return (
     <PageContainer title="Squirrel Fund" description="Squirrel Fund">
-      <Box>
-        <Grid container spacing={3}>
+      <Box sx={{ overflowX: 'hidden' }}>
+        <Grid container spacing={isMobile ? 2 : 3}>
           <Grid item xs={12} md={6}>
             <BalanceHistory />
           </Grid>
-          <Grid item xs={12} md={6}>
+           <Grid item xs={12} md={6}>
             <TabularSummary />
           </Grid>
           <Grid item xs={12}>
-            <Grid container spacing={3}>
+            <Grid container spacing={isMobile ? 2 : 3}>
               <Grid item xs={12} sm={6}>
                 <CurrentBalance />
               </Grid>

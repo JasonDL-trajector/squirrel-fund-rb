@@ -51,6 +51,11 @@ const DepositPage = () => {
     });
   };
 
+  const formatDate = (date: Dayjs | null) => {
+    if (!date) return '';
+    return date.toDate().toLocaleString('en-US', { month: 'short', day: 'numeric' });
+  };
+
   return (
     <PageContainer title="Deposit" description="Deposit funds">
       <Container maxWidth="xs">
@@ -84,7 +89,7 @@ const DepositPage = () => {
                 onChange={(e) => setDepositAmount(Number(e.target.value))}
                 InputProps={{
                   startAdornment: (
-                    <InputAdornment position="start">$</InputAdornment>
+                    <InputAdornment position="start">₱</InputAdornment>
                   ),
                 }}
                 variant="outlined"
@@ -118,6 +123,11 @@ const DepositPage = () => {
                 rows={4}
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start"></InputAdornment>
+                  ),
+                }}
                 variant="outlined"
                 sx={{
                   '& .MuiOutlinedInput-notchedOutline': {
@@ -132,7 +142,7 @@ const DepositPage = () => {
                     Current Balance:
                   </Typography>
                   <Typography variant="h4" fontWeight="medium" align="left">
-                    ${currentBalance.toFixed(2)}
+                    ₱{currentBalance.toFixed(2)}
                   </Typography>
                 </Grid>
                 <Grid item xs={6}>
@@ -140,7 +150,7 @@ const DepositPage = () => {
                     New Balance:
                   </Typography>
                   <Typography variant="h4" fontWeight="bold" color="primary" align="right">
-                    ${(currentBalance + totalAmount).toFixed(2)}
+                    ₱{(currentBalance + totalAmount).toFixed(2)}
                   </Typography>
                 </Grid>
               </Grid>
@@ -149,7 +159,7 @@ const DepositPage = () => {
                   Total Amount to be added:
                 </Typography>
                 <Typography variant="h5" fontWeight="bold" color="success.main">
-                  +${totalAmount.toFixed(2)}
+                  +₱{totalAmount.toFixed(2)}
                 </Typography>
               </Box>
               <Box display="flex" justifyContent="flex-end" mt={2} gap={2}>

@@ -83,19 +83,6 @@ const BalanceHistory = () => {
   return (
     <DashboardCard
       title="Balance History"
-      action={
-        <Select
-          labelId="month-dd"
-          id="month-dd"
-          value={month}
-          size="small"
-          onChange={handleChange}
-        >
-          <MenuItem value={1}>July 2024</MenuItem>
-          <MenuItem value={2}>August 2024</MenuItem>
-          <MenuItem value={3}>September 2024</MenuItem>
-        </Select>
-      }
     >
       <Chart
         options={optionscolumnchart}

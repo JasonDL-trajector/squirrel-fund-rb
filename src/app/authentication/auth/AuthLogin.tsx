@@ -74,7 +74,7 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => (
             color: "primary.main",
           }}
         >
-          Forgot Password ?
+          Forgot Password?
         </Typography>
       </Stack>
     </Stack>

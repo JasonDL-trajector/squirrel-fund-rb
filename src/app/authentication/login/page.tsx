@@ -1,12 +1,14 @@
 "use client";
 import Link from "next/link";
-import { Grid, Box, Card, Stack, Typography } from "@mui/material";
+import { Grid, Box, Card, Stack, Typography, useMediaQuery, Theme } from "@mui/material";
 // components
 import PageContainer from "@/app/(DashboardLayout)/components/container/PageContainer";
 import Logo from "@/app/(DashboardLayout)/layout/shared/logo/Logo";
 import AuthLogin from "../auth/AuthLogin";
 
 const Login2 = () => {
+  const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
+
   return (
     <PageContainer title="Login" description="this is Login page">
       <Box
@@ -28,7 +30,7 @@ const Login2 = () => {
           container
           spacing={0}
           justifyContent="center"
-          sx={{ height: "100vh" }}
+          sx={{ minHeight: "100vh" }}
         >
           <Grid
             item
@@ -42,40 +44,48 @@ const Login2 = () => {
           >
             <Card
               elevation={9}
-              sx={{ p: 4, zIndex: 1, width: "100%", maxWidth: "500px" }}
+              sx={{
+                p: isMobile ? 4 : 4,
+                zIndex: 1,
+                width: "100%",
+                maxWidth: isMobile ? "90%" : "500px",
+                m: isMobile ? 2 : 0
+              }}
             >
-              <Box display="flex" alignItems="center" justifyContent="center">
+              <Box display="flex" alignItems="center" justifyContent="center" >
                 <Logo />
               </Box>
               <AuthLogin
                 subtext={
                   <Typography
-                    variant="subtitle1"
+                    variant={isMobile ? "body1" : "subtitle1"}
                     textAlign="center"
                     color="textSecondary"
                     mb={1}
                   >
-                    Your Social Campaigns
+                    Your Finance Tracking App
                   </Typography>
                 }
                 subtitle={
                   <Stack
-                    direction="row"
+                    direction={"row"}
                     spacing={1}
                     justifyContent="center"
+                    alignItems="center"
                     mt={3}
                   >
                     <Typography
                       color="textSecondary"
-                      variant="h6"
+                      variant={isMobile ? "body1" : "h6"}
                       fontWeight="500"
                     >
-                      New to Modernize?
+                      New to Squirrel Fund?
                     </Typography>
                     <Typography
                       component={Link}
                       href="/authentication/register"
                       fontWeight="500"
+                      variant={isMobile ? "body1" : "h6"}
                       sx={{
                         textDecoration: "none",
                         color: "primary.main",

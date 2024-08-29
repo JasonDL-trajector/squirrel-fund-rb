@@ -16,7 +16,7 @@ import {
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import dayjs from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
 
 const WithdrawPage = () => {
@@ -25,6 +25,11 @@ const WithdrawPage = () => {
   const [note, setNote] = useState<string>('');
   const currentBalance = 1000; // This should be fetched from your state management or API
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
+
+  const formatDate = (date: Dayjs | null) => {
+    if (!date) return '';
+    return date.toDate().toLocaleString('en-US', { month: 'short', day: 'numeric' });
+  };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -64,7 +69,7 @@ const WithdrawPage = () => {
                 onChange={(e) => setAmount(Number(e.target.value))}
                 InputProps={{
                   startAdornment: (
-                    <InputAdornment position="start">$</InputAdornment>
+                    <InputAdornment position="start">₱</InputAdornment>
                   ),
                   inputProps: { min: 0, max: currentBalance, step: 0.01 },
                 }}
@@ -89,6 +94,7 @@ const WithdrawPage = () => {
                       },
                     },
                   }}
+                  format="MMM DD"
                 />
               </LocalizationProvider>
               <TextField
@@ -98,6 +104,11 @@ const WithdrawPage = () => {
                 rows={4}
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start"></InputAdornment>
+                  ),
+                }}
                 variant="outlined"
                 sx={{
                   '& .MuiOutlinedInput-notchedOutline': {
@@ -112,7 +123,7 @@ const WithdrawPage = () => {
                     Current Balance:
                   </Typography>
                   <Typography variant="h4" fontWeight="medium" align="left">
-                    ${currentBalance.toFixed(2)}
+                  ₱{currentBalance.toFixed(2)}
                   </Typography>
                 </Grid>
                 <Grid item xs={6}>
@@ -125,7 +136,7 @@ const WithdrawPage = () => {
                     sx={{ color: '#e57373' }}
                     align="right"
                   >
-                    ${(currentBalance - amount).toFixed(2)}
+                    ₱{(currentBalance - amount).toFixed(2)}
                   </Typography>
                 </Grid>
               </Grid>

@@ -23,7 +23,7 @@ const billsData = [
 const Bills = () => {
   return (
     <DashboardCard title="Bills To Pay">
-      <Box sx={{ overflow: 'auto', width: { xs: '280px', sm: 'auto' } }}>
+      <Box sx={{ overflow: 'auto', width: { xs: 'auto', sm: 'auto' } }}>
         <Table
           aria-label="simple table"
           sx={{

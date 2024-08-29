@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   Typography,
   Box,
@@ -8,45 +9,15 @@ import {
   TableRow,
   Chip,
 } from '@mui/material';
-import DashboardCard from '@/app/(DashboardLayout)//components/shared/DashboardCard';
+import DashboardCard from '../shared/DashboardCard';
 
-const products = [
-  {
-    id: '1',
-    name: 'Sunil Joshi',
-    post: 'Web Designer',
-    pname: 'Elite Admin',
-    priority: 'Low',
-    pbg: 'primary.main',
-    budget: '3.9',
-  },
-  {
-    id: '2',
-    name: 'Andrew McDownland',
-    post: 'Project Manager',
-    pname: 'Real Homes WP Theme',
-    priority: 'Medium',
-    pbg: 'secondary.main',
-    budget: '24.5',
-  },
-  {
-    id: '3',
-    name: 'Christopher Jamil',
-    post: 'Project Manager',
-    pname: 'MedicalPro WP Theme',
-    priority: 'High',
-    pbg: 'error.main',
-    budget: '12.8',
-  },
-  {
-    id: '4',
-    name: 'Nirav Joshi',
-    post: 'Frontend Engineer',
-    pname: 'Hosting Press HTML',
-    priority: 'Critical',
-    pbg: 'success.main',
-    budget: '2.4',
-  },
+// Mock data for bills
+const billsData = [
+  { id: '1', name: 'Electricity', amount: 120.5, dueDate: '2023-05-15' },
+  { id: '2', name: 'Water', amount: 45.75, dueDate: '2023-05-20' },
+  { id: '3', name: 'Internet', amount: 79.99, dueDate: '2023-05-25' },
+  { id: '4', name: 'Rent', amount: 1200.0, dueDate: '2023-06-01' },
+  { id: '5', name: 'Phone', amount: 65.0, dueDate: '2023-05-18' },
 ];
 
 const Bills = () => {
@@ -69,29 +40,24 @@ const Bills = () => {
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={600}>
-                  Assigned
-                </Typography>
-              </TableCell>
-              <TableCell>
-                <Typography variant="subtitle2" fontWeight={600}>
                   Name
                 </Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={600}>
-                  Priority
+                  Amount
                 </Typography>
               </TableCell>
-              <TableCell align="right">
+              <TableCell>
                 <Typography variant="subtitle2" fontWeight={600}>
-                  Budget
+                  Due Date
                 </Typography>
               </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {products.map((product) => (
-              <TableRow key={product.name}>
+            {billsData.map((bill) => (
+              <TableRow key={bill.id}>
                 <TableCell>
                   <Typography
                     sx={{
@@ -99,7 +65,7 @@ const Bills = () => {
                       fontWeight: '500',
                     }}
                   >
-                    {product.id}
+                    {bill.id}
                   </Typography>
                 </TableCell>
                 <TableCell>
@@ -111,15 +77,7 @@ const Bills = () => {
                   >
                     <Box>
                       <Typography variant="subtitle2" fontWeight={600}>
-                        {product.name}
-                      </Typography>
-                      <Typography
-                        color="textSecondary"
-                        sx={{
-                          fontSize: '13px',
-                        }}
-                      >
-                        {product.post}
+                        {bill.name}
                       </Typography>
                     </Box>
                   </Box>
@@ -130,22 +88,19 @@ const Bills = () => {
                     variant="subtitle2"
                     fontWeight={400}
                   >
-                    {product.pname}
+                    ₱{bill.amount.toFixed(2)}
                   </Typography>
                 </TableCell>
                 <TableCell>
                   <Chip
                     sx={{
                       px: '4px',
-                      backgroundColor: product.pbg,
-                      color: '#fff',
+                      backgroundColor: (theme) => theme.palette.primary.light,
+                      color: (theme) => theme.palette.primary.main,
                     }}
                     size="small"
-                    label={product.priority}
-                  ></Chip>
-                </TableCell>
-                <TableCell align="right">
-                  <Typography variant="h6">${product.budget}k</Typography>
+                    label={bill.dueDate}
+                  />
                 </TableCell>
               </TableRow>
             ))}

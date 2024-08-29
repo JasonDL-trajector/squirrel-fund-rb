@@ -1,7 +1,7 @@
 import { useMediaQuery, Box, Drawer } from '@mui/material';
 import SidebarItems from './SidebarItems';
-import { Upgrade } from './Updrade';
 import { Sidebar, Logo } from 'react-mui-sidebar';
+import BottomNavbar from '../bottomNavbar/BottomNavbar';
 
 interface ItemType {
   isMobileSidebarOpen: boolean;
@@ -37,9 +37,7 @@ const MSidebar = ({
           flexShrink: 0,
         }}
       >
-        {/* ------------------------------------------- */}
-        {/* Sidebar for desktop */}
-        {/* ------------------------------------------- */}
+        {/* Desktop sidebar content */}
         <Drawer
           anchor="left"
           open={isSidebarOpen}
@@ -51,14 +49,7 @@ const MSidebar = ({
             },
           }}
         >
-          {/* ------------------------------------------- */}
-          {/* Sidebar Box */}
-          {/* ------------------------------------------- */}
-          <Box
-            sx={{
-              height: '100%',
-            }}
-          >
+          <Box sx={{ height: '100%' }}>
             <Sidebar
               width={'270px'}
               collapsewidth="80px"
@@ -67,14 +58,8 @@ const MSidebar = ({
               themeSecondaryColor="#49beff"
               showProfile={false}
             >
-              {/* ------------------------------------------- */}
-              {/* Logo */}
-              {/* ------------------------------------------- */}
               <Logo img="/images/logos/dark-logo.svg" />
               <Box>
-                {/* ------------------------------------------- */}
-                {/* Sidebar Items */}
-                {/* ------------------------------------------- */}
                 <SidebarItems />
               </Box>
             </Sidebar>
@@ -84,48 +69,8 @@ const MSidebar = ({
     );
   }
 
-  return (
-    <Drawer
-      anchor="left"
-      open={isMobileSidebarOpen}
-      onClose={onSidebarClose}
-      variant="temporary"
-      PaperProps={{
-        sx: {
-          boxShadow: (theme) => theme.shadows[8],
-          ...scrollbarStyles,
-        },
-      }}
-    >
-      {/* ------------------------------------------- */}
-      {/* Sidebar Box */}
-      {/* ------------------------------------------- */}
-      <Box px={2}>
-        <Sidebar
-          width={'270px'}
-          collapsewidth="80px"
-          isCollapse={false}
-          mode="light"
-          direction="ltr"
-          themeColor="#5d87ff"
-          themeSecondaryColor="#49beff"
-          showProfile={false}
-        >
-          {/* ------------------------------------------- */}
-          {/* Logo */}
-          {/* ------------------------------------------- */}
-          <Logo img="/images/logos/dark-logo.svg" />
-          {/* ------------------------------------------- */}
-          {/* Sidebar Items */}
-          {/* ------------------------------------------- */}
-          <SidebarItems />
-        </Sidebar>
-      </Box>
-      {/* ------------------------------------------- */}
-      {/* Sidebar For Mobile */}
-      {/* ------------------------------------------- */}
-    </Drawer>
-  );
+  // For mobile, we only return the BottomNavbar
+  return <BottomNavbar />;
 };
 
 export default MSidebar;

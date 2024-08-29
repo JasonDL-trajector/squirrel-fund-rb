@@ -3,12 +3,14 @@
 import { Grid, Box } from '@mui/material';
 import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
 // components
-import SalesOverview from '@/app/(DashboardLayout)/components/dashboard/SalesOverview';
-import YearlyBreakup from '@/app/(DashboardLayout)/components/dashboard/YearlyBreakup';
-import RecentTransactions from '@/app/(DashboardLayout)/components/dashboard/RecentTransactions';
-import ProductPerformance from '@/app/(DashboardLayout)/components/dashboard/ProductPerformance';
+import BalanceHistory from '@/app/(DashboardLayout)/components/dashboard/BalanceHistory';
+import CurrentBalance from '@/app/(DashboardLayout)/components/dashboard/CurrentBalance';
+import RecentDeposits from '@/app/(DashboardLayout)/components/dashboard/RecentDeposits';
+import RecentWithdrawals from '@/app/(DashboardLayout)/components/dashboard/RecentWithdrawals';
+import Bills from '@/app/(DashboardLayout)/components/dashboard/Bills';
 
-import MonthlyEarnings from '@/app/(DashboardLayout)/components/dashboard/MonthlyEarnings';
+import DailyDeposit from '@/app/(DashboardLayout)/components/dashboard/DailyDeposit';
+import TabularSummary from './components/dashboard/TabularSummary';
 
 const Dashboard = () => {
   return (
@@ -16,29 +18,29 @@ const Dashboard = () => {
       <Box>
         <Grid container spacing={3}>
           <Grid item xs={12} md={6}>
-            <SalesOverview />
+            <BalanceHistory />
           </Grid>
           <Grid item xs={12} md={6}>
-            <SalesOverview />
+            <TabularSummary />
           </Grid>
           <Grid item xs={12}>
             <Grid container spacing={3}>
               <Grid item xs={12} sm={6}>
-                <YearlyBreakup />
+                <CurrentBalance />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <MonthlyEarnings />
+                <DailyDeposit />
               </Grid>
             </Grid>
           </Grid>
           <Grid item xs={12} md={6}>
-            <RecentTransactions />
+            <RecentDeposits />
           </Grid>
           <Grid item xs={12} md={6}>
-            <RecentTransactions />
+            <RecentWithdrawals />
           </Grid>
           <Grid item xs={12}>
-            <ProductPerformance />
+            <Bills />
           </Grid>
         </Grid>
       </Box>

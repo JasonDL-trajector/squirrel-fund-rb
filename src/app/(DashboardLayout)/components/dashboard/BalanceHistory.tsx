@@ -5,7 +5,7 @@ import DashboardCard from '@/app/(DashboardLayout)/components/shared/DashboardCa
 import dynamic from 'next/dynamic';
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
-const SalesOverview = () => {
+const BalanceHistory = () => {
   // select
   const [month, setMonth] = React.useState('1');
 
@@ -75,12 +75,8 @@ const SalesOverview = () => {
   };
   const seriescolumnchart: any = [
     {
-      name: 'Eanings this month',
+      name: 'Balance',
       data: [355, 390, 300, 350, 390, 180, 355, 390],
-    },
-    {
-      name: 'Expense this month',
-      data: [280, 250, 325, 215, 250, 310, 280, 250],
     },
   ];
 
@@ -112,4 +108,4 @@ const SalesOverview = () => {
   );
 };
 
-export default SalesOverview;
+export default BalanceHistory;

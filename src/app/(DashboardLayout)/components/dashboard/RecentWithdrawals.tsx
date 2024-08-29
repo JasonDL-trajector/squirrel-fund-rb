@@ -1,4 +1,3 @@
-
 import DashboardCard from '@/app/(DashboardLayout)/components/shared/DashboardCard';
 import {
   Timeline,
@@ -12,9 +11,9 @@ import {
 } from '@mui/lab';
 import { Link, Typography } from '@mui/material';
 
-const RecentTransactions = () => {
+const RecentWithdrawals = () => {
   return (
-    <DashboardCard title="Recent Transactions">
+    <DashboardCard title="Recent Withdrawals">
       <>
         <Timeline
           className="theme-timeline"
@@ -26,7 +25,7 @@ const RecentTransactions = () => {
             mb: '-40px',
             '& .MuiTimelineConnector-root': {
               width: '1px',
-              backgroundColor: '#efefef'
+              backgroundColor: '#efefef',
             },
             [`& .${timelineOppositeContentClasses.root}`]: {
               flex: 0.5,
@@ -40,7 +39,9 @@ const RecentTransactions = () => {
               <TimelineDot color="primary" variant="outlined" />
               <TimelineConnector />
             </TimelineSeparator>
-            <TimelineContent>Payment received from John Doe of $385.90</TimelineContent>
+            <TimelineContent>
+              Payment received from John Doe of $385.90
+            </TimelineContent>
           </TimelineItem>
           <TimelineItem>
             <TimelineOppositeContent>10:00 am</TimelineOppositeContent>
@@ -61,7 +62,9 @@ const RecentTransactions = () => {
               <TimelineDot color="success" variant="outlined" />
               <TimelineConnector />
             </TimelineSeparator>
-            <TimelineContent>Payment was made of $64.95 to Michael</TimelineContent>
+            <TimelineContent>
+              Payment was made of $64.95 to Michael
+            </TimelineContent>
           </TimelineItem>
           <TimelineItem>
             <TimelineOppositeContent>09:30 am</TimelineOppositeContent>
@@ -99,4 +102,4 @@ const RecentTransactions = () => {
   );
 };
 
-export default RecentTransactions;
+export default RecentWithdrawals;

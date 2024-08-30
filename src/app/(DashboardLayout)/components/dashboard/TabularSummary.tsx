@@ -49,7 +49,7 @@ const TabularSummary = () => {
   const classes = useStyles();
 
   return (
-    <Card elevation={9} variant={undefined}>
+    <Card elevation={3} variant={undefined}>
       <CardHeader title="Tabular Summary" />
       <CardContent>
         <TableContainer component={Paper} style={{ paddingBottom: '16px' }}>

@@ -27,7 +27,7 @@ const BottomNavbar = () => {
           left: 0,
           right: 0,
           paddingBottom: 3,
-          zIndex: 1300, // Increased z-index to ensure it's on top
+          zIndex: 1300,
         }}
         elevation={3}
       >

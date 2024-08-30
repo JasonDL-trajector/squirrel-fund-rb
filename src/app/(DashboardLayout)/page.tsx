@@ -18,8 +18,8 @@ const Dashboard = () => {
 
   return (
     <PageContainer title="Squirrel Fund" description="Squirrel Fund">
-      <Box sx={{ overflowX: 'hidden' }}>
-        <Grid container spacing={isMobile ? 2 : 3}>
+      <Box>
+        <Grid container spacing={isMobile ? 5 : 3}>
           <Grid item xs={12} md={6}>
             <BalanceHistory />
           </Grid>

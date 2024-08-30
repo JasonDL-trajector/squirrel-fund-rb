@@ -1,6 +1,6 @@
 {
   "name": "Squirrel Fund",
-  "short_name": "Squirrel",
+  "short_name": "Squirrel Fund",
   "description": "Manage your finances with Squirrel Fund",
   "start_url": "/",
   "display": "standalone",

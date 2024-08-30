@@ -8,8 +8,10 @@ import {
   TableHead,
   TableRow,
   Chip,
+  Skeleton,
 } from '@mui/material';
 import DashboardCard from '../shared/DashboardCard';
+import type { Loading } from '../../types/loading';
 
 // Updated mock data for bills with status
 const billsData = [
@@ -20,7 +22,7 @@ const billsData = [
   { id: '5', name: 'Phone', amount: 65.0, dueDate: '2023-05-18', status: 'Unpaid' },
 ];
 
-const Bills = () => {
+const Bills = ({ isLoading }: Loading) => {
   return (
     <DashboardCard title="Bills To Pay">
       <Box sx={{ overflow: 'auto', maxWidth: '80vw' }}>
@@ -61,71 +63,81 @@ const Bills = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {billsData.map((bill) => (
-              <TableRow key={bill.id}>
-                <TableCell>
-                  <Typography
-                    sx={{
-                      fontSize: '15px',
-                      fontWeight: '500',
-                    }}
-                  >
-                    {bill.id}
-                  </Typography>
-                </TableCell>
-                <TableCell>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <Box>
-                      <Typography variant="subtitle2" fontWeight={600}>
-                        {bill.name}
+            {isLoading
+              ? Array.from(new Array(5)).map((_, index) => (
+                  <TableRow key={index}>
+                    <TableCell><Skeleton variant="text" /></TableCell>
+                    <TableCell><Skeleton variant="text" /></TableCell>
+                    <TableCell><Skeleton variant="text" /></TableCell>
+                    <TableCell><Skeleton variant="rectangular" width={80} height={30} /></TableCell>
+                    <TableCell><Skeleton variant="rectangular" width={80} height={30} /></TableCell>
+                  </TableRow>
+                ))
+              : billsData.map((bill) => (
+                  <TableRow key={bill.id}>
+                    <TableCell>
+                      <Typography
+                        sx={{
+                          fontSize: '15px',
+                          fontWeight: '500',
+                        }}
+                      >
+                        {bill.id}
                       </Typography>
-                    </Box>
-                  </Box>
-                </TableCell>
-                <TableCell>
-                  <Typography
-                    color="textSecondary"
-                    variant="subtitle2"
-                    fontWeight={400}
-                  >
-                    ₱{bill.amount.toFixed(2)}
-                  </Typography>
-                </TableCell>
-                <TableCell>
-                  <Chip
-                    sx={{
-                      px: '4px',
-                      backgroundColor: (theme) => theme.palette.primary.light,
-                      color: (theme) => theme.palette.primary.main,
-                    }}
-                    size="small"
-                    label={bill.dueDate}
-                  />
-                </TableCell>
-                <TableCell>
-                  <Chip
-                    sx={{
-                      px: '4px',
-                      backgroundColor: (theme) =>
-                        bill.status === 'Paid'
-                          ? theme.palette.success.light
-                          : theme.palette.error.light,
-                      color: (theme) =>
-                        bill.status === 'Paid'
-                          ? theme.palette.success.main
-                          : theme.palette.error.main,
-                    }}
-                    size="small"
-                    label={bill.status}
-                  />
-                </TableCell>
-              </TableRow>
-            ))}
+                    </TableCell>
+                    <TableCell>
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <Box>
+                          <Typography variant="subtitle2" fontWeight={600}>
+                            {bill.name}
+                          </Typography>
+                        </Box>
+                      </Box>
+                    </TableCell>
+                    <TableCell>
+                      <Typography
+                        color="textSecondary"
+                        variant="subtitle2"
+                        fontWeight={400}
+                      >
+                        ₱{bill.amount.toFixed(2)}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Chip
+                        sx={{
+                          px: '4px',
+                          backgroundColor: (theme) => theme.palette.primary.light,
+                          color: (theme) => theme.palette.primary.main,
+                        }}
+                        size="small"
+                        label={bill.dueDate}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Chip
+                        sx={{
+                          px: '4px',
+                          backgroundColor: (theme) =>
+                            bill.status === 'Paid'
+                              ? theme.palette.success.light
+                              : theme.palette.error.light,
+                          color: (theme) =>
+                            bill.status === 'Paid'
+                              ? theme.palette.success.main
+                              : theme.palette.error.main,
+                        }}
+                        size="small"
+                        label={bill.status}
+                      />
+                    </TableCell>
+                  </TableRow>
+                ))}
           </TableBody>
         </Table>
       </Box>

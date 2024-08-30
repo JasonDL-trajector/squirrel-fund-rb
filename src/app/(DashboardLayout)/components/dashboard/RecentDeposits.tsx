@@ -10,8 +10,9 @@ import {
   timelineOppositeContentClasses,
 } from '@mui/lab';
 import { Link, Typography } from '@mui/material';
+import type { Loading } from '../../types/loading';
 
-const RecentDeposits = () => {
+const RecentDeposits = ({ isLoading }: Loading) => {
   return (
     <DashboardCard title="Recent Deposits">
       <>

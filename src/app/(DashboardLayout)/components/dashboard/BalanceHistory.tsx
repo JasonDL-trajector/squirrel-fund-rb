@@ -1,11 +1,12 @@
 import React from 'react';
-import { Select, MenuItem } from '@mui/material';
+import { Skeleton } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import DashboardCard from '@/app/(DashboardLayout)/components/shared/DashboardCard';
 import dynamic from 'next/dynamic';
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
+import type { Loading } from '../../types/loading';
 
-const BalanceHistory = () => {
+const BalanceHistory = ({ isLoading }: Loading) => {
   // select
   const [month, setMonth] = React.useState('1');
 
@@ -81,16 +82,18 @@ const BalanceHistory = () => {
   ];
 
   return (
-    <DashboardCard
-      title="Balance History"
-    >
-      <Chart
-        options={optionscolumnchart}
-        series={seriescolumnchart}
-        type="line"
-        height={370}
-        width={'100%'}
-      />
+    <DashboardCard title="Balance History">
+      {isLoading ? (
+        <Skeleton variant="rectangular" width="100%" height={370} />
+      ) : (
+        <Chart
+          options={optionscolumnchart}
+          series={seriescolumnchart}
+          type="line"
+          height={370}
+          width={'100%'}
+        />
+      )}
     </DashboardCard>
   );
 };

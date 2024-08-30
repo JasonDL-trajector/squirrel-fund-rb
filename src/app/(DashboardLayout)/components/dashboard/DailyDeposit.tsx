@@ -4,8 +4,9 @@ import { useTheme } from '@mui/material/styles';
 import { Stack, Typography, Avatar, Fab } from '@mui/material';
 import { IconArrowDownRight, IconCurrencyPeso } from '@tabler/icons-react';
 import DashboardCard from '@/app/(DashboardLayout)/components/shared/DashboardCard';
+import type { Loading } from '../../types/loading';
 
-const DailyDeposit = () => {
+const DailyDeposit = ({ isLoading }: Loading) => {
   // chart color
   const theme = useTheme();
   const secondary = theme.palette.secondary.main;

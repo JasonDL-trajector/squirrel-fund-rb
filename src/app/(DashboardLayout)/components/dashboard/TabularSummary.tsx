@@ -15,6 +15,7 @@ import {
 } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
 import { makeStyles } from '@mui/styles';
+import type { Loading } from '../../types/loading';
 
 // Mock data (in a real application, this would come from an API or props)
 const mockDeposits = [
@@ -40,7 +41,7 @@ const useStyles = makeStyles({
   },
 });
 
-const TabularSummary = () => {
+const TabularSummary = ({ isLoading }: Loading) => {
   const [deposits] = useState(mockDeposits);
   const [dateRange, setDateRange] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);

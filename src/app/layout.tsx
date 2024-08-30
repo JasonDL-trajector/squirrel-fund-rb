@@ -26,23 +26,20 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 
         <link
           rel="icon"
-          href="/icon?<generated>"
-          type="image/<generated>"
-          sizes="<generated>"
+          href="/favicon.ico"
+          type="image/ico"
         />
         <link
           rel="apple-touch-icon"
-          href="/apple-icon?<generated>"
-          type="image/<generated>"
-          sizes="<generated>"
+          href="/apple-touch-icon.png"
+          type="image/png"
         />
-        
+
         <meta name="apple-mobile-web-app-title" content="Squirrel Fund" />
         <meta name="theme-color" content="#ffffff" />
       </head>

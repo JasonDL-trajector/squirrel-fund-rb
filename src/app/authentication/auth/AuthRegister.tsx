@@ -22,20 +22,26 @@ const AuthRegister = ({ title, subtitle, subtext }: registerType) => (
         {subtext}
 
         <Box>
-            <Stack mb={3}>
-                <Typography variant="subtitle1"
-                    fontWeight={600} component="label" htmlFor='name' mb="5px">Name</Typography>
-                <CustomTextField type="text" id="name" variant="outlined" fullWidth />
+            <Stack spacing={2}> {/* Reduced spacing */}
+                <Box>
+                    <Typography variant="subtitle1"
+                        fontWeight={600} component="label" htmlFor='name' mb="5px">Name</Typography>
+                    <CustomTextField id="name" variant="outlined" fullWidth />
+                </Box>
 
-                <Typography variant="subtitle1"
-                    fontWeight={600} component="label" htmlFor='email' mb="5px" mt="25px">Email Address</Typography>
-                <CustomTextField type="text" id="email" variant="outlined" fullWidth />
+                <Box>
+                    <Typography variant="subtitle1"
+                        fontWeight={600} component="label" htmlFor='email' mb="5px">Email Address</Typography>
+                    <CustomTextField id="email" variant="outlined" fullWidth />
+                </Box>
 
-                <Typography variant="subtitle1"
-                    fontWeight={600} component="label" htmlFor='password' mb="5px" mt="25px">Password</Typography>
-                <CustomTextField type="password" id="password" variant="outlined" fullWidth />
+                <Box>
+                    <Typography variant="subtitle1"
+                        fontWeight={600} component="label" htmlFor='password' mb="5px">Password</Typography>
+                    <CustomTextField type="password" id="password" variant="outlined" fullWidth />
+                </Box>
             </Stack>
-            <Button color="primary" variant="contained" size="large" fullWidth component={Link} href="/authentication/login">
+            <Button color="primary" variant="contained" size="large" fullWidth sx={{ mt: 3 }} component={Link} href="/authentication/login">
                 Sign Up
             </Button>
         </Box>

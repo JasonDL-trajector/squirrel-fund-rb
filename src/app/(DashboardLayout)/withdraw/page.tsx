@@ -64,8 +64,8 @@ const WithdrawPage = () => {
               <Box display="flex" flexDirection="column" gap={4} flexGrow={1}>
                 <TextField
                   fullWidth
-                  label="Withdraw Amount"
-                  type="number"
+                  label="Amount"
+                  type="text"
                   value={amount}
                   onChange={(e) => setAmount(Number(e.target.value))}
                   InputProps={{
@@ -83,7 +83,7 @@ const WithdrawPage = () => {
                 />
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
-                    label="Withdraw Date"
+                    label="Date"
                     value={date}
                     onChange={(newDate) => newDate && setDate(newDate)}
                     slotProps={{
@@ -100,7 +100,7 @@ const WithdrawPage = () => {
                 </LocalizationProvider>
                 <TextField
                   fullWidth
-                  label="Enter a note"
+                  label="Note"
                   multiline
                   rows={4}
                   value={note}

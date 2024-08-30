@@ -28,7 +28,7 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => (
 
     {subtext}
 
-    <Stack>
+    <Stack spacing={2}> {/* Reduced spacing */}
       <Box>
         <Typography
           variant="subtitle1"
@@ -54,17 +54,11 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => (
         <CustomTextField type="password" variant="outlined" fullWidth />
       </Box>
       <Stack
-        justifyContent="space-between"
+        justifyContent="flex-end"
         direction="row"
         alignItems="center"
         my={2}
       >
-        <FormGroup>
-          <FormControlLabel
-            control={<Checkbox defaultChecked />}
-            label="Remeber this Device"
-          />
-        </FormGroup>
         <Typography
           component={Link}
           href="/"
@@ -72,6 +66,7 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => (
           sx={{
             textDecoration: "none",
             color: "primary.main",
+            marginBottom: 2,
           }}
         >
           Forgot Password?

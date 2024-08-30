@@ -16,13 +16,14 @@ const Login2 = () => {
           position: "relative",
           "&:before": {
             content: '""',
-            background: "radial-gradient(#d2f1df, #d3d7fa, #bad8f4)",
-            backgroundSize: "400% 400%",
+            background: "url(/images/backgrounds/squirrel.svg)",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
             animation: "gradient 15s ease infinite",
             position: "absolute",
             height: "100%",
             width: "100%",
-            opacity: "0.3",
+            opacity: "1",
           },
         }}
       >
@@ -49,7 +50,9 @@ const Login2 = () => {
                 zIndex: 1,
                 width: "100%",
                 maxWidth: isMobile ? "90%" : "500px",
-                m: isMobile ? 2 : 0
+                m: isMobile ? 2 : 0,
+                background: "rgba(255, 255, 255, 0.75)",
+                backdropFilter: "blur(10px)",
               }}
             >
               <Box display="flex" alignItems="center" justifyContent="center" >

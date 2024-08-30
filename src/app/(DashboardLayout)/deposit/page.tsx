@@ -84,8 +84,8 @@ const DepositPage = () => {
               <Box display="flex" flexDirection="column" gap={4} flexGrow={1}>
                 <TextField
                   fullWidth
-                  label="Daily Deposit Amount"
-                  type="number"
+                  label="Amount"
+                  type="text"
                   value={depositAmount}
                   onChange={(e) => setDepositAmount(Number(e.target.value))}
                   InputProps={{
@@ -119,7 +119,7 @@ const DepositPage = () => {
                 </LocalizationProvider>
                 <TextField
                   fullWidth
-                  label="Enter a note"
+                  label="Note"
                   multiline
                   rows={4}
                   value={note}

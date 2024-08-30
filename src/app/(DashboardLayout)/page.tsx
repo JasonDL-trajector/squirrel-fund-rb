@@ -32,7 +32,7 @@ const Dashboard = () => {
           <Grid item xs={12} md={6}>
             <BalanceHistory isLoading={isLoading} />
           </Grid>
-           <Grid item xs={12} md={6}>
+          <Grid item xs={12} md={6}>
             <TabularSummary isLoading={isLoading} />
           </Grid>
           <Grid item xs={12}>

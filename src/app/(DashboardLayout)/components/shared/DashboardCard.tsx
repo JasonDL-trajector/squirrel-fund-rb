@@ -28,7 +28,7 @@ const DashboardCard = ({
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   return (
-    <Card sx={{ padding: 0, height: '100%' }} elevation={3} variant={undefined}>
+    <Card sx={{ padding: 1.5, height: '100%', transform: isMobile ? 'scale(0.95)' : 'none', transformOrigin: 'top center' }} elevation={3} variant={undefined}>
       {cardheading ? (
         <CardContent>
           <Typography variant="h5">{headtitle}</Typography>

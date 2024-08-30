@@ -12,6 +12,8 @@ import {
   TableRow,
   Paper,
   Skeleton,
+  useTheme,
+  useMediaQuery,
 } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
 import { makeStyles } from '@mui/styles';
@@ -86,8 +88,11 @@ const TabularSummary = ({ isLoading }: Loading) => {
     </TableBody>
   );
 
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
   return (
-    <Card elevation={3} variant={undefined}>
+    <Card sx={{ padding: 1.5, height: '100%', transform: isMobile ? 'scale(0.95)' : 'none', transformOrigin: 'top center' }} elevation={3} variant={undefined}>
       <CardHeader title="Tabular Summary" />
       <CardContent>
         <TableContainer component={Paper} className={classes.tableContainer}>

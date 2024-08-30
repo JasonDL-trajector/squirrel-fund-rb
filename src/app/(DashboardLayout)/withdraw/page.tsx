@@ -38,17 +38,19 @@ const WithdrawPage = () => {
 
   return (
     <PageContainer title="Withdraw" description="Withdraw funds">
-      <Container maxWidth="xs">
-        <Box sx={{ transform: isMobile ? 'scale(0.9)' : 'none', transformOrigin: 'top center' }}>
+      <Container maxWidth="sm">
+        <Box sx={{ transform: isMobile ? 'scale(0.9)' : 'none', transformOrigin: 'top center'}}>
           <Paper
             elevation={3}
             sx={{
               p: 4,
+              marginX: -3,
               bgcolor: 'background.paper',
               borderRadius: 2,
               minHeight: '70vh',
               display: 'flex',
               flexDirection: 'column',
+              width: 'screen',
             }}
           >
             <Typography variant="h5" gutterBottom>

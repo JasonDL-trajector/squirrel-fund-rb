@@ -82,7 +82,7 @@ const BalanceHistory = ({ isLoading }: Loading) => {
   ];
 
   return (
-    <DashboardCard title="Balance History">
+    <DashboardCard title="Balance History" >
       {isLoading ? (
         <Skeleton variant="rectangular" width="100%" height={370} />
       ) : (

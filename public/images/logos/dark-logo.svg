@@ -3,12 +3,12 @@
   <defs>
     <style bx:fonts="ADLaM Display">@import url(https://fonts.googleapis.com/css2?family=ADLaM+Display%3Aital%2Cwght%400%2C400&amp;display=swap);</style>
   </defs>
-  <path d="M20.1369 26C22.8983 26 25.1842 23.7425 24.6732 21.0288C24.3528 19.3274 23.8679 17.6594 23.2235 16.0502C21.9602 12.8958 20.1087 10.0295 17.7745 7.61522C15.4403 5.2009 12.6692 3.28575 9.61949 1.97913C8.11383 1.33406 6.55481 0.843538 4.96489 0.512196C2.26154 -0.0511821 0 2.23858 0 5V21C0 23.7614 2.23858 26 5 26H20.1369Z" fill="#615DFF" transform="matrix(1, 0, 0, 1, 8.881784197001252e-16, 0)"/>
-  <g style="mix-blend-mode:multiply" transform="matrix(1, 0, 0, 1, 8.881784197001252e-16, 0)">
+  <path d="M 33.737 25.71 C 36.499 25.71 38.785 23.453 38.274 20.739 C 37.953 19.037 37.468 17.369 36.824 15.76 C 35.561 12.606 33.709 9.74 31.375 7.325 C 29.041 4.911 26.27 2.996 23.22 1.689 C 21.714 1.044 20.155 0.554 18.565 0.222 C 15.862 -0.341 13.6 1.949 13.6 4.71 L 13.6 20.71 C 13.6 23.471 15.839 25.71 18.6 25.71 L 33.737 25.71 Z" fill="#615DFF" transform="matrix(1, 0, 0, 1, 8.881784197001252e-16, 0)"/>
+  <g style="mix-blend-mode:multiply" transform="matrix(1, 0, 0, 1, 16.1075382232666, -0.3858100473880768)">
     <path d="M13.7013 26C10.9399 26 8.65395 23.7425 9.16502 21.0288C9.48544 19.3274 9.97031 17.6594 10.6147 16.0502C11.878 12.8958 13.7295 10.0295 16.0637 7.61522C18.3979 5.2009 21.169 3.28575 24.2187 1.97913C25.7244 1.33406 27.2834 0.843538 28.8733 0.512196C31.5767 -0.0511821 33.8382 2.23858 33.8382 5V21C33.8382 23.7614 31.5996 26 28.8382 26H13.7013Z" fill="#3DD9EB"/>
   </g>
-  <text style="fill: rgb(51, 51, 51); font-family: 'ADLaM Display'; font-size: 20px; white-space: pre;" x="41.184" y="21.026" transform="matrix(1, 0, 0, 1, 8.881784197001252e-16, 0)">Squirrel Fund</text>
-  <text style="white-space: pre; fill: rgb(51, 51, 51); font-family: Arial, sans-serif; font-size: 28px;" x="105.229" y="8.97" transform="matrix(1, 0, 0, 1, 8.881784197001252e-16, 0)"> </text>
-  <text style="white-space: pre; fill: rgb(51, 51, 51); font-family: Arial, sans-serif; font-size: 28px;" x="100.793" y="28.936" transform="matrix(1, 0, 0, 1, 8.881784197001252e-16, 0)"> </text>
-  <text style="white-space: pre; fill: rgb(51, 51, 51); font-family: Arial, sans-serif; font-size: 28px;" x="131.272" y="41.957" transform="matrix(1, 0, 0, 1, 8.881784197001252e-16, 0)"> </text>
+  <text style="fill: rgb(51, 51, 51); font-family: 'ADLaM Display'; font-size: 20px; white-space: pre;" x="59.028" y="20.545" transform="matrix(1, 0, 0, 1, 8.881784197001252e-16, 0)">Squirrel Fund</text>
+  <text style="white-space: pre; fill: rgb(51, 51, 51); font-family: Arial, sans-serif; font-size: 28px;" x="105.229" y="8.97" transform="matrix(1, 0, 0, 1, 1.7763568394002505e-15, 0)"> </text>
+  <text style="white-space: pre; fill: rgb(51, 51, 51); font-family: Arial, sans-serif; font-size: 28px;" x="100.793" y="28.936" transform="matrix(1, 0, 0, 1, 1.7763568394002505e-15, 0)"> </text>
+  <text style="white-space: pre; fill: rgb(51, 51, 51); font-family: Arial, sans-serif; font-size: 28px;" x="131.272" y="41.957" transform="matrix(1, 0, 0, 1, 1.7763568394002505e-15, 0)"> </text>
 </svg>

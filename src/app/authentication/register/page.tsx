@@ -50,7 +50,7 @@ const Register2 = () => {
                 width: "100%", 
                 maxWidth: isMobile ? "90%" : "500px",
                 m: isMobile ? 2 : 0,
-                background: "rgba(255, 255, 255, 0.75)",
+                background: "rgba(255, 255, 255, 1)",
                 backdropFilter: "blur(10px)",
               }}
             >

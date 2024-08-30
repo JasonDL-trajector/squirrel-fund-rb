@@ -61,10 +61,9 @@ const TabularSummary = ({ isLoading }: Loading) => {
       }
 
       setDateRange(dates.reverse());
-      setLoading(false); // Set loading to false when date range is generated
+      setLoading(false);
     };
 
-    // Simulate API call delay
     setTimeout(() => {
       generateDateRange();
     }, 1000);

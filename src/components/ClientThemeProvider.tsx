@@ -3,10 +3,11 @@
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import theme from '@/utils/theme';
+import { baselightTheme } from '@/utils/theme/DefaultColors';
 
 export default function ClientThemeProvider({ children }: { children: React.ReactNode }) {
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={baselightTheme}>
       <CssBaseline />
       {children}
     </ThemeProvider>

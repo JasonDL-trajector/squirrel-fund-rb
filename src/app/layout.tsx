@@ -1,7 +1,4 @@
 import { Metadata } from 'next';
-import { baselightTheme } from '@/utils/theme/DefaultColors';
-import { ThemeProvider } from '@mui/material/styles';
-import { CssBaseline } from '@mui/material';
 import ClientThemeProvider from '@/components/ClientThemeProvider';
 
 export const metadata: Metadata = {
@@ -35,10 +32,9 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-title" content="Squirrel Fund" />
       </head>
       <body>
-        <ThemeProvider theme={baselightTheme}>
-          <CssBaseline />
+        <ClientThemeProvider>
           {children}
-        </ThemeProvider>
+        </ClientThemeProvider>
       </body>
     </html>
   );

@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 
 import { IconListCheck, IconMail, IconUser } from "@tabler/icons-react";
+import { SignOutButton, UserButton } from "@clerk/nextjs";
 
 const Profile = () => {
   const [anchorEl2, setAnchorEl2] = useState(null);
@@ -35,16 +36,9 @@ const Profile = () => {
             color: "primary.main",
           }),
         }}
-        onClick={handleClick2}
+        // onClick={handleClick2}
       >
-        <Avatar
-          src="/images/profile/user-1.jpg"
-          alt="image"
-          sx={{
-            width: 35,
-            height: 35,
-          }}
-        />
+        <UserButton />
       </IconButton>
       {/* ------------------------------------------- */}
       {/* Message Dropdown */}
@@ -89,8 +83,9 @@ const Profile = () => {
             component={Link}
             fullWidth
           >
-            Logout
+            <SignOutButton />
           </Button>
+          
         </Box>
       </Menu>
     </Box>

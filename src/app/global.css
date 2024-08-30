@@ -1,0 +1,19 @@
+/* Custom styles for Clerk components */
+.custom-button-class {
+  background-color: #5D87FF !important;
+  color: white !important;
+  padding: 10px 14px !important;
+  font-size: 1rem !important;
+  font-weight: 500 !important;
+  border-radius: 4px !important;
+  text-transform: none !important;
+}
+
+.custom-input-class {
+  padding: 10px 14px !important;
+  font-size: 1rem !important;
+  border: 1px solid #DFE5EF !important;
+  border-radius: 4px !important;
+}
+
+/* Add more custom styles as needed */

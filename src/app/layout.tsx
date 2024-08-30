@@ -1,6 +1,17 @@
 import { Metadata } from 'next';
 import ClientThemeProvider from '@/components/ClientThemeProvider';
 import { SpeedInsights } from "@vercel/speed-insights/next"
+import {
+  ClerkProvider,
+  SignInButton,
+  SignIn,
+  SignedIn,
+  SignOutButton,
+  SignedOut,
+  UserButton
+} from '@clerk/nextjs'
+import './global.css';  // Add this line
+import Login2 from './authentication/login/page';
 
 export const metadata: Metadata = {
   title: 'Squirrel Fund',
@@ -25,6 +36,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
+    <ClerkProvider>
     <html lang="en">
       <head>
         <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -46,10 +58,19 @@ export default function RootLayout({
       </head>
       <body>
         <ClientThemeProvider>
-          {children}
+          <SignedOut>
+             <Login2 />
+          </SignedOut>
+          
+          <SignedIn>
+          
+            {children}
+        
+          </SignedIn>
           <SpeedInsights />
         </ClientThemeProvider>
       </body>
     </html>
+    </ClerkProvider>
   );
 }

@@ -5,6 +5,7 @@ import { Grid, Box, Card, Stack, Typography, useMediaQuery, Theme } from "@mui/m
 import PageContainer from "@/app/(DashboardLayout)/components/container/PageContainer";
 import Logo from "@/app/(DashboardLayout)/layout/shared/logo/Logo";
 import AuthLogin from "../auth/AuthLogin";
+import { SignIn } from "@clerk/nextjs";
 
 const Login2 = () => {
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
@@ -43,7 +44,7 @@ const Login2 = () => {
             justifyContent="center"
             alignItems="center"
           >
-            <Card
+            {/* <Card
               elevation={9}
               sx={{
                 p: isMobile ? 4 : 4,
@@ -99,7 +100,8 @@ const Login2 = () => {
                   </Stack>
                 }
               />
-            </Card>
+            </Card> */}
+            <SignIn routing="hash"/>
           </Grid>
         </Grid>
       </Box>

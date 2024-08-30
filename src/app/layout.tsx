@@ -36,7 +36,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <ClerkProvider>
+    <ClerkProvider appearance={{
+      layout: {
+        unsafe_disableDevelopmentModeWarnings: true,
+      }
+    }}>
     <html lang="en">
       <head>
         <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -63,9 +67,7 @@ export default function RootLayout({
           </SignedOut>
           
           <SignedIn>
-          
             {children}
-        
           </SignedIn>
           <SpeedInsights />
         </ClientThemeProvider>

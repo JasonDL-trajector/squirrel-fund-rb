@@ -61,7 +61,9 @@ const Header = ({ toggleMobileSidebar }: ItemType) => {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
+                borderBottom: "solid 1px #E5E5E5",
               }}
+              
             >
               <Logo />
               <Box flexGrow={1} />

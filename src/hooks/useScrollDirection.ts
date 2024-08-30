@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 
 const useScrollDirection = () => {
   const [scrollDirection, setScrollDirection] = useState('up');
+  const [isAtBottom, setIsAtBottom] = useState(false);
 
   useEffect(() => {
     let lastScrollY = window.pageYOffset;
@@ -13,6 +14,9 @@ const useScrollDirection = () => {
         setScrollDirection(direction);
       }
       lastScrollY = scrollY > 0 ? scrollY : 0;
+
+      const isBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight - 10;
+      setIsAtBottom(isBottom);
     };
 
     window.addEventListener('scroll', updateScrollDirection);
@@ -21,7 +25,7 @@ const useScrollDirection = () => {
     };
   }, [scrollDirection]);
 
-  return scrollDirection;
+  return { scrollDirection, isAtBottom };
 };
 
 export default useScrollDirection;

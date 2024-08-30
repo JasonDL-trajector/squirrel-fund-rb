@@ -16,10 +16,10 @@ import useScrollDirection from '@/hooks/useScrollDirection';
 const BottomNavbar = () => {
   const pathname = usePathname();
   const router = useRouter();
-  const scrollDirection = useScrollDirection();
+  const { scrollDirection, isAtBottom } = useScrollDirection();
 
   return (
-    <Slide appear={false} direction="up" in={scrollDirection === 'up'}>
+    <Slide appear={false} direction="up" in={scrollDirection === 'up' || isAtBottom}>
       <Paper
         sx={{
           position: 'fixed',

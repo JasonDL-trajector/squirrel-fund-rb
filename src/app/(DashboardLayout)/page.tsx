@@ -42,7 +42,7 @@ const Dashboard = () => {
           <Grid item xs={12} md={6}>
             <RecentWithdrawals />
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={12} sx={{ marginBottom: 3 }}>
             <Bills />
           </Grid>
         </Grid>

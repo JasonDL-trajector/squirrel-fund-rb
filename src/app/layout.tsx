@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import ClientThemeProvider from '@/components/ClientThemeProvider';
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 export const metadata: Metadata = {
   title: 'Squirrel Fund',
@@ -46,6 +47,7 @@ export default function RootLayout({
       <body>
         <ClientThemeProvider>
           {children}
+          <SpeedInsights />
         </ClientThemeProvider>
       </body>
     </html>

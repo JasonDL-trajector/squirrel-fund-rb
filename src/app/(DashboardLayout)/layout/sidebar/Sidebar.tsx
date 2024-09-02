@@ -58,7 +58,8 @@ const MSidebar = ({
               themeSecondaryColor="#49beff"
               showProfile={false}
             >
-              <Logo img="/images/logos/dark-logo.svg" />
+              <Logo img="/images/logos/dark-logo-2.svg" />
+
               <Box>
                 <SidebarItems />
               </Box>

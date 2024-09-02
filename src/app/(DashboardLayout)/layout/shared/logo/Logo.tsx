@@ -13,7 +13,7 @@ const Logo = () => {
   return (
     <LinkStyled href="/">
       <Image
-        src="/images/logos/dark-logo.svg"
+        src="/images/logos/dark-logo-2.svg"
         alt="logo"
         height={70}
         width={174}

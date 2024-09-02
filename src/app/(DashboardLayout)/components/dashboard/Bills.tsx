@@ -274,14 +274,15 @@ const Bills = ({ isLoading }: Loading) => {
               </Select>
             </FormControl>
             <Box display="flex" justifyContent="space-between" mt={2}>
-              <Button
-                variant="contained"
-                color="error"
-                onClick={handleDeleteBill}
-                disabled={!editingBill}
-              >
-                Delete Bill
-              </Button>
+              {editingBill && (
+                <Button
+                  variant="contained"
+                  color="error"
+                  onClick={handleDeleteBill}
+                >
+                  Delete Bill
+                </Button>
+              )}
               <Button type="submit" variant="contained" color="primary">
                 {editingBill ? 'Update Bill' : 'Add Bill'}
               </Button>

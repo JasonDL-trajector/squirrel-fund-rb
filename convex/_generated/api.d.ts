@@ -14,6 +14,7 @@ import type {
   FunctionReference,
 } from "convex/server";
 import type * as balances from "../balances.js";
+import type * as bills from "../bills.js";
 import type * as deposits from "../deposits.js";
 import type * as withdraws from "../withdraws.js";
 
@@ -27,6 +28,7 @@ import type * as withdraws from "../withdraws.js";
  */
 declare const fullApi: ApiFromModules<{
   balances: typeof balances;
+  bills: typeof bills;
   deposits: typeof deposits;
   withdraws: typeof withdraws;
 }>;

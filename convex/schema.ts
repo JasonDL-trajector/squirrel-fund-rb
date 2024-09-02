@@ -17,5 +17,11 @@ export default defineSchema({
   balances: defineTable({
     balanceAmount: v.float64(),
     balanceDate: v.string(),
-  })
+  }),
+  bills: defineTable({
+    name: v.string(),
+    amount: v.number(),
+    dueDate: v.string(),
+    status: v.string(),
+  }),
 });

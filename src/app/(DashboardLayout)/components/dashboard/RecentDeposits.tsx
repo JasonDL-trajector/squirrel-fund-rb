@@ -39,7 +39,7 @@ const RecentDeposits = ({ isLoading }: Loading) => {
   );
   
   return (
-    <DashboardCard title="Recent Deposits" sx={{ borderBottom: "solid 1px #E5E5E5" }}>
+    <DashboardCard title="Recent Deposits">
       <Timeline
         className="theme-timeline"
         nonce={undefined}

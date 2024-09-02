@@ -6,12 +6,20 @@ import { IconArrowUpLeft } from '@tabler/icons-react';
 
 import DashboardCard from '@/app/(DashboardLayout)/components/shared/DashboardCard';
 import type { Loading } from '../../types/loading';
+import { api } from '../../../../../convex/_generated/api';
+import { useMutation, useQuery } from 'convex/react';
 
 const CurrentBalance = ({ isLoading }: Loading) => {
   const theme = useTheme();
   const primary = theme.palette.primary.main;
   const primarylight = '#ecf2ff';
   const successlight = theme.palette.success.light;
+  const currentBalanceData = useQuery(api.balances.getCurrentBalance);
+
+  let currentBalance = 0;
+  if (currentBalanceData) {
+    currentBalance = currentBalanceData.balanceAmount;
+  }
 
   // chart
   const optionscolumnchart: any = {
@@ -74,7 +82,7 @@ const CurrentBalance = ({ isLoading }: Loading) => {
           ) : (
             <>
               <Typography variant="h3" fontWeight="700">
-                ₱1,550
+                ₱{currentBalance}
               </Typography>
               <Stack direction="row" spacing={1} mt={1} alignItems="center">
                 <Avatar sx={{ bgcolor: successlight, width: 27, height: 27 }}>

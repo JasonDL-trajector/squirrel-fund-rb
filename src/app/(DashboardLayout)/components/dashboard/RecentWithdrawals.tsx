@@ -54,7 +54,8 @@ const RecentWithdrawals = ({ isLoading }: Loading) => {
           },
           [`& .${timelineOppositeContentClasses.root}`]: {
             flex: 0.5,
-            paddingLeft: 0,
+            paddingLeft: '12%',
+            paddingRight: '-3%',
           },
         }}
       >

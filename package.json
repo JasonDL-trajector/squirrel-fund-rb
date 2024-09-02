@@ -27,6 +27,7 @@
     "@types/react-dom": "18.2.7",
     "@vercel/speed-insights": "^1.0.12",
     "apexcharts": "3.41.1",
+    "convex": "^1.15.0",
     "date-fns": "^3.6.0",
     "dayjs": "^1.11.13",
     "eslint": "8.46.0",

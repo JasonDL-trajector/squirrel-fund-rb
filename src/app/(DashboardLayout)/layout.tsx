@@ -4,6 +4,8 @@ import React, { useState } from 'react';
 import Header from '@/app/(DashboardLayout)/layout/header/Header';
 import Sidebar from '@/app/(DashboardLayout)/layout/sidebar/Sidebar';
 import { useMediaQuery } from '@mui/material';
+import { Authenticated, Unauthenticated, useQuery } from 'convex/react';
+import Login2 from '../authentication/login/page';
 
 const MainWrapper = styled('div')(() => ({
   display: 'flex',
@@ -28,24 +30,32 @@ export default function RootLayout({
   const lgUp = useMediaQuery((theme: any) => theme.breakpoints.up('lg'));
 
   return (
-    <MainWrapper className="mainwrapper">
-      <Sidebar
-        isSidebarOpen={isSidebarOpen}
-        isMobileSidebarOpen={false}
-        onSidebarClose={() => {}}
-      />
-      <PageWrapper className="page-wrapper">
-        <Header toggleMobileSidebar={() => {}} />
-        <Container
-          sx={{
-            paddingTop: '20px',
-            maxWidth: '1200px',
-            paddingBottom: !lgUp ? '80px' : '20px', // Increased bottom padding for mobile
-          }}
-        >
-          <Box sx={{ minHeight: 'calc(100vh - 170px)' }}>{children}</Box>
-        </Container>
-      </PageWrapper>
-    </MainWrapper>
+    <>
+      <Unauthenticated>
+        <Login2 />
+      </Unauthenticated>
+
+      <Authenticated>
+        <MainWrapper className="mainwrapper">
+          <Sidebar
+            isSidebarOpen={isSidebarOpen}
+            isMobileSidebarOpen={false}
+            onSidebarClose={() => {}}
+          />
+          <PageWrapper className="page-wrapper">
+            <Header toggleMobileSidebar={() => {}} />
+            <Container
+              sx={{
+                paddingTop: '20px',
+                maxWidth: '1200px',
+                paddingBottom: !lgUp ? '80px' : '20px', // Increased bottom padding for mobile
+              }}
+            >
+              <Box sx={{ minHeight: 'calc(100vh - 170px)' }}>{children}</Box>
+            </Container>
+          </PageWrapper>
+        </MainWrapper>
+      </Authenticated>
+    </>
   );
 }

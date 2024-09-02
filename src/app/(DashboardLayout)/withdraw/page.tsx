@@ -1,43 +1,69 @@
 'use client';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   Grid,
-  Typography,
+  Box,
   TextField,
   Button,
-  Container,
+  Typography,
   Paper,
   InputAdornment,
-  Theme,
+  Container,
   useMediaQuery,
-  Box,
+  Theme,
 } from '@mui/material';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs, { Dayjs } from 'dayjs';
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
+import { api } from '../../../../convex/_generated/api';
+import { useMutation, useQuery } from 'convex/react';
+import { useUser } from '@clerk/clerk-react';
+import { calculateAmount, formatDate } from '../utilities/utils';
+
+dayjs.extend(isSameOrBefore);
 
 const WithdrawPage = () => {
-  const [amount, setAmount] = useState<number>(0);
-  const [date, setDate] = useState<dayjs.Dayjs>(dayjs());
+  const { user, isLoaded } = useUser();
+  const createWithdraw = useMutation(api.withdraws.createWithdraw);
+  const createBalance = useMutation(api.balances.createBalance);
+  const [withdrawAmount, setWithdrawAmount] = useState<number>(0);
+  const [withdrawDate, setWithdrawDate] = useState<Dayjs | null>(dayjs());
   const [note, setNote] = useState<string>('');
-  const currentBalance = 1000; // This should be fetched from your state management or API
+  const currentBalanceData = useQuery(api.balances.getCurrentBalance);
+
+  let currentBalance = 0;
+  if (currentBalanceData) {
+    currentBalance = currentBalanceData.balanceAmount;
+  }
+
   const isMobile = useMediaQuery((theme: Theme) =>
     theme.breakpoints.down('sm')
   );
 
-  const formatDate = (date: Dayjs | null) => {
-    if (!date) return '';
-    return date
-      .toDate()
-      .toLocaleString('en-US', { month: 'short', day: 'numeric' });
-  };
+  const totalAmount = withdrawAmount;
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log('Withdraw:', { amount, date: date.format('YYYY-MM-DD'), note });
+  
+    if (withdrawDate) {
+      createWithdraw({
+        name: user?.firstName ?? 'User',
+        withdrawAmount: withdrawAmount,
+        withdrawDate: formatDate(withdrawDate),
+        withdrawNote: note,
+      });
+  
+      createBalance({
+        balanceAmount: Number(currentBalance) - withdrawAmount,
+        balanceDate: formatDate(withdrawDate),
+      });
+    } else {
+      console.error('No date selected');
+    }
   };
 
   return (
@@ -66,7 +92,7 @@ const WithdrawPage = () => {
               Withdraw Funds
             </Typography>
             <Typography variant="body2" color="textSecondary" paragraph>
-              Enter the withdrawal amount and details below.
+              Select a date and enter the withdrawal details below.
             </Typography>
             <form
               onSubmit={handleSubmit}
@@ -82,13 +108,12 @@ const WithdrawPage = () => {
                   fullWidth
                   label="Amount"
                   type="text"
-                  value={amount}
-                  onChange={(e) => setAmount(Number(e.target.value))}
+                  value={withdrawAmount}
+                  onChange={(e) => setWithdrawAmount(Number(e.target.value))}
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">₱</InputAdornment>
                     ),
-                    inputProps: { min: 0, max: currentBalance, step: 0.01 },
                   }}
                   variant="outlined"
                   sx={{
@@ -99,11 +124,12 @@ const WithdrawPage = () => {
                 />
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
-                    label="Date"
-                    value={date}
-                    onChange={(newDate) => newDate && setDate(newDate)}
+                    label="Withdrawal Date"
+                    value={withdrawDate}
+                    onChange={(newDate) => setWithdrawDate(newDate)}
                     slotProps={{
                       textField: {
+                        fullWidth: true,
                         sx: {
                           '& .MuiOutlinedInput-notchedOutline': {
                             borderColor: 'rgba(0, 0, 0, 0.2)',
@@ -111,7 +137,6 @@ const WithdrawPage = () => {
                         },
                       },
                     }}
-                    format="MMM DD"
                   />
                 </LocalizationProvider>
                 <TextField
@@ -140,7 +165,7 @@ const WithdrawPage = () => {
                       Current Balance:
                     </Typography>
                     <Typography variant="h4" fontWeight="medium" align="left">
-                      ₱{currentBalance.toFixed(2)}
+                      ₱{currentBalance}
                     </Typography>
                   </Grid>
                   <Grid item xs={6}>
@@ -152,10 +177,22 @@ const WithdrawPage = () => {
                       New Balance:
                     </Typography>
                     <Typography variant="h4" fontWeight="bold" align="right">
-                      ₱{(currentBalance - amount).toFixed(2)}
+                      ₱{(currentBalance - totalAmount)}
                     </Typography>
                   </Grid>
                 </Grid>
+                <Box>
+                  <Typography variant="body2">
+                    Amount to be withdrawn:
+                  </Typography>
+                  <Typography
+                    variant="h5"
+                    fontWeight="bold"
+                    color="error.main"
+                  >
+                    -₱{withdrawAmount.toFixed(2)}
+                  </Typography>
+                </Box>
                 <Box display="flex" justifyContent="flex-end" mt={2} gap={2}>
                   <Button
                     variant="outlined"
@@ -174,8 +211,9 @@ const WithdrawPage = () => {
                   <Button
                     type="submit"
                     variant="contained"
+                    color="primary"
                     size={isMobile ? 'medium' : 'large'}
-                    disabled={amount > currentBalance}
+                    disabled={totalAmount > currentBalance}
                     sx={{
                       bgcolor: 'black',
                       '&:hover': { bgcolor: '#424242' },

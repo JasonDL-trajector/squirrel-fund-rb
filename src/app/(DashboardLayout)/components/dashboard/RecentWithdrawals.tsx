@@ -1,4 +1,7 @@
 import DashboardCard from '@/app/(DashboardLayout)/components/shared/DashboardCard';
+import { useQuery } from 'convex/react';
+import { api } from '../../../../../convex/_generated/api';
+import { formatAmount } from '../../utilities/utils'
 import {
   Timeline,
   TimelineItem,
@@ -9,96 +12,72 @@ import {
   TimelineContent,
   timelineOppositeContentClasses,
 } from '@mui/lab';
-import { Link, Typography } from '@mui/material';
+import { Typography, Skeleton } from '@mui/material';
 import type { Loading } from '../../types/loading';
 
 const RecentWithdrawals = ({ isLoading }: Loading) => {
+  const withdraws = useQuery(api.withdraws.listRecentWithdraws);
+
+  const LoadingSkeleton = () => (
+    <>
+      {[...Array(5)].map((_, index) => (
+        <TimelineItem key={index}>
+          <TimelineOppositeContent>
+            <Skeleton variant="text" width={80} />
+          </TimelineOppositeContent>
+          <TimelineSeparator>
+            <TimelineDot color="error" variant="outlined" />
+            <TimelineConnector />
+          </TimelineSeparator>
+          <TimelineContent>
+            <Skeleton variant="text" width={150} />
+            <Skeleton variant="text" width={100} />
+          </TimelineContent>
+        </TimelineItem>
+      ))}
+    </>
+  );
+
   return (
     <DashboardCard title="Recent Withdrawals">
-      <>
-        <Timeline
-          className="theme-timeline"
-          nonce={undefined}
-          onResize={undefined}
-          onResizeCapture={undefined}
-          sx={{
-            p: 0,
-            mb: '-40px',
-            '& .MuiTimelineConnector-root': {
-              width: '1px',
-              backgroundColor: '#efefef',
-            },
-            [`& .${timelineOppositeContentClasses.root}`]: {
-              flex: 0.5,
-              paddingLeft: 0,
-            },
-          }}
-        >
-          <TimelineItem>
-            <TimelineOppositeContent>09:30 am</TimelineOppositeContent>
-            <TimelineSeparator>
-              <TimelineDot color="primary" variant="outlined" />
-              <TimelineConnector />
-            </TimelineSeparator>
-            <TimelineContent>
-              Payment received from John Doe of $385.90
-            </TimelineContent>
-          </TimelineItem>
-          <TimelineItem>
-            <TimelineOppositeContent>10:00 am</TimelineOppositeContent>
-            <TimelineSeparator>
-              <TimelineDot color="secondary" variant="outlined" />
-              <TimelineConnector />
-            </TimelineSeparator>
-            <TimelineContent>
-              <Typography fontWeight="600">New sale recorded</Typography>{' '}
-              <Link href="/" underline="none">
-                #ML-3467
-              </Link>
-            </TimelineContent>
-          </TimelineItem>
-          <TimelineItem>
-            <TimelineOppositeContent>12:00 am</TimelineOppositeContent>
-            <TimelineSeparator>
-              <TimelineDot color="success" variant="outlined" />
-              <TimelineConnector />
-            </TimelineSeparator>
-            <TimelineContent>
-              Payment was made of $64.95 to Michael
-            </TimelineContent>
-          </TimelineItem>
-          <TimelineItem>
-            <TimelineOppositeContent>09:30 am</TimelineOppositeContent>
-            <TimelineSeparator>
-              <TimelineDot color="warning" variant="outlined" />
-              <TimelineConnector />
-            </TimelineSeparator>
-            <TimelineContent>
-              <Typography fontWeight="600">New sale recorded</Typography>{' '}
-              <Link href="/" underline="none">
-                #ML-3467
-              </Link>
-            </TimelineContent>
-          </TimelineItem>
-          <TimelineItem>
-            <TimelineOppositeContent>09:30 am</TimelineOppositeContent>
-            <TimelineSeparator>
-              <TimelineDot color="error" variant="outlined" />
-              <TimelineConnector />
-            </TimelineSeparator>
-            <TimelineContent>
-              <Typography fontWeight="600">New arrival recorded</Typography>
-            </TimelineContent>
-          </TimelineItem>
-          <TimelineItem>
-            <TimelineOppositeContent>12:00 am</TimelineOppositeContent>
-            <TimelineSeparator>
-              <TimelineDot color="success" variant="outlined" />
-            </TimelineSeparator>
-            <TimelineContent>Payment Received</TimelineContent>
-          </TimelineItem>
-        </Timeline>
-      </>
+      <Timeline
+        className="theme-timeline"
+        nonce={undefined}
+        onResize={undefined}
+        onResizeCapture={undefined}
+        sx={{
+          p: 0,
+          mb: '-40px',
+          '& .MuiTimelineConnector-root': {
+            width: '1px',
+            backgroundColor: '#efefef',
+          },
+          [`& .${timelineOppositeContentClasses.root}`]: {
+            flex: 0.5,
+            paddingLeft: 0,
+          },
+        }}
+      >
+        {isLoading || !withdraws ? (
+          <LoadingSkeleton />
+        ) : (
+          withdraws.map((withdraw: any) => (
+            <TimelineItem key={withdraw._id}>
+              <TimelineOppositeContent>{withdraw.withdrawDate}</TimelineOppositeContent>
+              <TimelineSeparator>
+                <TimelineDot color="error" variant="outlined" />
+                <TimelineConnector />
+              </TimelineSeparator>
+              <TimelineContent>
+                <Typography fontWeight="600">{withdraw.withdrawNote} - {formatAmount(withdraw.withdrawAmount)}</Typography>
+                <Typography>
+                  {withdraw.name}
+                </Typography>
+              </TimelineContent>
+            </TimelineItem>
+          ))
+        )}
+      </Timeline>
     </DashboardCard>
   );
 };

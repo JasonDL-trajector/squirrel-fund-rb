@@ -8,6 +8,12 @@ export default defineSchema({
     depositNote: v.string(),
     name: v.string(),
   }),
+  withdraws: defineTable({
+    withdrawAmount: v.float64(),
+    withdrawDate: v.string(),
+    withdrawNote: v.string(),
+    name: v.string(),
+  }),
   balances: defineTable({
     balanceAmount: v.float64(),
     balanceDate: v.string(),

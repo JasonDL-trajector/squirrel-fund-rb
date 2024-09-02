@@ -9,5 +9,13 @@ export const calculateAmount = (depositAmount: number, dateRange: [Dayjs | null,
 };
 
 export const formatDate = (date: Dayjs) => {
-  return date.format('MMM D');
+  return date.format('MMMM D');
+};
+
+export const formatAmount = (amount: number) => {
+  return new Intl.NumberFormat('en-PH', {
+    style: 'currency',
+    currency: 'PHP',
+    minimumFractionDigits: 0,
+  }).format(amount);
 };

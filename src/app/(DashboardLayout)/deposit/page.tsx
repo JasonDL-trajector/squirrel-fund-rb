@@ -28,7 +28,9 @@ const DepositPage = () => {
   ]);
   const [note, setNote] = useState<string>('');
   const currentBalance = 1000; // This should be fetched from your state management or API
-  const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
+  const isMobile = useMediaQuery((theme: Theme) =>
+    theme.breakpoints.down('sm')
+  );
 
   const calculateAmount = () => {
     if (dateRange[0] && dateRange[1]) {
@@ -53,13 +55,20 @@ const DepositPage = () => {
 
   const formatDate = (date: Dayjs | null) => {
     if (!date) return '';
-    return date.toDate().toLocaleString('en-US', { month: 'short', day: 'numeric' });
+    return date
+      .toDate()
+      .toLocaleString('en-US', { month: 'short', day: 'numeric' });
   };
 
   return (
     <PageContainer title="Deposit" description="Deposit funds">
       <Container maxWidth="sm">
-        <Box sx={{ transform: isMobile ? 'scale(0.9)' : 'none', transformOrigin: 'top center'}}>
+        <Box
+          sx={{
+            transform: isMobile ? 'scale(0.9)' : 'none',
+            transformOrigin: 'top center',
+          }}
+        >
           <Paper
             elevation={3}
             sx={{
@@ -81,7 +90,12 @@ const DepositPage = () => {
             </Typography>
             <form
               onSubmit={handleSubmit}
-              style={{ flexGrow: 1, display: 'flex', flexDirection: 'column', marginTop: "50px" }}
+              style={{
+                flexGrow: 1,
+                display: 'flex',
+                flexDirection: 'column',
+                marginTop: '50px',
+              }}
             >
               <Box display="flex" flexDirection="column" gap={4} flexGrow={1}>
                 <TextField
@@ -138,7 +152,7 @@ const DepositPage = () => {
                     },
                   }}
                 />
-              
+
                 <Grid container spacing={2} justifyContent="space-between">
                   <Grid item xs={6}>
                     <Typography variant="body2" color="textSecondary">
@@ -149,27 +163,42 @@ const DepositPage = () => {
                     </Typography>
                   </Grid>
                   <Grid item xs={6}>
-                    <Typography variant="body2" color="textSecondary" align="right">
+                    <Typography
+                      variant="body2"
+                      color="textSecondary"
+                      align="right"
+                    >
                       New Balance:
                     </Typography>
-                    <Typography variant="h4" fontWeight="bold" color="primary" align="right">
+                    <Typography variant="h4" fontWeight="bold" align="right">
                       ₱{(currentBalance + totalAmount).toFixed(2)}
                     </Typography>
                   </Grid>
                 </Grid>
                 <Box>
-                  <Typography variant="body2" color="textSecondary">
+                  <Typography variant="body2">
                     Total Amount to be added:
                   </Typography>
-                  <Typography variant="h5" fontWeight="bold" color="success.main">
+                  <Typography
+                    variant="h5"
+                    fontWeight="bold"
+                    color="success.main"
+                  >
                     +₱{totalAmount.toFixed(2)}
                   </Typography>
                 </Box>
                 <Box display="flex" justifyContent="flex-end" mt={2} gap={2}>
-                  <Button 
-                    variant="outlined" 
-                    color="primary" 
-                    size={isMobile ? "medium" : "large"}
+                  <Button
+                    variant="outlined"
+                    size={isMobile ? 'medium' : 'large'}
+                    sx={{
+                      color: 'black',
+                      borderColor: 'black',
+                      '&:hover': {
+                        borderColor: 'black',
+                        backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                      },
+                    }}
                   >
                     Cancel
                   </Button>
@@ -177,8 +206,11 @@ const DepositPage = () => {
                     type="submit"
                     variant="contained"
                     color="primary"
-                    size={isMobile ? "medium" : "large"}
-                    sx={{ bgcolor: '#1565c0', '&:hover': { bgcolor: '#0d47a1' } }}
+                    size={isMobile ? 'medium' : 'large'}
+                    sx={{
+                      bgcolor: 'black',
+                      '&:hover': { bgcolor: '#424242' },
+                    }}
                   >
                     Deposit
                   </Button>

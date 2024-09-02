@@ -24,11 +24,15 @@ const WithdrawPage = () => {
   const [date, setDate] = useState<dayjs.Dayjs>(dayjs());
   const [note, setNote] = useState<string>('');
   const currentBalance = 1000; // This should be fetched from your state management or API
-  const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
+  const isMobile = useMediaQuery((theme: Theme) =>
+    theme.breakpoints.down('sm')
+  );
 
   const formatDate = (date: Dayjs | null) => {
     if (!date) return '';
-    return date.toDate().toLocaleString('en-US', { month: 'short', day: 'numeric' });
+    return date
+      .toDate()
+      .toLocaleString('en-US', { month: 'short', day: 'numeric' });
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -39,7 +43,12 @@ const WithdrawPage = () => {
   return (
     <PageContainer title="Withdraw" description="Withdraw funds">
       <Container maxWidth="sm">
-        <Box sx={{ transform: isMobile ? 'scale(0.9)' : 'none', transformOrigin: 'top center'}}>
+        <Box
+          sx={{
+            transform: isMobile ? 'scale(0.9)' : 'none',
+            transformOrigin: 'top center',
+          }}
+        >
           <Paper
             elevation={3}
             sx={{
@@ -61,7 +70,12 @@ const WithdrawPage = () => {
             </Typography>
             <form
               onSubmit={handleSubmit}
-              style={{ flexGrow: 1, display: 'flex', flexDirection: 'column', marginTop: "50px" }}
+              style={{
+                flexGrow: 1,
+                display: 'flex',
+                flexDirection: 'column',
+                marginTop: '50px',
+              }}
             >
               <Box display="flex" flexDirection="column" gap={4} flexGrow={1}>
                 <TextField
@@ -119,41 +133,40 @@ const WithdrawPage = () => {
                     },
                   }}
                 />
-            
+
                 <Grid container spacing={2} justifyContent="space-between">
                   <Grid item xs={6}>
                     <Typography variant="body2" color="textSecondary">
                       Current Balance:
                     </Typography>
                     <Typography variant="h4" fontWeight="medium" align="left">
-                    ₱{currentBalance.toFixed(2)}
+                      ₱{currentBalance.toFixed(2)}
                     </Typography>
                   </Grid>
                   <Grid item xs={6}>
-                    <Typography variant="body2" color="textSecondary" align="right">
-                      New Balance:
-                    </Typography>
                     <Typography
-                      variant="h4"
-                      fontWeight="bold"
-                      sx={{ color: '#e57373' }}
+                      variant="body2"
+                      color="textSecondary"
                       align="right"
                     >
+                      New Balance:
+                    </Typography>
+                    <Typography variant="h4" fontWeight="bold" align="right">
                       ₱{(currentBalance - amount).toFixed(2)}
                     </Typography>
                   </Grid>
                 </Grid>
                 <Box display="flex" justifyContent="flex-end" mt={2} gap={2}>
-                  <Button 
-                    variant="outlined" 
-                    size={isMobile ? "medium" : "large"}
-                    sx={{ 
-                      color: '#e57373', 
-                      borderColor: '#e57373',
-                      '&:hover': { 
-                        borderColor: '#e57373', 
-                        backgroundColor: 'rgba(229, 115, 115, 0.04)' 
-                      } 
+                  <Button
+                    variant="outlined"
+                    size={isMobile ? 'medium' : 'large'}
+                    sx={{
+                      color: 'black',
+                      borderColor: 'black',
+                      '&:hover': {
+                        borderColor: 'black',
+                        backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                      },
                     }}
                   >
                     Cancel
@@ -161,9 +174,12 @@ const WithdrawPage = () => {
                   <Button
                     type="submit"
                     variant="contained"
-                    size={isMobile ? "medium" : "large"}
+                    size={isMobile ? 'medium' : 'large'}
                     disabled={amount > currentBalance}
-                    sx={{ bgcolor: '#e57373', '&:hover': { bgcolor: '#e57373' } }}
+                    sx={{
+                      bgcolor: 'black',
+                      '&:hover': { bgcolor: '#424242' },
+                    }}
                   >
                     Withdraw
                   </Button>

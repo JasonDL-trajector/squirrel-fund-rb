@@ -30,14 +30,14 @@ const DashboardCard = ({
   return (
     <Card sx={{ padding: 1.5, height: '100%', transform: isMobile ? 'scale(0.95)' : 'none', transformOrigin: 'top center' }} elevation={3} variant={undefined}>
       {cardheading ? (
-        <CardContent>
+        <CardContent >
           <Typography variant="h5">{headtitle}</Typography>
-          <Typography variant="subtitle2" color="textSecondary">
+          <Typography variant="subtitle2" color="textSecondary" >
             {headsubtitle}
           </Typography>
         </CardContent>
       ) : (
-        <CardContent sx={{ p: isMobile ? '16px' : '30px' }}>
+        <CardContent sx={{ p: isMobile ? '16px' : '30px'}}>
           {title ? (
             <Stack
               direction="row"
@@ -45,6 +45,8 @@ const DashboardCard = ({
               justifyContent="space-between"
               alignItems={"center"}
               mb={3}
+              pb={3}
+              sx={{borderBottom: "solid 1px #E5E5E5"}}
             >
               <Box>
                 {title ? <Typography variant="h5">{title}</Typography> : ""}

@@ -39,7 +39,7 @@ const RecentDeposits = ({ isLoading }: Loading) => {
   );
   
   return (
-    <DashboardCard title="Recent Deposits">
+    <DashboardCard title="Recent Deposits" sx={{ borderBottom: "solid 1px #E5E5E5" }}>
       <Timeline
         className="theme-timeline"
         nonce={undefined}
@@ -48,16 +48,13 @@ const RecentDeposits = ({ isLoading }: Loading) => {
         sx={{
           p: 0,
           mb: '-40px',
-          display: 'flex',
-          justifyContent: 'center',
           '& .MuiTimelineConnector-root': {
             width: '1px',
             backgroundColor: '#efefef',
           },
           [`& .${timelineOppositeContentClasses.root}`]: {
-            flex: 0.5,
             paddingLeft: '12%',
-            paddingRight: '-3%',
+
           },
         }}
       >

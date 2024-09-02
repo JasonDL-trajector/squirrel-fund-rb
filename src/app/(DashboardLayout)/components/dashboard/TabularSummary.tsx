@@ -92,7 +92,7 @@ const TabularSummary = ({ isLoading }: Loading) => {
 
   return (
     <Card sx={{ padding: 1.5, height: '100%', transform: isMobile ? 'scale(0.95)' : 'none', transformOrigin: 'top center' }} elevation={3} variant={undefined}>
-      <CardHeader title="Tabular Summary" />
+      <CardHeader title="Tabular Summary" sx={{ paddingBottom: 3, borderBottom: "solid 1px #E5E5E5" }}/>
       <CardContent>
         <TableContainer component={Paper} className={classes.tableContainer}>
           <Table size="small" aria-label="tabular summary" stickyHeader>

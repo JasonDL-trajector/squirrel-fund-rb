@@ -5,21 +5,21 @@ import DashboardCard from '@/app/(DashboardLayout)/components/shared/DashboardCa
 import dynamic from 'next/dynamic';
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 import type { Loading } from '../../types/loading';
+import { useQuery } from 'convex/react';
+import { api } from '../../../../../convex/_generated/api';
 
 const BalanceHistory = ({ isLoading }: Loading) => {
-  // select
-  const [month, setMonth] = React.useState('1');
-
-  const handleChange = (event: any) => {
-    setMonth(event.target.value);
-  };
+  const listBalances = useQuery(api.balances.listBalances);
 
   // chart color
   const theme = useTheme();
   const primary = theme.palette.primary.main;
-  const secondary = theme.palette.secondary.main;
 
-  // chart
+  // Prepare data for the chart
+  const categories = listBalances?.map(balance => balance.balanceDate) || [];
+  const balanceData = listBalances?.map(balance => balance.balanceAmount) || [];
+
+  // chart options
   const optionscolumnchart: any = {
     chart: {
       type: 'line',
@@ -30,8 +30,7 @@ const BalanceHistory = ({ isLoading }: Loading) => {
       },
       height: 370,
     },
-    colors: [primary, secondary],
-
+    colors: [primary],
     stroke: {
       curve: 'smooth',
       width: 3,
@@ -55,16 +54,7 @@ const BalanceHistory = ({ isLoading }: Loading) => {
       tickAmount: 4,
     },
     xaxis: {
-      categories: [
-        '16/08',
-        '17/08',
-        '18/08',
-        '19/08',
-        '20/08',
-        '21/08',
-        '22/08',
-        '23/08',
-      ],
+      categories: categories,
       axisBorder: {
         show: false,
       },
@@ -74,16 +64,17 @@ const BalanceHistory = ({ isLoading }: Loading) => {
       fillSeriesColor: false,
     },
   };
+
   const seriescolumnchart: any = [
     {
       name: 'Balance',
-      data: [355, 390, 300, 350, 390, 180, 355, 390],
+      data: balanceData,
     },
   ];
 
   return (
     <DashboardCard title="Balance History" >
-      {isLoading ? (
+      {isLoading || !listBalances ? (
         <Skeleton variant="rectangular" width="100%" height={370} />
       ) : (
         <Chart

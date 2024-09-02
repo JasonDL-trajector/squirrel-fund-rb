@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import {
   Grid,
   Box,
@@ -18,46 +18,65 @@ import { SingleInputDateRangeField } from '@mui/x-date-pickers-pro/SingleInputDa
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs, { Dayjs } from 'dayjs';
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
+import { DateRange } from '@mui/x-date-pickers-pro';
 import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
+import { api } from '../../../../convex/_generated/api';
+import { useMutation, useQuery } from 'convex/react';
+import { useUser } from '@clerk/clerk-react';
+import { calculateAmount, formatDate } from '../utilities/utils';
+
+dayjs.extend(isSameOrBefore);
 
 const DepositPage = () => {
+  const { user, isLoaded } = useUser();
+  const createDeposit = useMutation(api.deposits.createDeposit);
+  const createBalance = useMutation(api.balances.createBalance);
   const [depositAmount, setDepositAmount] = useState<number>(0);
   const [dateRange, setDateRange] = useState<[Dayjs | null, Dayjs | null]>([
     dayjs(),
     dayjs(),
   ]);
   const [note, setNote] = useState<string>('');
-  const currentBalance = 1000; // This should be fetched from your state management or API
+  const currentBalanceData = useQuery(api.balances.getCurrentBalance);
+
+  let currentBalance = 0;
+  if (currentBalanceData) {
+    currentBalance = currentBalanceData.balanceAmount;
+  }
+
+
   const isMobile = useMediaQuery((theme: Theme) =>
     theme.breakpoints.down('sm')
   );
 
-  const calculateAmount = () => {
-    if (dateRange[0] && dateRange[1]) {
-      const days = dateRange[1].diff(dateRange[0], 'day') + 1;
-      return days * depositAmount;
-    }
-    return 0;
-  };
-
-  const totalAmount = calculateAmount();
+  const totalAmount = calculateAmount(depositAmount, dateRange);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log('Deposit:', {
-      amount: totalAmount,
-      depositAmount,
-      startDate: dateRange[0]?.format('YYYY-MM-DD'),
-      endDate: dateRange[1]?.format('YYYY-MM-DD'),
-      note,
-    });
-  };
-
-  const formatDate = (date: Dayjs | null) => {
-    if (!date) return '';
-    return date
-      .toDate()
-      .toLocaleString('en-US', { month: 'short', day: 'numeric' });
+  
+    if (dateRange[0]) {
+      const startDate = dayjs(dateRange[0]).startOf('day');
+      const endDate = dateRange[1] ? dayjs(dateRange[1]).endOf('day') : startDate.endOf('day');
+      let currentDate = startDate;
+  
+      while (currentDate.isSameOrBefore(endDate, 'day')) {
+        createDeposit({
+          name: user?.firstName ?? 'User',
+          depositAmount: depositAmount,
+          depositDate: formatDate(currentDate),
+          depositNote: note,
+        });
+        currentDate = currentDate.add(1, 'day');
+      }
+  
+      createBalance({
+        balanceAmount: Number(currentBalance) + totalAmount,
+        balanceDate: formatDate(endDate),
+      });
+    } else {
+      console.error('No date selected');
+    }
   };
 
   return (
@@ -121,7 +140,7 @@ const DepositPage = () => {
                     slots={{ field: SingleInputDateRangeField }}
                     label="Date Range"
                     value={dateRange}
-                    onChange={(newValue) => setDateRange(newValue)}
+                    onChange={(newValue: DateRange<Dayjs>) => setDateRange(newValue)}
                     slotProps={{
                       field: {
                         sx: {
@@ -129,6 +148,9 @@ const DepositPage = () => {
                             borderColor: 'rgba(0, 0, 0, 0.2)',
                           },
                         },
+                      },
+                      textField: {
+                        helperText: 'Select a single date or a date range',
                       },
                     }}
                   />
@@ -159,7 +181,7 @@ const DepositPage = () => {
                       Current Balance:
                     </Typography>
                     <Typography variant="h4" fontWeight="medium" align="left">
-                      ₱{currentBalance.toFixed(2)}
+                      ₱{currentBalance}
                     </Typography>
                   </Grid>
                   <Grid item xs={6}>
@@ -171,7 +193,7 @@ const DepositPage = () => {
                       New Balance:
                     </Typography>
                     <Typography variant="h4" fontWeight="bold" align="right">
-                      ₱{(currentBalance + totalAmount).toFixed(2)}
+                      ₱{(currentBalance + totalAmount)}
                     </Typography>
                   </Grid>
                 </Grid>

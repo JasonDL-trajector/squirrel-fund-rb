@@ -1,4 +1,6 @@
-import DashboardCard from '@/app/(DashboardLayout)/components/shared/DashboardCard';
+import { useQuery } from 'convex/react';
+import { api } from '../../../../../convex/_generated/api';
+import { Typography } from '@mui/material';
 import {
   Timeline,
   TimelineItem,
@@ -9,14 +11,27 @@ import {
   TimelineContent,
   timelineOppositeContentClasses,
 } from '@mui/lab';
-import { Link, Typography } from '@mui/material';
-import type { Loading } from '../../types/loading';
+import DashboardCard from '../shared/DashboardCard';
 
-const RecentDeposits = ({ isLoading }: Loading) => {
+const RecentDeposits = ({ isLoading }: { isLoading: boolean }) => {
+  const deposits = useQuery(api.deposits.listRecentDeposits);
+
+  if (isLoading || !deposits) {
+    return <Typography>Loading...</Typography>;
+  }
+
+  const formatAmount = (amount: number) => {
+    return new Intl.NumberFormat('en-PH', {
+      style: 'currency',
+      currency: 'PHP',
+      minimumFractionDigits: 0,
+    }).format(amount);
+  };
+  
   return (
     <DashboardCard title="Recent Deposits">
       <>
-        <Timeline
+      <Timeline
           className="theme-timeline"
           nonce={undefined}
           onResize={undefined}
@@ -34,70 +49,22 @@ const RecentDeposits = ({ isLoading }: Loading) => {
             },
           }}
         >
-          <TimelineItem>
-            <TimelineOppositeContent>09:30 am</TimelineOppositeContent>
-            <TimelineSeparator>
-              <TimelineDot color="primary" variant="outlined" />
-              <TimelineConnector />
-            </TimelineSeparator>
-            <TimelineContent>
-              Payment received from John Doe of $385.90
-            </TimelineContent>
-          </TimelineItem>
-          <TimelineItem>
-            <TimelineOppositeContent>10:00 am</TimelineOppositeContent>
-            <TimelineSeparator>
-              <TimelineDot color="secondary" variant="outlined" />
-              <TimelineConnector />
-            </TimelineSeparator>
-            <TimelineContent>
-              <Typography fontWeight="600">New sale recorded</Typography>{' '}
-              <Link href="/" underline="none">
-                #ML-3467
-              </Link>
-            </TimelineContent>
-          </TimelineItem>
-          <TimelineItem>
-            <TimelineOppositeContent>12:00 am</TimelineOppositeContent>
+        {deposits.map((deposit: any) => (
+          <TimelineItem key={deposit._id}>
+            <TimelineOppositeContent>{deposit.depositDate}</TimelineOppositeContent>
             <TimelineSeparator>
               <TimelineDot color="success" variant="outlined" />
               <TimelineConnector />
             </TimelineSeparator>
             <TimelineContent>
-              Payment was made of $64.95 to Michael
+              <Typography fontWeight="600">{deposit.depositNote} - {formatAmount(deposit.depositAmount)}</Typography>
+              <Typography>
+                {deposit.name}
+              </Typography>
             </TimelineContent>
           </TimelineItem>
-          <TimelineItem>
-            <TimelineOppositeContent>09:30 am</TimelineOppositeContent>
-            <TimelineSeparator>
-              <TimelineDot color="warning" variant="outlined" />
-              <TimelineConnector />
-            </TimelineSeparator>
-            <TimelineContent>
-              <Typography fontWeight="600">New sale recorded</Typography>{' '}
-              <Link href="/" underline="none">
-                #ML-3467
-              </Link>
-            </TimelineContent>
-          </TimelineItem>
-          <TimelineItem>
-            <TimelineOppositeContent>09:30 am</TimelineOppositeContent>
-            <TimelineSeparator>
-              <TimelineDot color="error" variant="outlined" />
-              <TimelineConnector />
-            </TimelineSeparator>
-            <TimelineContent>
-              <Typography fontWeight="600">New arrival recorded</Typography>
-            </TimelineContent>
-          </TimelineItem>
-          <TimelineItem>
-            <TimelineOppositeContent>12:00 am</TimelineOppositeContent>
-            <TimelineSeparator>
-              <TimelineDot color="success" variant="outlined" />
-            </TimelineSeparator>
-            <TimelineContent>Payment Received</TimelineContent>
-          </TimelineItem>
-        </Timeline>
+        ))}
+      </Timeline>
       </>
     </DashboardCard>
   );

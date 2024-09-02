@@ -113,7 +113,8 @@ const Login2 = () => {
                         backgroundColor: '#FFFFFF',
                         color: 'white',
                         '&:hover': {
-                          backgroundColor: '#3DD9EB',
+                          backgroundColor: '#5D87FF',
+                       
                         },
                       }}
                     >
@@ -140,7 +141,7 @@ const Login2 = () => {
                         backgroundColor: '#FFFFFF',
                         color: 'white',
                         '&:hover': {
-                          backgroundColor: '#3DD9EB',
+                          backgroundColor: '#5D87FF',
                         },
                       }}
                     >

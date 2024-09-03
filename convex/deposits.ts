@@ -4,6 +4,7 @@ import { mutation, query } from './_generated/server';
 export const createDeposit = mutation({
   args: {
     name: v.string(),
+    email: v.string(),
     depositAmount: v.number(),
     depositDate: v.string(),
     depositNote: v.string(),
@@ -11,6 +12,7 @@ export const createDeposit = mutation({
   async handler(ctx, args) {
     await ctx.db.insert('deposits', {
       name: args.name,
+      email: args.email,
       depositAmount: args.depositAmount,
       depositDate: args.depositDate,
       depositNote: args.depositNote,

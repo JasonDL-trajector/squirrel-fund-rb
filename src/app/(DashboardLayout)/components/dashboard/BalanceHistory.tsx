@@ -58,6 +58,13 @@ const BalanceHistory = ({ isLoading }: Loading) => {
       axisBorder: {
         show: false,
       },
+      tickAmount: Math.min(5, categories.length),
+      labels: {
+        rotate: -45, 
+        style: {
+          fontSize: '12px',
+        },
+      },
     },
     tooltip: {
       theme: 'dark',

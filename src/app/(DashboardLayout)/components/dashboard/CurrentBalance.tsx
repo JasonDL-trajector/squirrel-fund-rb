@@ -1,7 +1,8 @@
+import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 import { useTheme } from '@mui/material/styles';
-import { Grid, Stack, Typography, Avatar, Skeleton } from '@mui/material';
+import { Grid, Stack, Typography, Avatar, Skeleton, Modal, Box, TextField, Button } from '@mui/material';
 import { IconArrowUpLeft } from '@tabler/icons-react';
 
 import DashboardCard from '@/app/(DashboardLayout)/components/shared/DashboardCard';
@@ -11,17 +12,49 @@ import { useMutation, useQuery } from 'convex/react';
 
 const CurrentBalance = ({ isLoading }: Loading) => {
   const theme = useTheme();
+  const [openModal, setOpenModal] = useState(false);
+  const [currentBalance, setCurrentBalance] = useState(0);
   const primary = theme.palette.primary.main;
   const primarylight = '#ecf2ff';
   const successlight = theme.palette.success.light;
   const currentBalanceData = useQuery(api.balances.getCurrentBalance);
+  const editCurrentBalance = useMutation(api.balances.editCurrentBalance);
 
-  let currentBalance = 0;
-  if (currentBalanceData) {
-    currentBalance = currentBalanceData.balanceAmount;
-  }
+  useEffect(() => {
+    if (currentBalanceData) {
+      setCurrentBalance(currentBalanceData.balanceAmount);
+    }
+  }, [currentBalanceData]);
 
-  // chart
+  const handleOpenModal = () => {
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
+
+  const handleBalanceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setCurrentBalance(parseFloat(event.target.value));
+  };
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!currentBalanceData?._id) {
+        console.error('Balance ID is undefined');
+        return; // Exit if the ID is not available
+    }
+    try {
+        await editCurrentBalance({
+            id: currentBalanceData._id,
+            balanceAmount: currentBalance,
+        });
+        handleCloseModal();
+    } catch (error) {
+        console.error('Failed to update balance:', error);
+    }
+};
+
   const optionscolumnchart: any = {
     chart: {
       type: 'donut',
@@ -81,7 +114,7 @@ const CurrentBalance = ({ isLoading }: Loading) => {
             </>
           ) : (
             <>
-              <Typography variant="h3" fontWeight="700">
+              <Typography variant="h3" fontWeight="700" onClick={handleOpenModal}>
                 ₱{currentBalance}
               </Typography>
               <Stack direction="row" spacing={1} mt={1} alignItems="center">
@@ -95,6 +128,44 @@ const CurrentBalance = ({ isLoading }: Loading) => {
                   last year
                 </Typography>
               </Stack>
+
+              <Modal
+                open={openModal}
+                onClose={handleCloseModal}
+                aria-labelledby="edit-balance-modal"
+                aria-describedby="modal-to-edit-current-balance"
+              >
+                <Box
+                  sx={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    width: { xs: '90%', sm: 400 },
+                    bgcolor: 'background.paper',
+                    boxShadow: 24,
+                    borderRadius: 5,
+                    p: 4,
+                  }}
+                >
+                  <Typography variant="h6" component="h2" gutterBottom>
+                    Edit Current Balance
+                  </Typography>
+                  <form onSubmit={handleSubmit}>
+                    <TextField
+                      fullWidth
+                      label="Current Balance"
+                      type="number"
+                      value={currentBalance}
+                      onChange={handleBalanceChange}
+                      margin="normal"
+                    />
+                    <Button type="submit" variant="contained" color="primary">
+                      Save
+                    </Button>
+                  </form>
+                </Box>
+              </Modal>
             </>
           )}
         </Grid>

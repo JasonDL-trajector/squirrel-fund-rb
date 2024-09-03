@@ -18,17 +18,8 @@ import {
 import CheckIcon from '@mui/icons-material/Check';
 import { makeStyles } from '@mui/styles';
 import type { Loading } from '../../types/loading';
-
-// Mock data (in a real application, this would come from an API or props)
-const mockDeposits = [
-  { name: 'jay', depositDate: '2024-07-10', amount: 100 },
-  { name: 'ely', depositDate: '2024-07-10', amount: 150 },
-  { name: 'jay', depositDate: '2024-07-15', amount: 200 },
-  { name: 'ely', depositDate: '2024-07-20', amount: 175 },
-  { name: 'jay', depositDate: '2024-07-25', amount: 125 },
-  { name: 'ely', depositDate: '2024-07-30', amount: 225 },
-  // Add more mock data as needed
-];
+import { useMutation, useQuery } from 'convex/react';
+import { api } from '../../../../../convex/_generated/api';
 
 const useStyles = makeStyles({
   tableRow: {
@@ -38,13 +29,14 @@ const useStyles = makeStyles({
     padding: '8px 16px',
   },
   tableContainer: {
-    maxHeight: 400, // Set a fixed height for the table container
-    overflow: 'auto', // Enable scrolling
+    maxHeight: 400, 
+    overflow: 'auto',
   },
 });
 
 const TabularSummary = ({ isLoading }: Loading) => {
-  const [deposits] = useState(mockDeposits);
+  const deposits = useQuery(api.deposits.listDeposits);
+  console.log(deposits)
   const [dateRange, setDateRange] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const classes = useStyles();
@@ -90,64 +82,49 @@ const TabularSummary = ({ isLoading }: Loading) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
+  const checkDepositExists = (deposits: any, email: string, date: string) => {
+    return deposits.some((deposit: { email: string; depositDate: string; }) => 
+      deposit.email === email && 
+      deposit.depositDate === date 
+    );
+  };
+
   return (
-    <Card sx={{ padding: 1.5, height: '100%', transform: isMobile ? 'scale(0.95)' : 'none', transformOrigin: 'top center' }} elevation={3} variant={undefined}>
+    <Card sx={{ padding: 1.5, height: '100%', transform: isMobile ? 'scale(0.95)' : 'none', transformOrigin: 'top center' }} elevation={3}>
       <CardHeader title="Tabular Summary" sx={{ paddingBottom: 3, borderBottom: "solid 1px #E5E5E5" }}/>
       <CardContent>
         <TableContainer component={Paper} className={classes.tableContainer}>
           <Table size="small" aria-label="tabular summary" stickyHeader>
             <TableHead>
               <TableRow className={classes.tableRow}>
-                <TableCell className={classes.tableCell} align="center">
-                  Date
-                </TableCell>
-                <TableCell className={classes.tableCell} align="center">
-                  jay
-                </TableCell>
-                <TableCell className={classes.tableCell} align="center">
-                  ely
-                </TableCell>
+                <TableCell className={classes.tableCell} align="center">Date</TableCell>
+                <TableCell className={classes.tableCell} align="center">Jason</TableCell>
+                <TableCell className={classes.tableCell} align="center">Ely</TableCell>
               </TableRow>
             </TableHead>
             {loading ? (
               <LoadingSkeleton />
             ) : (
               <TableBody>
-                {dateRange.map((date, index) => {
-                  const jasonDeposit = deposits.find(
-                    (deposit) =>
-                      new Date(deposit.depositDate).toLocaleDateString('en-US', {
-                        month: 'long',
-                        day: 'numeric',
-                      }) === date && deposit.name === 'jay'
-                  );
-                  const elyDeposit = deposits.find(
-                    (deposit) =>
-                      new Date(deposit.depositDate).toLocaleDateString('en-US', {
-                        month: 'long',
-                        day: 'numeric',
-                      }) === date && deposit.name === 'ely'
-                  );
-
-                  return (
-                    <TableRow key={index} className={classes.tableRow}>
-                      <TableCell className={classes.tableCell} align="center">
-                        <Typography variant="body2">{date}</Typography>
-                      </TableCell>
-                      <TableCell className={classes.tableCell} align="center">
-                        {jasonDeposit ? (
-                          <CheckIcon color="success" fontSize="small" />
-                        ) : null}
-                      </TableCell>
-                      <TableCell className={classes.tableCell} align="center">
-                        {elyDeposit ? (
-                          <CheckIcon color="success" fontSize="small" />
-                        ) : null}
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
+              {dateRange.map((date, index) => {
+                const jasonDepositExists = checkDepositExists(deposits, 'jasondl0517@gmail.com', date);
+                const elyDepositExists = checkDepositExists(deposits, 'deunachristelanne@gmail.com', date);
+            
+                return (
+                  <TableRow key={index} className={classes.tableRow}>
+                    <TableCell className={classes.tableCell} align="center">
+                      <Typography variant="body2">{date}</Typography>
+                    </TableCell>
+                    <TableCell className={classes.tableCell} align="center">
+                      {jasonDepositExists ? <CheckIcon color="success" fontSize="small" /> : null}
+                    </TableCell>
+                    <TableCell className={classes.tableCell} align="center">
+                      {elyDepositExists ? <CheckIcon color="success" fontSize="small" /> : null}
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
             )}
           </Table>
         </TableContainer>

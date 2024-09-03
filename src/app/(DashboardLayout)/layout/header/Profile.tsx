@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 
 import { IconListCheck, IconMail, IconUser } from "@tabler/icons-react";
-import { SignOutButton, UserButton } from "@clerk/nextjs";
+import { SignOutButton, UserButton, OrganizationSwitcher } from "@clerk/nextjs";
 
 const Profile = () => {
   const [anchorEl2, setAnchorEl2] = useState(null);

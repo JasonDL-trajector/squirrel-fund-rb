@@ -32,7 +32,7 @@ const DepositPage = () => {
   const { user, isLoaded } = useUser();
   const createDeposit = useMutation(api.deposits.createDeposit);
   const createBalance = useMutation(api.balances.createBalance);
-  const [depositAmount, setDepositAmount] = useState<number>(0);
+  const [depositAmount, setDepositAmount] = useState(Number(user?.unsafeMetadata.dailydeposit) || 0);
   const [dateRange, setDateRange] = useState<[Dayjs | null, Dayjs | null]>([
     dayjs(),
     dayjs(),
@@ -63,6 +63,7 @@ const DepositPage = () => {
       while (currentDate.isSameOrBefore(endDate, 'day')) {
         createDeposit({
           name: user?.firstName ?? 'User',
+          email: String(user?.emailAddresses) ?? 'User',
           depositAmount: depositAmount,
           depositDate: formatDate(currentDate),
           depositNote: note,

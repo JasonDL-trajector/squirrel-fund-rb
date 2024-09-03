@@ -12,6 +12,13 @@ export const formatDate = (date: Dayjs) => {
   return date.format('MMMM D');
 };
 
+export const formatDateRange = (dateRange: [Dayjs | null, Dayjs | null]) => {
+  if (dateRange[0] && dateRange[1]) {
+    return `${formatDate(dateRange[0])} - ${formatDate(dateRange[1])}`;
+  }
+  return '';
+};
+
 export const formatAmount = (amount: number) => {
   return new Intl.NumberFormat('en-PH', {
     style: 'currency',

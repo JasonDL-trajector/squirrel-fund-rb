@@ -33,3 +33,14 @@ export const getCurrentBalance= query({
     return balances;
   },
 });
+
+export const editCurrentBalance = mutation({
+  args: {
+    id: v.id('balances'),
+    balanceAmount: v.number(),
+  },
+  async handler(ctx, args) {
+    const { id, balanceAmount } = args;
+    await ctx.db.patch(id, { balanceAmount });
+  },
+});

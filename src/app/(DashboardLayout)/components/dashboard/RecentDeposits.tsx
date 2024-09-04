@@ -14,6 +14,7 @@ import {
 import DashboardCard from '../shared/DashboardCard';
 import { formatAmount } from '../../utilities/utils'
 import type { Loading } from '../../types/loading';
+import Link from 'next/link';
 
 const RecentDeposits = ({ isLoading }: Loading) => {
   const deposits = useQuery(api.deposits.listRecentDeposits);
@@ -39,7 +40,9 @@ const RecentDeposits = ({ isLoading }: Loading) => {
   );
   
   return (
-    <DashboardCard title="Recent Deposits">
+    <>
+    <Link href='deposit/history' style={{ textDecoration: 'none' }}>
+    <DashboardCard title="Recent Deposits" >
       <Timeline
         className="theme-timeline"
         nonce={undefined}
@@ -48,12 +51,13 @@ const RecentDeposits = ({ isLoading }: Loading) => {
         sx={{
           p: 0,
           mb: '-40px',
+          marginLeft: '-12%',
           '& .MuiTimelineConnector-root': {
             width: '1px',
             backgroundColor: '#efefef',
           },
           [`& .${timelineOppositeContentClasses.root}`]: {
-            paddingLeft: '12%',
+            paddingLeft: 0,
 
           },
         }}
@@ -79,6 +83,8 @@ const RecentDeposits = ({ isLoading }: Loading) => {
         )}
       </Timeline>
     </DashboardCard>
+    </Link>
+    </>
   );
 };
 

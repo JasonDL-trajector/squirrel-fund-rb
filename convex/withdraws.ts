@@ -38,7 +38,21 @@ export const listRecentWithdraws = query({
   },
 });
 
-export const deleteWithdaws = mutation({
+export const updateWithdraw = mutation({
+  args: {
+    id: v.id('withdraws'),
+    name: v.string(),
+    withdrawAmount: v.number(),
+    withdrawDate: v.string(),
+    withdrawNote: v.string(),
+  },
+  async handler(ctx, args) {
+    const { id, ...updates } = args;
+    await ctx.db.patch(id, updates);
+  },
+});
+
+export const deleteWithdraws = mutation({
   args: {
     id: v.id('withdraws'),
   },

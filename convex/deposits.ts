@@ -50,6 +50,20 @@ export const listRecentDeposits = query({
   },
 });
 
+export const updateDeposit = mutation({
+  args: {
+    id: v.id('deposits'),
+    name: v.string(),
+    depositAmount: v.number(),
+    depositDate: v.string(),
+    depositNote: v.string(),
+  },
+  async handler(ctx, args) {
+    const { id, ...updates } = args;
+    await ctx.db.patch(id, updates);
+  },
+});
+
 export const deleteDeposits = mutation({
   args: {
     id: v.id('deposits'),

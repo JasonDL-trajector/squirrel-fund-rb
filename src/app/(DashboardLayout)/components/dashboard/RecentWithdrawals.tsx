@@ -14,6 +14,7 @@ import {
 } from '@mui/lab';
 import { Typography, Skeleton } from '@mui/material';
 import type { Loading } from '../../types/loading';
+import Link from 'next/link';
 
 const RecentWithdrawals = ({ isLoading }: Loading) => {
   const withdraws = useQuery(api.withdraws.listRecentWithdraws);
@@ -39,6 +40,8 @@ const RecentWithdrawals = ({ isLoading }: Loading) => {
   );
 
   return (
+    <>
+    <Link href='withdraw/history' style={{ textDecoration: 'none' }}>
     <DashboardCard title="Recent Withdrawals">
       <Timeline
         className="theme-timeline"
@@ -48,12 +51,13 @@ const RecentWithdrawals = ({ isLoading }: Loading) => {
         sx={{
           p: 0,
           mb: '-40px',
+          marginLeft: '-12%',
           '& .MuiTimelineConnector-root': {
             width: '1px',
             backgroundColor: '#efefef',
           },
           [`& .${timelineOppositeContentClasses.root}`]: {
-            paddingLeft: '12%',
+            paddingLeft: 0,
           },
         }}
       >
@@ -78,6 +82,8 @@ const RecentWithdrawals = ({ isLoading }: Loading) => {
         )}
       </Timeline>
     </DashboardCard>
+    </Link>
+    </>
   );
 };
 

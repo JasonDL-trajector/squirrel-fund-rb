@@ -36,7 +36,6 @@ const useStyles = makeStyles({
 
 const TabularSummary = ({ isLoading }: Loading) => {
   const deposits = useQuery(api.deposits.listDeposits);
-  console.log(deposits)
   const [dateRange, setDateRange] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const classes = useStyles();

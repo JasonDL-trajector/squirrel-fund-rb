@@ -21,9 +21,8 @@ export const createWithdraw = mutation({
 export const listWithdraws = query({
   args: {},
   async handler(ctx) {
-    const withdraws = await ctx.db.query('withdraws')
-      .order('desc')
-      .collect();
+    const withdraws = await ctx.db.query('withdraws').collect();
+    withdraws.sort((a, b) => new Date(b.withdrawDate).getTime() - new Date(a.withdrawDate).getTime());
     return withdraws;
   },
 });
@@ -31,9 +30,19 @@ export const listWithdraws = query({
 export const listRecentWithdraws = query({
   args: {},
   async handler(ctx) {
-    const withdraws = await ctx.db.query('withdraws')
-      .order('desc')
-      .take(5);
-    return withdraws;
+    const withdraws = await ctx.db.query('withdraws').collect();
+    withdraws.sort((a, b) => new Date(b.withdrawDate).getTime() - new Date(a.withdrawDate).getTime());
+    const recentWithdraws = withdraws.slice(0, 5);
+    
+    return recentWithdraws;
+  },
+});
+
+export const deleteWithdaws = mutation({
+  args: {
+    id: v.id('withdraws'),
+  },
+  async handler(ctx, args) {
+    await ctx.db.delete(args.id);
   },
 });

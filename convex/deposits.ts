@@ -1,6 +1,16 @@
 import { v } from 'convex/values';
 import { mutation, query } from './_generated/server';
 
+type Deposit = {
+  _id: string;
+  _creationTime: number;
+  depositAmount: number;
+  depositDate: string;
+  depositNote: string;
+  email: string;
+  name: string;
+};
+
 export const createDeposit = mutation({
   args: {
     name: v.string(),
@@ -23,9 +33,8 @@ export const createDeposit = mutation({
 export const listDeposits = query({
   args: {},
   async handler(ctx) {
-    const deposits = await ctx.db.query('deposits')
-      .order('desc')
-      .collect();
+    const deposits = await ctx.db.query("deposits").collect();
+    deposits.sort((a, b) => new Date(b.depositDate).getTime() - new Date(a.depositDate).getTime());
     return deposits;
   },
 });
@@ -33,9 +42,19 @@ export const listDeposits = query({
 export const listRecentDeposits = query({
   args: {},
   async handler(ctx) {
-    const deposits = await ctx.db.query('deposits')
-      .order('desc')
-      .take(5);
-    return deposits;
+    const deposits = await ctx.db.query("deposits").collect();
+    deposits.sort((a, b) => new Date(b.depositDate).getTime() - new Date(a.depositDate).getTime());
+    const recentDeposits = deposits.slice(0, 5);
+
+    return recentDeposits;
+  },
+});
+
+export const deleteDeposits = mutation({
+  args: {
+    id: v.id('deposits'),
+  },
+  async handler(ctx, args) {
+    await ctx.db.delete(args.id);
   },
 });

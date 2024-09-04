@@ -44,3 +44,24 @@ export const editCurrentBalance = mutation({
     await ctx.db.patch(id, { balanceAmount });
   },
 });
+
+export const updateBalance = mutation({
+  args: {
+    id: v.id('balances'),
+    balanceAmount: v.number(),
+    balanceDate: v.string(),
+  },
+  async handler(ctx, args) {
+    const { id, ...updates } = args;
+    await ctx.db.patch(id, updates);
+  },
+});
+
+export const deleteBalance = mutation({
+  args: {
+    id: v.id('balances'),
+  },
+  async handler(ctx, args) {
+    await ctx.db.delete(args.id);
+  },
+});

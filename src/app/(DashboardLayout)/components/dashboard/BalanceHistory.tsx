@@ -7,6 +7,7 @@ const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 import type { Loading } from '../../types/loading';
 import { useQuery } from 'convex/react';
 import { api } from '../../../../../convex/_generated/api';
+import Link from 'next/link';
 
 const BalanceHistory = ({ isLoading }: Loading) => {
   const listBalances = useQuery(api.balances.listBalances);
@@ -80,6 +81,8 @@ const BalanceHistory = ({ isLoading }: Loading) => {
   ];
 
   return (
+  <>
+  <Link href="/balance-history" style={{ textDecoration: 'none' }}>
     <DashboardCard title="Balance History" >
       {isLoading || !listBalances ? (
         <Skeleton variant="rectangular" width="100%" height={370} />
@@ -93,6 +96,8 @@ const BalanceHistory = ({ isLoading }: Loading) => {
         />
       )}
     </DashboardCard>
+    </Link>
+    </>
   );
 };
 

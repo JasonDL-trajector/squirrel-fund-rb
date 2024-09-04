@@ -32,7 +32,9 @@ const DepositPage = () => {
   const { user, isLoaded } = useUser();
   const createDeposit = useMutation(api.deposits.createDeposit);
   const createBalance = useMutation(api.balances.createBalance);
-  const [depositAmount, setDepositAmount] = useState(Number(user?.unsafeMetadata.dailydeposit) || 0);
+  const [depositAmount, setDepositAmount] = useState(
+    Number(user?.unsafeMetadata.dailydeposit) || 0
+  );
   const [dateRange, setDateRange] = useState<[Dayjs | null, Dayjs | null]>([
     dayjs(),
     dayjs(),
@@ -45,7 +47,6 @@ const DepositPage = () => {
     currentBalance = currentBalanceData.balanceAmount;
   }
 
-
   const isMobile = useMediaQuery((theme: Theme) =>
     theme.breakpoints.down('sm')
   );
@@ -54,12 +55,14 @@ const DepositPage = () => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-  
+
     if (dateRange[0]) {
       const startDate = dayjs(dateRange[0]).startOf('day');
-      const endDate = dateRange[1] ? dayjs(dateRange[1]).endOf('day') : startDate.endOf('day');
+      const endDate = dateRange[1]
+        ? dayjs(dateRange[1]).endOf('day')
+        : startDate.endOf('day');
       let currentDate = startDate;
-  
+
       while (currentDate.isSameOrBefore(endDate, 'day')) {
         createDeposit({
           name: user?.firstName ?? 'User',
@@ -70,7 +73,7 @@ const DepositPage = () => {
         });
         currentDate = currentDate.add(1, 'day');
       }
-  
+
       createBalance({
         balanceAmount: Number(currentBalance) + totalAmount,
         balanceDate: formatDate(endDate),
@@ -139,9 +142,12 @@ const DepositPage = () => {
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DateRangePicker
                     slots={{ field: SingleInputDateRangeField }}
+                    format="MMMM D"
                     label="Date Range"
                     value={dateRange}
-                    onChange={(newValue: DateRange<Dayjs>) => setDateRange(newValue)}
+                    onChange={(newValue: DateRange<Dayjs>) =>
+                      setDateRange(newValue)
+                    }
                     slotProps={{
                       field: {
                         sx: {
@@ -194,7 +200,7 @@ const DepositPage = () => {
                       New Balance:
                     </Typography>
                     <Typography variant="h4" fontWeight="bold" align="right">
-                      ₱{(currentBalance + totalAmount)}
+                      ₱{currentBalance + totalAmount}
                     </Typography>
                   </Grid>
                 </Grid>

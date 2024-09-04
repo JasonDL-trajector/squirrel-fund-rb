@@ -48,7 +48,7 @@ const WithdrawPage = () => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-  
+
     if (withdrawDate) {
       createWithdraw({
         name: user?.firstName ?? 'User',
@@ -56,7 +56,7 @@ const WithdrawPage = () => {
         withdrawDate: formatDate(withdrawDate),
         withdrawNote: note,
       });
-  
+
       createBalance({
         balanceAmount: Number(currentBalance) - withdrawAmount,
         balanceDate: formatDate(withdrawDate),
@@ -125,6 +125,7 @@ const WithdrawPage = () => {
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
                     label="Withdrawal Date"
+                    format="MMMM D"
                     value={withdrawDate}
                     onChange={(newDate) => setWithdrawDate(newDate)}
                     slotProps={{
@@ -177,7 +178,7 @@ const WithdrawPage = () => {
                       New Balance:
                     </Typography>
                     <Typography variant="h4" fontWeight="bold" align="right">
-                      ₱{(currentBalance - totalAmount)}
+                      ₱{currentBalance - totalAmount}
                     </Typography>
                   </Grid>
                 </Grid>
@@ -185,11 +186,7 @@ const WithdrawPage = () => {
                   <Typography variant="body2">
                     Amount to be withdrawn:
                   </Typography>
-                  <Typography
-                    variant="h5"
-                    fontWeight="bold"
-                    color="error.main"
-                  >
+                  <Typography variant="h5" fontWeight="bold" color="error.main">
                     -₱{withdrawAmount.toFixed(2)}
                   </Typography>
                 </Box>

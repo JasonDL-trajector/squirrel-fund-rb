@@ -22,6 +22,7 @@ export const listBills = query({
   args: {},
   async handler(ctx) {
     const bills = await ctx.db.query('bills').collect();
+    bills.sort((a, b) => (a.status === 'Unpaid' ? -1 : 1));
     return bills;
   },
 });

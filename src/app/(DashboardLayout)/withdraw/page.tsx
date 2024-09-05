@@ -12,6 +12,7 @@ import {
   Container,
   useMediaQuery,
   Theme,
+  IconButton,
 } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -23,6 +24,8 @@ import { api } from '../../../../convex/_generated/api';
 import { useMutation, useQuery } from 'convex/react';
 import { useUser } from '@clerk/clerk-react';
 import { calculateAmount, formatDate } from '../utilities/utils';
+import Link from 'next/link';
+import {IconTableMinus} from '@tabler/icons-react';
 
 dayjs.extend(isSameOrBefore);
 
@@ -88,12 +91,25 @@ const WithdrawPage = () => {
               width: 'screen',
             }}
           >
-            <Typography variant="h5" gutterBottom>
-              Withdraw Funds
-            </Typography>
-            <Typography variant="body2" color="textSecondary" paragraph>
-              Select a date and enter the withdrawal details below.
-            </Typography>
+
+            <div style={{ display: 'flex', justifyContent: 'space-between'}}>
+              <div>
+                <Typography variant="h5" gutterBottom>
+                  Withdraw Funds
+                </Typography>
+                <Typography variant="body2" color="textSecondary" paragraph>
+                  Select a date and enter the withdrawal details below.
+                </Typography>
+              </div>
+
+              <Box>
+                <Link href='/withdraw/history'>
+                <IconButton color="primary">
+                  <IconTableMinus />
+                </IconButton>
+                </Link>
+              </Box>
+            </div>
             <form
               onSubmit={handleSubmit}
               style={{

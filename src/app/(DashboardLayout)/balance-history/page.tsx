@@ -116,7 +116,7 @@ const BalanceHistory = () => {
         <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: { xs: '90%', sm: 400 }, bgcolor: 'background.paper', boxShadow: 24, borderRadius: 5, p: 4 }}>
           <Typography variant="h6" component="h2" gutterBottom>{editingBalance ? 'Edit Balance' : 'Add a Balance'}</Typography>
           <form onSubmit={handleSubmit} style={{ gap: '2rem'}}>
-            <TextField fullWidth label="Amount" name="balanceAmount" type="number" value={newBalance.balanceAmount} onChange={handleInputChange} margin="normal" />
+            <TextField fullWidth label="Amount" name="balanceAmount" type="number" value={newBalance.balanceAmount} onChange={handleInputChange} margin="normal" style={{ marginBottom: '20px' }}/>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker label="Date" format="MMMM D" value={newBalance.balanceDate} onChange={(newValue) => setNewBalance({ ...newBalance, balanceDate: newValue })} 
                 slotProps={{

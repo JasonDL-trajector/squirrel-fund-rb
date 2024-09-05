@@ -283,6 +283,7 @@ const Bills = ({ isLoading }: Loading) => {
                 value={editingBill ? editingBill.amount : newBill.amount}
                 onChange={handleInputChange}
                 margin="normal"
+                style={{ marginBottom: '20px' }}
               />
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker

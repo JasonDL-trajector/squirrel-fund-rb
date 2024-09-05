@@ -12,7 +12,11 @@ import {
   Container,
   useMediaQuery,
   Theme,
+  IconButton
 } from '@mui/material';
+import DashboardCard from '@/app/(DashboardLayout)/components/shared/DashboardCard';
+import { IconTablePlus } from '@tabler/icons-react'
+import { Add as AddIcon } from '@mui/icons-material';
 import { DateRangePicker } from '@mui/x-date-pickers-pro/DateRangePicker';
 import { SingleInputDateRangeField } from '@mui/x-date-pickers-pro/SingleInputDateRangeField';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -25,6 +29,7 @@ import { api } from '../../../../convex/_generated/api';
 import { useMutation, useQuery } from 'convex/react';
 import { useUser } from '@clerk/clerk-react';
 import { calculateAmount, formatDate } from '../utilities/utils';
+import Link from 'next/link';
 
 dayjs.extend(isSameOrBefore);
 
@@ -84,7 +89,9 @@ const DepositPage = () => {
   };
 
   return (
-    <PageContainer title="Deposit" description="Deposit funds">
+    <PageContainer title="Deposit" 
+    
+    >
       <Container maxWidth="sm">
         <Box
           sx={{
@@ -105,12 +112,24 @@ const DepositPage = () => {
               width: 'screen',
             }}
           >
-            <Typography variant="h5" gutterBottom>
-              Deposit Funds
-            </Typography>
-            <Typography variant="body2" color="textSecondary" paragraph>
-              Select a date range and enter the deposit details below.
-            </Typography>
+            <div style={{ display: 'flex', justifyContent: 'space-between'}}>
+              <div>
+                <Typography variant="h5" gutterBottom>
+                  Deposit Funds
+                </Typography>
+                <Typography variant="body2" color="textSecondary" paragraph>
+                  Select a date range and enter the deposit details below.
+                </Typography>
+              </div>
+
+              <Box>
+                <Link href='/deposit/history'>
+                <IconButton color="primary">
+                  <IconTablePlus />
+                </IconButton>
+                </Link>
+              </Box>
+            </div>
             <form
               onSubmit={handleSubmit}
               style={{

@@ -213,6 +213,7 @@ const DepositsHistory = () => {
                 value={newDeposit.depositAmount}
                 onChange={handleInputChange}
                 margin="normal"
+                style={{ marginBottom: '20px' }}
               />
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker

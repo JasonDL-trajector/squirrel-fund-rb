@@ -27,6 +27,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { api } from '../../../../../convex/_generated/api';
+import Link from 'next/link';
 
 const WithdrawHistory = () => {
   const withdraws = useQuery(api.withdraws.listWithdraws);
@@ -35,7 +36,7 @@ const WithdrawHistory = () => {
   const [openModal, setOpenModal] = useState(false);
   const [editingWithdrawal, setEditingWithdrawal] = useState<any | null>(null);
   const [newWithdrawal, setNewWithdrawal] = useState<Omit<any, '_id'>>({
-    name: '',
+    name: 'User',
     withdrawAmount: 0,
     withdrawDate: dayjs(),
     withdrawNote: '',
@@ -49,6 +50,7 @@ const WithdrawHistory = () => {
       withdrawDate: dayjs(withdraw.withdrawDate),
       withdrawNote: withdraw.withdrawNote,
     });
+    console.log(newWithdrawal);
     setOpenModal(true);
   };
 
@@ -85,9 +87,11 @@ const WithdrawHistory = () => {
       title="Withdrawals History"
       action={
         <Box>
-          <IconButton color="primary" onClick={() => handleOpenModal(null)}>
-            <AddIcon />
-          </IconButton>
+          <Link href='/withdraw'>
+            <IconButton color="primary">
+              <AddIcon />
+            </IconButton>
+          </Link>
         </Box>
       }
     >
@@ -219,8 +223,9 @@ const WithdrawHistory = () => {
                 value={newWithdrawal.withdrawAmount}
                 onChange={handleInputChange}
                 margin="normal"
+                style={{ marginBottom: '20px' }}
               />
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <LocalizationProvider dateAdapter={AdapterDayjs} >
                 <DatePicker
                   label="Withdrawal Date"
                   value={newWithdrawal.withdrawDate}

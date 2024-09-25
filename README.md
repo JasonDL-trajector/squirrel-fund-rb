@@ -1,6 +1,6 @@
 ![SquirrelFund](./public/images/banner.png)
 
-# Squirrel Fund: A NextJS finance tracking application with Clerk and Convex.
+# Squirrel Fund
 
 **Project Overview:**  
 This project is a NextJS-based web application that integrates with the Clerk for auth and Convex for backend as a service (BAAS) to help users track their finances. The application has a user friendly interface thanks to MaterialUI.

@@ -1,25 +1,11 @@
-'use client';
-import { styled, Container, Box } from '@mui/material';
-import React, { useState } from 'react';
-import Header from '@/app/(DashboardLayout)/layout/header/Header';
-import Sidebar from '@/app/(DashboardLayout)/layout/sidebar/Sidebar';
-import { useMediaQuery } from '@mui/material';
-import { Authenticated, Unauthenticated, useQuery } from 'convex/react';
-import Login2 from '../authentication/login/page';
-
-const MainWrapper = styled('div')(() => ({
-  display: 'flex',
-  minHeight: '100vh',
-  width: '100%',
-}));
-
-const PageWrapper = styled('div')(() => ({
-  display: 'flex',
-  flexGrow: 1,
-  flexDirection: 'column',
-  zIndex: 1,
-  backgroundColor: 'transparent',
-}));
+"use client";
+import { Container, Stack, useMantineTheme } from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
+import React, { useState } from "react";
+import Header from "@/app/(DashboardLayout)/layout/header/Header";
+import Sidebar from "@/app/(DashboardLayout)/layout/sidebar/Sidebar";
+import { Authenticated, Unauthenticated, useQuery } from "convex/react";
+import Login2 from "../authentication/login/page";
 
 export default function RootLayout({
   children,
@@ -27,7 +13,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   const [isSidebarOpen, setSidebarOpen] = useState(true);
-  const lgUp = useMediaQuery((theme: any) => theme.breakpoints.up('lg'));
+  const theme = useMantineTheme();
+  const lgUp = useMediaQuery(`(min-width: ${theme.breakpoints.lg})`);
 
   return (
     <>
@@ -36,25 +23,43 @@ export default function RootLayout({
       </Unauthenticated>
 
       <Authenticated>
-        <MainWrapper className="mainwrapper">
+        <Stack
+          className="mainwrapper"
+          style={{
+            minHeight: "100vh",
+            width: "100%",
+          }}
+          gap={0}
+        >
           <Sidebar
             isSidebarOpen={isSidebarOpen}
             isMobileSidebarOpen={false}
             onSidebarClose={() => {}}
           />
-          <PageWrapper className="page-wrapper">
+          <Stack
+            className="page-wrapper"
+            style={{
+              flexGrow: 1,
+              zIndex: 1,
+              backgroundColor: "transparent",
+              marginLeft: lgUp ? "270px" : "0", // Account for fixed sidebar
+            }}
+            gap={0}
+          >
             <Header toggleMobileSidebar={() => {}} />
             <Container
-              sx={{
-                paddingTop: '20px',
-                maxWidth: '1200px',
-                paddingBottom: !lgUp ? '80px' : '20px', // Increased bottom padding for mobile
+              size="lg"
+              py="md"
+              style={{
+                paddingBottom: !lgUp ? "80px" : "20px", // Increased bottom padding for mobile
               }}
             >
-              <Box sx={{ minHeight: 'calc(100vh - 170px)' }}>{children}</Box>
+              <Stack style={{ minHeight: "calc(100vh - 170px)" }} gap={0}>
+                {children}
+              </Stack>
             </Container>
-          </PageWrapper>
-        </MainWrapper>
+          </Stack>
+        </Stack>
       </Authenticated>
     </>
   );

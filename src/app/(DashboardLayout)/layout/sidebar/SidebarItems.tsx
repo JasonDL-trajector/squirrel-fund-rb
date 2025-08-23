@@ -1,7 +1,7 @@
 import React from "react";
 import Menuitems from "./MenuItems";
 import { usePathname } from "next/navigation";
-import { Box, List } from "@mui/material";
+import { Box, Stack } from "@mantine/core";
 import NavItem from "./NavItem";
 import NavGroup from "./NavGroup/NavGroup";
 
@@ -10,8 +10,8 @@ const SidebarItems = ({ toggleMobileSidebar }: any) => {
   const pathDirect = pathname;
 
   return (
-    <Box sx={{ px: 3 }}>
-      <List sx={{ pt: 0 }} className="sidebarNav" component="div">
+    <Box>
+      <Stack gap="xs" className="sidebarNav">
         {Menuitems.map((item) => {
           // {/********SubHeader**********/}
           if (item.subheader) {
@@ -30,7 +30,7 @@ const SidebarItems = ({ toggleMobileSidebar }: any) => {
             );
           }
         })}
-      </List>
+      </Stack>
     </Box>
   );
 };

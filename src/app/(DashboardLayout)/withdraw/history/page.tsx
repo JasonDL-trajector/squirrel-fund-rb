@@ -1,33 +1,22 @@
-"use client"
-import React, { useState } from 'react';
+"use client";
+import React, { useState } from "react";
 import {
-  Typography,
-  Box,
+  Text,
   Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  Chip,
   Skeleton,
-  IconButton,
+  ActionIcon,
   Modal,
-  TextField,
+  TextInput,
   Button,
   Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
-} from '@mui/material';
-import { Add as AddIcon } from '@mui/icons-material';
-import DashboardCard from '@/app/(DashboardLayout)/components/shared/DashboardCard';
-import { useQuery, useMutation } from 'convex/react';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import dayjs from 'dayjs';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { api } from '../../../../../convex/_generated/api';
-import Link from 'next/link';
+  Stack,
+  Group,
+} from "@mantine/core";
+import { IconPlus } from "@tabler/icons-react";
+import DashboardCard from "@/app/(DashboardLayout)/components/shared/DashboardCard";
+import { useQuery, useMutation } from "convex/react";
+import { api } from "../../../../../convex/_generated/api";
+import Link from "next/link";
 
 const WithdrawHistory = () => {
   const withdraws = useQuery(api.withdraws.listWithdraws);
@@ -35,11 +24,14 @@ const WithdrawHistory = () => {
   const deleteWithdrawal = useMutation(api.withdraws.deleteWithdraws);
   const [openModal, setOpenModal] = useState(false);
   const [editingWithdrawal, setEditingWithdrawal] = useState<any | null>(null);
-  const [newWithdrawal, setNewWithdrawal] = useState<Omit<any, '_id'>>({
-    name: 'User',
+  const [newWithdrawal, setNewWithdrawal] = useState<Omit<any, "_id">>({
+    name: "User",
     withdrawAmount: 0,
-    withdrawDate: dayjs(),
-    withdrawNote: '',
+    withdrawDate: new Date().toLocaleDateString("en-US", {
+      month: "long",
+      day: "numeric",
+    }),
+    withdrawNote: "",
   });
 
   const handleOpenModal = (withdraw: any) => {
@@ -47,7 +39,7 @@ const WithdrawHistory = () => {
     setNewWithdrawal({
       name: withdraw.name,
       withdrawAmount: withdraw.withdrawAmount,
-      withdrawDate: dayjs(withdraw.withdrawDate),
+      withdrawDate: withdraw.withdrawDate,
       withdrawNote: withdraw.withdrawNote,
     });
     console.log(newWithdrawal);
@@ -68,7 +60,7 @@ const WithdrawHistory = () => {
         id: editingWithdrawal._id,
         name: newWithdrawal.name,
         withdrawAmount: Number(newWithdrawal.withdrawAmount),
-        withdrawDate: newWithdrawal.withdrawDate.format('MMMM D'),
+        withdrawDate: newWithdrawal.withdrawDate,
         withdrawNote: newWithdrawal.withdrawNote,
       });
     }
@@ -86,187 +78,150 @@ const WithdrawHistory = () => {
     <DashboardCard
       title="Withdrawals History"
       action={
-        <Box>
-          <Link href='/withdraw'>
-            <IconButton color="primary">
-              <AddIcon />
-            </IconButton>
-          </Link>
-        </Box>
+        <ActionIcon
+          component={Link}
+          href="/withdraw"
+          size="lg"
+          variant="filled"
+          color="blue"
+        >
+          <IconPlus size={20} />
+        </ActionIcon>
       }
     >
       <>
-        <Box sx={{ overflow: 'auto', maxWidth: '80vw', maxHeight: '500px' }}>
-          <Table
-            aria-label="withdrawals table"
-            sx={{
-              whiteSpace: 'nowrap',
-              mt: 2,
-              overflow: 'auto',
-              borderCollapse: 'collapse',
-            }}
-          >
-            <TableHead>
-              <TableRow>
-                <TableCell sx={{ border: '1px solid rgba(204, 204, 204, 0.2)', borderTop: 0, borderLeft: 0 }}>
-                  <Typography variant="subtitle2" fontWeight={600}>
+        <div style={{ overflow: "auto", maxWidth: "80vw", maxHeight: "500px" }}>
+          <Table>
+            <Table.Thead>
+              <Table.Tr>
+                <Table.Th>
+                  <Text size="sm" fw={600}>
                     Date
-                  </Typography>
-                </TableCell>
-                <TableCell sx={{ border: '1px solid rgba(204, 204, 204, 0.2)', borderTop: 0 }}>
-                  <Typography variant="subtitle2" fontWeight={600}>
+                  </Text>
+                </Table.Th>
+                <Table.Th>
+                  <Text size="sm" fw={600}>
                     Name
-                  </Typography>
-                </TableCell>
-                <TableCell sx={{ border: '1px solid rgba(204, 204, 204, 0.2)', borderTop: 0 }}>
-                  <Typography variant="subtitle2" fontWeight={600}>
+                  </Text>
+                </Table.Th>
+                <Table.Th>
+                  <Text size="sm" fw={600}>
                     Amount
-                  </Typography>
-                </TableCell>
-                <TableCell sx={{ border: '1px solid rgba(204, 204, 204, 0.2)', borderTop: 0, borderRight: 0 }}>
-                  <Typography variant="subtitle2" fontWeight={600}>
+                  </Text>
+                </Table.Th>
+                <Table.Th>
+                  <Text size="sm" fw={600}>
                     Note
-                  </Typography>
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
+                  </Text>
+                </Table.Th>
+              </Table.Tr>
+            </Table.Thead>
+            <Table.Tbody>
               {!withdraws
                 ? Array.from(new Array(5)).map((_, index) => (
-                    <TableRow key={index}>
-                      <TableCell sx={{ border: '1px solid rgba(204, 204, 204, 0.2)' }}>
-                        <Skeleton variant="text" />
-                      </TableCell>
-                      <TableCell sx={{ border: '1px solid rgba(204, 204, 204, 0.2)' }}>
-                        <Skeleton variant="text" />
-                      </TableCell>
-                      <TableCell sx={{ border: '1px solid rgba(204, 204, 204, 0.2)' }}>
-                        <Skeleton variant="text" />
-                      </TableCell>
-                    </TableRow>
+                    <Table.Tr key={index}>
+                      <Table.Td>
+                        <Skeleton height={20} />
+                      </Table.Td>
+                      <Table.Td>
+                        <Skeleton height={20} />
+                      </Table.Td>
+                      <Table.Td>
+                        <Skeleton height={20} />
+                      </Table.Td>
+                      <Table.Td>
+                        <Skeleton height={20} />
+                      </Table.Td>
+                    </Table.Tr>
                   ))
                 : withdraws.map((withdraw) => (
-                    <TableRow
+                    <Table.Tr
                       key={withdraw._id}
                       onClick={() => handleOpenModal(withdraw)}
-                      style={{ cursor: 'pointer' }}
+                      style={{ cursor: "pointer" }}
                     >
-                      <TableCell sx={{ border: '1px solid rgba(204, 204, 204, 0.2)', borderLeft: 0 }}>
-                        <Typography variant="subtitle2">
-                          {withdraw.withdrawDate}
-                        </Typography>
-                      </TableCell>
-                      <TableCell sx={{ border: '1px solid rgba(204, 204, 204, 0.2)' }}>
-                        <Typography variant="subtitle2" fontWeight={600}>
+                      <Table.Td>
+                        <Text size="sm">{withdraw.withdrawDate}</Text>
+                      </Table.Td>
+                      <Table.Td>
+                        <Text size="sm" fw={600}>
                           {withdraw.name}
-                        </Typography>
-                      </TableCell>
-                      <TableCell sx={{ border: '1px solid rgba(204, 204, 204, 0.2)' }}>
-                        <Typography
-                          color="textSecondary"
-                          variant="subtitle2"
-                          fontWeight={400}
-                        >
+                        </Text>
+                      </Table.Td>
+                      <Table.Td>
+                        <Text size="sm" c="dimmed">
                           ₱{withdraw.withdrawAmount.toFixed(2)}
-                        </Typography>
-                      </TableCell>
-                      <TableCell sx={{ border: '1px solid rgba(204, 204, 204, 0.2)', borderRight: 0 }}>
-                        <Typography
-                          color="textSecondary"
-                          variant="subtitle2"
-                          fontWeight={400}
-                        >
+                        </Text>
+                      </Table.Td>
+                      <Table.Td>
+                        <Text size="sm" c="dimmed">
                           {withdraw.withdrawNote}
-                        </Typography>
-                      </TableCell>
-                    </TableRow>
+                        </Text>
+                      </Table.Td>
+                    </Table.Tr>
                   ))}
-            </TableBody>
+            </Table.Tbody>
           </Table>
-        </Box>
+        </div>
         <Modal
-          open={openModal}
+          opened={openModal}
           onClose={handleCloseModal}
-          aria-labelledby="edit-withdrawal-modal"
-          aria-describedby="modal-to-edit-withdrawal"
+          title={editingWithdrawal ? "Edit Withdrawal" : "Add a Withdrawal"}
+          size="sm"
+          centered
         >
-          <Box
-            sx={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              width: { xs: '90%', sm: 400 },
-              bgcolor: 'background.paper',
-              boxShadow: 24,
-              borderRadius: 5,
-              p: 4,
-            }}
-          >
-            <Typography variant="h6" component="h2" gutterBottom>
-              {editingWithdrawal ? 'Edit Withdrawal' : 'Add a Withdrawal'}
-            </Typography>
-            <form onSubmit={handleSubmit}>
-              <TextField
-                fullWidth
+          <form onSubmit={handleSubmit}>
+            <Stack gap="md">
+              <TextInput
                 label="Name"
                 name="name"
                 value={newWithdrawal.name}
                 onChange={handleInputChange}
-                margin="normal"
+                required
               />
-              <TextField
-                fullWidth
+              <TextInput
                 label="Amount"
                 name="withdrawAmount"
-                type="text"
+                type="number"
                 value={newWithdrawal.withdrawAmount}
                 onChange={handleInputChange}
-                margin="normal"
-                style={{ marginBottom: '20px' }}
+                required
               />
-              <LocalizationProvider dateAdapter={AdapterDayjs} >
-                <DatePicker
-                  label="Withdrawal Date"
-                  value={newWithdrawal.withdrawDate}
-                  format="MMMM D"
-                  onChange={(newValue) => setNewWithdrawal({ ...newWithdrawal, withdrawDate: newValue })}
-                  slotProps={{
-                    textField: {
-                      fullWidth: true,
-                      sx: {
-                        '& .MuiOutlinedInput-notchedOutline': {
-                          borderColor: 'rgba(0, 0, 0, 0.2)',
-                        },
-                      },
-                    },
-                  }}
-                />
-              </LocalizationProvider>
-              <TextField
-                fullWidth
+              <TextInput
+                label="Withdrawal Date"
+                name="withdrawDate"
+                value={newWithdrawal.withdrawDate}
+                onChange={(e) =>
+                  setNewWithdrawal({
+                    ...newWithdrawal,
+                    withdrawDate: e.target.value,
+                  })
+                }
+                placeholder="e.g., January 15"
+                required
+              />
+              <TextInput
                 label="Note"
                 name="withdrawNote"
                 value={newWithdrawal.withdrawNote}
                 onChange={handleInputChange}
-                margin="normal"
               />
-              <Box display="flex" justifyContent="space-between" mt={2}>
+              <Group justify="space-between">
                 {editingWithdrawal && (
                   <Button
-                    variant="contained"
-                    color="error"
+                    variant="filled"
+                    color="red"
                     onClick={handleDeleteWithdrawal}
                   >
                     Delete
                   </Button>
                 )}
-                <Button type="submit" variant="contained" color="primary">
-                  {editingWithdrawal ? 'Update' : 'Add'}
+                <Button type="submit" color="blue">
+                  {editingWithdrawal ? "Update" : "Add"}
                 </Button>
-              </Box>
-            </form>
-          </Box>
+              </Group>
+            </Stack>
+          </form>
         </Modal>
       </>
     </DashboardCard>

@@ -1,13 +1,5 @@
 import React from "react";
-import {
-  Box,
-  Typography,
-  FormGroup,
-  FormControlLabel,
-  Button,
-  Stack,
-  Checkbox,
-} from "@mui/material";
+import { Text, Button, Stack, Group, Checkbox, Anchor } from "@mantine/core";
 import Link from "next/link";
 
 import CustomTextField from "@/app/(DashboardLayout)/components/forms/theme-elements/CustomTextField";
@@ -21,63 +13,43 @@ interface loginType {
 const AuthLogin = ({ title, subtitle, subtext }: loginType) => (
   <>
     {title ? (
-      <Typography fontWeight="700" variant="h2" mb={1}>
+      <Text size="2xl" fw={700} mb="xs">
         {title}
-      </Typography>
+      </Text>
     ) : null}
 
     {subtext}
 
-    <Stack spacing={2}> {/* Reduced spacing */}
-      <Box>
-        <Typography
-          variant="subtitle1"
-          fontWeight={600}
-          component="label"
-          htmlFor="username"
-          mb="5px"
-        >
+    <Stack gap="md">
+      <div>
+        <Text size="sm" fw={600} component="label" htmlFor="username" mb="xs">
           Username
-        </Typography>
-        <CustomTextField variant="outlined" fullWidth />
-      </Box>
-      <Box mt="25px">
-        <Typography
-          variant="subtitle1"
-          fontWeight={600}
-          component="label"
-          htmlFor="password"
-          mb="5px"
-        >
+        </Text>
+        <CustomTextField />
+      </div>
+      <div>
+        <Text size="sm" fw={600} component="label" htmlFor="password" mb="xs">
           Password
-        </Typography>
-        <CustomTextField type="password" variant="outlined" fullWidth />
-      </Box>
-      <Stack
-        justifyContent="flex-end"
-        direction="row"
-        alignItems="center"
-        my={2}
-      >
-        <Typography
+        </Text>
+        <CustomTextField type="password" />
+      </div>
+      <Group justify="flex-end" align="center" my="md">
+        <Anchor
           component={Link}
           href="/"
-          fontWeight="500"
-          sx={{
-            textDecoration: "none",
-            color: "primary.main",
-            marginBottom: 2,
-          }}
+          fw={500}
+          c="blue"
+          style={{ textDecoration: "none" }}
         >
           Forgot Password?
-        </Typography>
-      </Stack>
+        </Anchor>
+      </Group>
     </Stack>
-    <Box>
+    <div>
       <Button
-        color="primary"
-        variant="contained"
-        size="large"
+        color="blue"
+        variant="filled"
+        size="lg"
         fullWidth
         component={Link}
         href="/"
@@ -85,7 +57,7 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => (
       >
         Sign In
       </Button>
-    </Box>
+    </div>
     {subtitle}
   </>
 );

@@ -1,83 +1,56 @@
-import React from 'react';
-import {
-  AppBar,
-  Box,
-  IconButton,
-  Stack,
-  Toolbar,
-  useMediaQuery,
-  styled,
-} from '@mui/material';
-import PropTypes from 'prop-types';
-import Profile from './Profile';
-import { IconBellRinging } from '@tabler/icons-react';
-import Logo from '../shared/logo/Logo';
+import React from "react";
+import { Group, ActionIcon, useMantineTheme } from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
+import Profile from "./Profile";
+import { IconBellRinging } from "@tabler/icons-react";
+import Logo from "../shared/logo/Logo";
 
 interface ItemType {
   toggleMobileSidebar: (event: React.MouseEvent<HTMLElement>) => void;
 }
 
 const Header = ({ toggleMobileSidebar }: ItemType) => {
-  const lgUp = useMediaQuery((theme: any) => theme.breakpoints.up('lg'));
-
-  const AppBarStyled = styled(AppBar)(({ theme }) => ({
-    boxShadow: 'none',
-    background: theme.palette.background.paper,
-    justifyContent: 'center',
-    backdropFilter: 'blur(4px)',
-    [theme.breakpoints.up('lg')]: {
-      minHeight: '70px',
-    },
-  }));
-  const ToolbarStyled = styled(Toolbar)(({ theme }) => ({
-    width: '100%',
-    color: theme.palette.text.secondary,
-  }));
+  const theme = useMantineTheme();
+  const lgUp = useMediaQuery(`(min-width: ${theme.breakpoints.lg})`);
 
   return (
-    <AppBarStyled position="sticky" color="default">
-      <ToolbarStyled>
-        {lgUp ? (
-          <>
-            <IconButton
-              size="large"
-              aria-label="show 11 new notifications"
-              color="inherit"
-              aria-controls="msgs-menu"
-              aria-haspopup="true"
+    <Group
+      component="header"
+      justify="space-between"
+      align="center"
+      p="md"
+      style={{
+        position: "sticky",
+        top: 0,
+        zIndex: 1000,
+        background: theme.white,
+        borderBottom: `1px solid ${theme.colors.gray[2]}`,
+        backdropFilter: "blur(4px)",
+        minHeight: lgUp ? "70px" : "60px",
+      }}
+    >
+      {lgUp ? (
+        <>
+          <Group>
+            <ActionIcon
+              size="lg"
+              variant="subtle"
+              color="gray"
+              aria-label="show notifications"
             >
               <IconBellRinging size="21" stroke="1.5" />
-            </IconButton>
-            <Box flexGrow={1} />
-            <Stack spacing={1} direction="row" alignItems="center">
-              <Profile />
-            </Stack>
-          </>
-        ) : (
-          <>
-            <Box
-              sx={{
-                width: '100%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                borderBottom: "solid 1px #E5E5E5",
-              }}
-              
-            >
-              <Logo />
-              <Box flexGrow={1} />
-              <Profile />
-            </Box>
-          </>
-        )}
-      </ToolbarStyled>
-    </AppBarStyled>
+            </ActionIcon>
+          </Group>
+          <Profile />
+        </>
+      ) : (
+        <>
+          <Logo />
+          <Profile />
+        </>
+      )}
+    </Group>
   );
-};
-
-Header.propTypes = {
-  sx: PropTypes.object,
 };
 
 export default Header;

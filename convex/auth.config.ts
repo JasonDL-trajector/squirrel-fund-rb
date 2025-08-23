@@ -1,8 +1,8 @@
 export default {
   providers: [
     {
-      domain: 'https://useful-bream-25.clerk.accounts.dev',
-      applicationID: 'convex',
+      domain: process.env.CLERK_JWT_ISSUER_DOMAIN!,
+      applicationID: "convex",
     },
   ],
 };

@@ -1,184 +1,89 @@
-'use client';
-import Link from 'next/link';
-import {
-  Grid,
-  Box,
-  Card,
-  Stack,
-  Typography,
-  useMediaQuery,
-  Theme,
-} from '@mui/material';
+"use client";
+import Link from "next/link";
+import { Paper, Stack, Text, Button, useMantineTheme } from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
 // components
-import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
-import Logo from '@/app/(DashboardLayout)/layout/shared/logo/Logo';
-// import { SignIn } from "@clerk/nextjs";
-import { Button } from '@mui/material';
-import GoogleIcon from '@mui/icons-material/Google';
-import FacebookIcon from '@mui/icons-material/Facebook';
-import * as SignIn from '@clerk/elements/sign-in';
-import * as Clerk from '@clerk/elements/common';
+import PageContainer from "@/app/(DashboardLayout)/components/container/PageContainer";
+import Logo from "@/app/(DashboardLayout)/layout/shared/logo/Logo";
+import * as SignIn from "@clerk/elements/sign-in";
+import * as Clerk from "@clerk/elements/common";
+import { IconBrandGoogle } from "@tabler/icons-react";
 
 const Login2 = () => {
-  const isMobile = useMediaQuery((theme: Theme) =>
-    theme.breakpoints.down('sm')
-  );
+  const theme = useMantineTheme();
+  const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
 
   return (
     <PageContainer title="Login" description="this is Login page">
-      <Box
-        sx={{
-          position: 'relative',
-          '&:before': {
-            content: '""',
-            background: 'url(/images/backgrounds/squirrel.svg)',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            animation: 'gradient 15s ease infinite',
-            position: 'absolute',
-            height: '100%',
-            width: '100%',
-            opacity: '1',
-          },
+      <div
+        style={{
+          position: "relative",
+          minHeight: "100vh",
+          background: "url(/images/backgrounds/squirrel.svg)",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
         }}
       >
-        <Grid
-          container
-          spacing={0}
-          justifyContent="center"
-          sx={{ minHeight: '100vh' }}
-        >
-          <Grid
-            item
-            xs={12}
-            sm={12}
-            lg={4}
-            xl={3}
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
+        <Stack justify="center" align="center" style={{ minHeight: "100vh" }}>
+          <Paper
+            shadow="xl"
+            p={isMobile ? "xl" : "xl"}
+            style={{
+              zIndex: 1,
+              width: "100%",
+              maxWidth: isMobile ? "90%" : "500px",
+              margin: isMobile ? theme.spacing.md : 0,
+              background: "rgba(255, 255, 255, 1)",
+              backdropFilter: "blur(10px)",
+            }}
           >
-            <Card
-              elevation={9}
-              sx={{
-                p: isMobile ? 4 : 4,
-                zIndex: 1,
-                width: '100%',
-                maxWidth: isMobile ? '90%' : '500px',
-                m: isMobile ? 2 : 0,
-                background: 'rgba(255, 255, 255, 1)',
-                backdropFilter: 'blur(10px)',
-              }}
-            >
-              <Box
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-                mb={0}
-              >
-                <Logo />
-              </Box>
-              <Typography
-                variant={isMobile ? 'h5' : 'h6'}
-                textAlign="center"
-                mb={2}
-              >
-                Your Finance Tracking App
-              </Typography>
+            <Stack align="center" mb={0}>
+              <Logo />
+            </Stack>
+            <Text size={isMobile ? "lg" : "md"} ta="center" mb="md">
+              Your Finance Tracking App
+            </Text>
 
-              <Typography
-                variant="overline"
-                gutterBottom
-                sx={{ display: 'block' }}
-                textAlign="center"
-                mb={-2}
-              >
-                Sign in with
-              </Typography>
-              <SignIn.Root>
-                <Stack
-                  direction="row"
-                  spacing={1}
-                  justifyContent="center"
-                  alignItems="center"
-                  mt={3}
-                >
-                  <SignIn.Step name="start">
-                    <Button
-                      fullWidth
-                      variant="contained"
-                      startIcon={<FacebookIcon htmlColor="#000000" />}
-                      sx={{
-                        mb: 2,
-                        backgroundColor: '#FFFFFF',
-                        color: 'white',
-                        '&:hover': {
-                          backgroundColor: '#5D87FF',
-                       
-                        },
+            <Text size="xs" tt="uppercase" ta="center" mb="xs">
+              Sign in with
+            </Text>
+            <SignIn.Root>
+              <Stack align="center" mt="lg">
+                <SignIn.Step name="start">
+                  <Button
+                    fullWidth
+                    variant="outline"
+                    leftSection={<IconBrandGoogle size={20} />}
+                    style={{
+                      backgroundColor: "#FFFFFF",
+                      color: "black",
+                      border: "1px solid #ddd",
+                    }}
+                    size="lg"
+                  >
+                    <Clerk.Connection
+                      name="google"
+                      style={{
+                        background: "transparent",
+                        color: "black",
+                        border: 0,
+                        fontFamily: "inherit",
                       }}
                     >
-                      <Clerk.Connection
-                        name="facebook"
-                        style={{
-                          background: 'transparent',
-                          color: 'black',
-                          border: 0,
-                          fontFamily: 'inherit',
-                        }}
-                      >
-                        Facebook
-                      </Clerk.Connection>
-                    </Button>
-                  </SignIn.Step>
-                  <SignIn.Step name="start">
-                    <Button
-                      fullWidth
-                      variant="contained"
-                      startIcon={<GoogleIcon htmlColor="#000000" />}
-                      sx={{
-                        mb: 2,
-                        backgroundColor: '#FFFFFF',
-                        color: 'white',
-                        '&:hover': {
-                          backgroundColor: '#5D87FF',
-                        },
-                      }}
-                    >
-                      <Clerk.Connection
-                        name="google"
-                        style={{
-                          background: 'transparent',
-                          color: 'black',
-                          border: 0,
-                          fontFamily: 'inherit',
-                        }}
-                      >
-                        Google
-                      </Clerk.Connection>
-                    </Button>
-                  </SignIn.Step>
-                </Stack>
-              </SignIn.Root>
-              <Stack
-                direction="row"
-                spacing={1}
-                justifyContent="center"
-                alignItems="center"
-                mt={3}
-              >
-                <Typography
-                  variant="overline"
-                  gutterBottom
-                  sx={{ display: 'block' }}
-                >
-                  All rights reserved ® 2024
-                </Typography>
+                      Google
+                    </Clerk.Connection>
+                  </Button>
+                </SignIn.Step>
               </Stack>
-            </Card>
-          </Grid>
-        </Grid>
-      </Box>
+            </SignIn.Root>
+            <Stack align="center" mt="lg">
+              <Text size="xs" tt="uppercase">
+                All rights reserved ® 2024
+              </Text>
+            </Stack>
+          </Paper>
+        </Stack>
+      </div>
     </PageContainer>
   );
 };

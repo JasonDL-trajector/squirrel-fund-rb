@@ -1,5 +1,6 @@
 import React from "react";
-import { Card, CardContent, Typography, Stack, Box, useTheme, useMediaQuery } from "@mui/material";
+import { Paper, Text, Group, Stack, useMantineTheme } from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
 
 type Props = {
   title?: string;
@@ -24,52 +25,60 @@ const DashboardCard = ({
   headsubtitle,
   middlecontent,
 }: Props) => {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const theme = useMantineTheme();
+  const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
 
   return (
-    <Card sx={{ padding: 1.5, height: '100%', transform: isMobile ? 'scale(0.95)' : 'none', transformOrigin: 'top center' }} elevation={3} variant={undefined}>
+    <Paper
+      shadow="md"
+      p="md"
+      style={{
+        height: "100%",
+        transform: isMobile ? "scale(0.95)" : "none",
+        transformOrigin: "top center",
+      }}
+    >
       {cardheading ? (
-        <CardContent >
-          <Typography variant="h5">{headtitle}</Typography>
-          <Typography variant="subtitle2" color="textSecondary" >
+        <Stack gap="xs">
+          <Text size="xl" fw={600}>
+            {headtitle}
+          </Text>
+          <Text size="sm" c="dimmed">
             {headsubtitle}
-          </Typography>
-        </CardContent>
+          </Text>
+        </Stack>
       ) : (
-        <CardContent sx={{ p: isMobile ? '16px' : '30px'}}>
+        <Stack gap="lg">
           {title ? (
-            <Stack
-              direction="row"
-              spacing={2}
-              justifyContent="space-between"
-              alignItems={"center"}
-              mb={3}
-              pb={3}
-              sx={{borderBottom: "solid 1px #E5E5E5"}}
+            <Group
+              justify="space-between"
+              align="center"
+              pb="md"
+              style={{ borderBottom: `1px solid ${theme.colors.gray[2]}` }}
             >
-              <Box>
-                {title ? <Typography variant="h5">{title}</Typography> : ""}
-
-                {subtitle ? (
-                  <Typography variant="subtitle2" color="textSecondary">
-                    {subtitle}
-                  </Typography>
-                ) : (
-                  ""
+              <Stack gap="xs">
+                {title && (
+                  <Text size="xl" fw={600}>
+                    {title}
+                  </Text>
                 )}
-              </Box>
+                {subtitle && (
+                  <Text size="sm" c="dimmed">
+                    {subtitle}
+                  </Text>
+                )}
+              </Stack>
               {action}
-            </Stack>
+            </Group>
           ) : null}
 
           {children}
-        </CardContent>
+        </Stack>
       )}
 
       {middlecontent}
       {footer}
-    </Card>
+    </Paper>
   );
 };
 

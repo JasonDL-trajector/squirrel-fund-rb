@@ -1,31 +1,31 @@
-import React from 'react';
-import { Skeleton } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
-import DashboardCard from '@/app/(DashboardLayout)/components/shared/DashboardCard';
-import dynamic from 'next/dynamic';
-const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
-import type { Loading } from '../../types/loading';
-import { useQuery } from 'convex/react';
-import { api } from '../../../../../convex/_generated/api';
-import Link from 'next/link';
+import React from "react";
+import { Skeleton, useMantineTheme } from "@mantine/core";
+import DashboardCard from "@/app/(DashboardLayout)/components/shared/DashboardCard";
+import dynamic from "next/dynamic";
+const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
+import type { Loading } from "../../types/loading";
+import { useQuery } from "convex/react";
+import { api } from "../../../../../convex/_generated/api";
+import Link from "next/link";
 
 const BalanceHistory = ({ isLoading }: Loading) => {
   const listBalances = useQuery(api.balances.listBalances);
 
   // chart color
-  const theme = useTheme();
-  const primary = theme.palette.primary.main;
+  const theme = useMantineTheme();
+  const primary = theme.colors.blue[6];
 
   // Prepare data for the chart
-  const categories = listBalances?.map(balance => balance.balanceDate) || [];
-  const balanceData = listBalances?.map(balance => balance.balanceAmount) || [];
+  const categories = listBalances?.map((balance) => balance.balanceDate) || [];
+  const balanceData =
+    listBalances?.map((balance) => balance.balanceAmount) || [];
 
   // chart options
   const optionscolumnchart: any = {
     chart: {
-      type: 'line',
+      type: "line",
       fontFamily: "'Plus Jakarta Sans', sans-serif;",
-      foreColor: '#adb0bb',
+      foreColor: "#adb0bb",
       toolbar: {
         show: true,
       },
@@ -33,7 +33,7 @@ const BalanceHistory = ({ isLoading }: Loading) => {
     },
     colors: [primary],
     stroke: {
-      curve: 'smooth',
+      curve: "smooth",
       width: 3,
     },
     dataLabels: {
@@ -43,7 +43,7 @@ const BalanceHistory = ({ isLoading }: Loading) => {
       show: false,
     },
     grid: {
-      borderColor: 'rgba(0,0,0,0.1)',
+      borderColor: "rgba(0,0,0,0.1)",
       strokeDashArray: 3,
       xaxis: {
         lines: {
@@ -61,42 +61,42 @@ const BalanceHistory = ({ isLoading }: Loading) => {
       },
       tickAmount: Math.min(5, categories.length),
       labels: {
-        rotate: -45, 
+        rotate: -45,
         style: {
-          fontSize: '12px',
+          fontSize: "12px",
         },
       },
     },
     tooltip: {
-      theme: 'dark',
+      theme: "dark",
       fillSeriesColor: false,
     },
   };
 
   const seriescolumnchart: any = [
     {
-      name: 'Balance',
+      name: "Balance",
       data: balanceData,
     },
   ];
 
   return (
-  <>
-  <Link href="/balance-history" style={{ textDecoration: 'none' }}>
-    <DashboardCard title="Balance History" >
-      {isLoading || !listBalances ? (
-        <Skeleton variant="rectangular" width="100%" height={370} />
-      ) : (
-        <Chart
-          options={optionscolumnchart}
-          series={seriescolumnchart}
-          type="line"
-          height={370}
-          width={'100%'}
-        />
-      )}
-    </DashboardCard>
-    </Link>
+    <>
+      <Link href="/balance-history" style={{ textDecoration: "none" }}>
+        <DashboardCard title="Balance History">
+          {isLoading || !listBalances ? (
+            <Skeleton height={370} width="100%" />
+          ) : (
+            <Chart
+              options={optionscolumnchart}
+              series={seriescolumnchart}
+              type="line"
+              height={370}
+              width={"100%"}
+            />
+          )}
+        </DashboardCard>
+      </Link>
     </>
   );
 };

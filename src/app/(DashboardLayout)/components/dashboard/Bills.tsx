@@ -1,63 +1,55 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
-  Typography,
-  Box,
+  Text,
   Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  Chip,
+  Badge,
   Skeleton,
-  IconButton,
+  ActionIcon,
   Modal,
-  TextField,
+  TextInput,
   Button,
   Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
-  SelectChangeEvent,
-} from '@mui/material';
-import { Add as AddIcon } from '@mui/icons-material';
-import DashboardCard from '../shared/DashboardCard';
-import type { Loading } from '../../types/loading';
-import { useQuery, useMutation } from 'convex/react';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import dayjs, { Dayjs } from 'dayjs';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { api } from '../../../../../convex/_generated/api';
-import { Id } from '../../../../../convex/_generated/dataModel';
-import { ConvexError } from 'convex/values';
-
-interface Bill {
-  _id: Id<'bills'>;
-  name: string;
-  amount: number;
-  dueDate: Dayjs;
-  status: string;
-}
+  Group,
+  useMantineTheme,
+  Stack,
+} from "@mantine/core";
+import { IconPlus } from "@tabler/icons-react";
+import DashboardCard from "../shared/DashboardCard";
+import type { Loading } from "../../types/loading";
+import { useQuery, useMutation } from "convex/react";
+import { api } from "../../../../../convex/_generated/api";
+import { Id } from "../../../../../convex/_generated/dataModel";
+import { ConvexError } from "convex/values";
 
 const Bills = ({ isLoading }: Loading) => {
   const bills = useQuery(api.bills.listBills);
   const createBill = useMutation(api.bills.createBill);
   const updateBill = useMutation(api.bills.updateBill);
   const deleteBill = useMutation(api.bills.deleteBill);
-  const [billsDueDate, setBillsDueDate] = useState<Dayjs | null>(dayjs());
-  const [eBillsDueDate, setEBillsDueDate] = useState<Dayjs | null>(dayjs());
+  const theme = useMantineTheme();
   const [openModal, setOpenModal] = useState(false);
   const [editingBill, setEditingBill] = useState<any | null>(null);
-  const [newBill, setNewBill] = useState<Omit<any, '_id'>>({
-    name: '',
+  const [newBill, setNewBill] = useState<Omit<any, "_id">>({
+    name: "",
     amount: 0,
-    dueDate: dayjs(),
-    status: 'Unpaid',
+    dueDate: new Date().toLocaleDateString("en-US", {
+      month: "long",
+      day: "numeric",
+    }),
+    status: "Unpaid",
   });
 
   const handleOpenModal = () => {
     setEditingBill(null);
-    setNewBill({ name: '', amount: 0, dueDate: dayjs(), status: 'Unpaid' });
+    setNewBill({
+      name: "",
+      amount: 0,
+      dueDate: new Date().toLocaleDateString("en-US", {
+        month: "long",
+        day: "numeric",
+      }),
+      status: "Unpaid",
+    });
     setOpenModal(true);
   };
 
@@ -72,8 +64,7 @@ const Bills = ({ isLoading }: Loading) => {
     }
   };
 
-  const handleStatusChange = (e: SelectChangeEvent<string>) => {
-    const value = e.target.value;
+  const handleStatusChange = (value: string | null) => {
     if (editingBill) {
       setEditingBill({ ...editingBill, status: value });
     } else {
@@ -84,24 +75,18 @@ const Bills = ({ isLoading }: Loading) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (editingBill) {
-
-      if(!eBillsDueDate) throw new ConvexError("Due date error");
-
       await updateBill({
         id: editingBill._id,
         name: editingBill.name,
         amount: Number(editingBill.amount),
-        dueDate: eBillsDueDate?.format('MMMM D'),
+        dueDate: editingBill.dueDate,
         status: editingBill.status,
       });
     } else {
-
-      if (!billsDueDate) throw new ConvexError("Due date error");
-
       await createBill({
         name: newBill.name,
         amount: Number(newBill.amount),
-        dueDate: billsDueDate?.format('MMMM D'),
+        dueDate: newBill.dueDate,
         status: newBill.status,
       });
     }
@@ -120,223 +105,162 @@ const Bills = ({ isLoading }: Loading) => {
     }
   };
 
+  const getStatusColor = (status: string) => {
+    return status === "Paid" ? "green" : "red";
+  };
+
   return (
     <DashboardCard
       title="Bills To Pay"
       action={
-        <Box>
-          <IconButton color="primary" onClick={handleOpenModal}>
-            <AddIcon />
-          </IconButton>
-        </Box>
+        <ActionIcon
+          size="lg"
+          variant="filled"
+          color="blue"
+          onClick={handleOpenModal}
+        >
+          <IconPlus size={20} />
+        </ActionIcon>
       }
     >
       <>
-        <Box sx={{ overflow: 'auto', maxWidth: '80vw' }}>
-          <Table
-            aria-label="simple table"
-            sx={{
-              whiteSpace: 'nowrap',
-              mt: 2,
-            }}
-          >
-            <TableHead>
-              <TableRow>
-                <TableCell>
-                  <Typography variant="subtitle2" fontWeight={600}>
+        <div style={{ overflow: "auto", maxWidth: "80vw" }}>
+          <Table>
+            <Table.Thead>
+              <Table.Tr>
+                <Table.Th>
+                  <Text size="sm" fw={600}>
                     Name
-                  </Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography variant="subtitle2" fontWeight={600}>
+                  </Text>
+                </Table.Th>
+                <Table.Th>
+                  <Text size="sm" fw={600}>
                     Amount
-                  </Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography variant="subtitle2" fontWeight={600}>
+                  </Text>
+                </Table.Th>
+                <Table.Th>
+                  <Text size="sm" fw={600}>
                     Status
-                  </Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography variant="subtitle2" fontWeight={600}>
+                  </Text>
+                </Table.Th>
+                <Table.Th>
+                  <Text size="sm" fw={600}>
                     Due Date
-                  </Typography>
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
+                  </Text>
+                </Table.Th>
+              </Table.Tr>
+            </Table.Thead>
+            <Table.Tbody>
               {isLoading || !bills
                 ? Array.from(new Array(5)).map((_, index) => (
-                    <TableRow key={index}>
-                      <TableCell>
-                        <Skeleton variant="text" />
-                      </TableCell>
-                      <TableCell>
-                        <Skeleton variant="text" />
-                      </TableCell>
-                      <TableCell>
-                        <Skeleton
-                          variant="rectangular"
-                          width={80}
-                          height={30}
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <Skeleton
-                          variant="rectangular"
-                          width={80}
-                          height={30}
-                        />
-                      </TableCell>
-                    </TableRow>
+                    <Table.Tr key={index}>
+                      <Table.Td>
+                        <Skeleton height={20} />
+                      </Table.Td>
+                      <Table.Td>
+                        <Skeleton height={20} />
+                      </Table.Td>
+                      <Table.Td>
+                        <Skeleton height={30} width={80} />
+                      </Table.Td>
+                      <Table.Td>
+                        <Skeleton height={30} width={80} />
+                      </Table.Td>
+                    </Table.Tr>
                   ))
                 : bills.map((bill) => (
-                    <TableRow
+                    <Table.Tr
                       key={bill._id}
                       onClick={() => handleBillClick(bill)}
-                      style={{ cursor: 'pointer' }}
+                      style={{ cursor: "pointer" }}
                     >
-                      <TableCell>
-                        <Typography variant="subtitle2" fontWeight={600}>
+                      <Table.Td>
+                        <Text size="sm" fw={600}>
                           {bill.name}
-                        </Typography>
-                      </TableCell>
-                      <TableCell>
-                        <Typography
-                          color="textSecondary"
-                          variant="subtitle2"
-                          fontWeight={400}
-                        >
+                        </Text>
+                      </Table.Td>
+                      <Table.Td>
+                        <Text size="sm" c="dimmed">
                           ₱{bill.amount.toFixed(2)}
-                        </Typography>
-                      </TableCell>
-                      <TableCell>
-                        <Chip
-                          sx={{
-                            px: '4px',
-                            backgroundColor: (theme) =>
-                              bill.status === 'Paid'
-                                ? theme.palette.success.light
-                                : theme.palette.error.light,
-                            color: (theme) =>
-                              bill.status === 'Paid'
-                                ? theme.palette.success.main
-                                : theme.palette.error.main,
-                          }}
-                          size="small"
-                          label={bill.status}
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <Chip
-                          sx={{
-                            px: '4px',
-                            backgroundColor: (theme) =>
-                              theme.palette.primary.light,
-                            color: (theme) => theme.palette.primary.main,
-                          }}
-                          size="small"
-                          label={bill.dueDate}
-                        />
-                      </TableCell>
-                    </TableRow>
+                        </Text>
+                      </Table.Td>
+                      <Table.Td>
+                        <Badge
+                          color={getStatusColor(bill.status)}
+                          variant="light"
+                          size="sm"
+                        >
+                          {bill.status}
+                        </Badge>
+                      </Table.Td>
+                      <Table.Td>
+                        <Badge color="blue" variant="light" size="sm">
+                          {bill.dueDate}
+                        </Badge>
+                      </Table.Td>
+                    </Table.Tr>
                   ))}
-            </TableBody>
+            </Table.Tbody>
           </Table>
-        </Box>
+        </div>
         <Modal
-          open={openModal}
+          opened={openModal}
           onClose={handleCloseModal}
-          aria-labelledby="add-edit-bill-modal"
-          aria-describedby="modal-to-add-or-edit-bill"
+          title={editingBill ? "Edit Bill" : "Add a Bill"}
+          size="sm"
+          centered
         >
-          <Box
-            sx={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              width: { xs: '90%', sm: 400 },
-              bgcolor: 'background.paper',
-              boxShadow: 24,
-              borderRadius: 5,
-              p: 4,
-            }}
-          >
-            <Typography variant="h6" component="h2" gutterBottom>
-              {editingBill ? 'Edit Bill' : 'Add a Bill'}
-            </Typography>
-            <form onSubmit={handleSubmit}>
-              <TextField
-                fullWidth
+          <form onSubmit={handleSubmit}>
+            <Stack gap="md">
+              <TextInput
                 label="Bill Name"
                 name="name"
                 value={editingBill ? editingBill.name : newBill.name}
                 onChange={handleInputChange}
-                margin="normal"
+                required
               />
-              <TextField
-                fullWidth
+              <TextInput
                 label="Amount"
                 name="amount"
                 type="number"
                 value={editingBill ? editingBill.amount : newBill.amount}
                 onChange={handleInputChange}
-                margin="normal"
-                style={{ marginBottom: '20px' }}
+                required
               />
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DatePicker
-                  label="Due Date"
-                  value={editingBill ? eBillsDueDate : billsDueDate}
-                  format="MMMM D"
-                  onChange={(newValue) => {
-                    if (editingBill) {
-                      setEBillsDueDate(newValue);
-                    } else {
-                      setBillsDueDate(newValue);
-                    }
-                  }}
-                  slotProps={{
-                    textField: {
-                      fullWidth: true,
-                      sx: {
-                        '& .MuiOutlinedInput-notchedOutline': {
-                          borderColor: 'rgba(0, 0, 0, 0.2)',
-                        },
-                      },
-                    },
-                  }}
-                />
-              </LocalizationProvider>
-              <FormControl fullWidth margin="normal">
-                <InputLabel id="status-label">Status</InputLabel>
-                <Select
-                  labelId="status-label"
-                  value={editingBill ? editingBill.status : newBill.status}
-                  onChange={handleStatusChange}
-                  label="Status"
-                >
-                  <MenuItem value="Unpaid">Unpaid</MenuItem>
-                  <MenuItem value="Paid">Paid</MenuItem>
-                </Select>
-              </FormControl>
-              <Box display="flex" justifyContent="space-between" mt={2}>
+              <TextInput
+                label="Due Date"
+                name="dueDate"
+                value={editingBill ? editingBill.dueDate : newBill.dueDate}
+                onChange={handleInputChange}
+                placeholder="e.g., January 15"
+                required
+              />
+              <Select
+                label="Status"
+                value={editingBill ? editingBill.status : newBill.status}
+                onChange={handleStatusChange}
+                data={[
+                  { value: "Unpaid", label: "Unpaid" },
+                  { value: "Paid", label: "Paid" },
+                ]}
+                required
+              />
+              <Group justify="space-between">
                 {editingBill && (
                   <Button
-                    variant="contained"
-                    color="error"
+                    variant="filled"
+                    color="red"
                     onClick={handleDeleteBill}
                   >
                     Delete Bill
                   </Button>
                 )}
-                <Button type="submit" variant="contained" color="primary">
-                  {editingBill ? 'Update Bill' : 'Add Bill'}
+                <Button type="submit" color="blue">
+                  {editingBill ? "Update Bill" : "Add Bill"}
                 </Button>
-              </Box>
-            </form>
-          </Box>
+              </Group>
+            </Stack>
+          </form>
         </Modal>
       </>
     </DashboardCard>

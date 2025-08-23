@@ -1,89 +1,91 @@
-import { useQuery } from 'convex/react';
-import { api } from '../../../../../convex/_generated/api';
-import { Typography, Skeleton } from '@mui/material';
+import { useQuery } from "convex/react";
+import { api } from "../../../../../convex/_generated/api";
 import {
-  Timeline,
-  TimelineItem,
-  TimelineOppositeContent,
-  TimelineSeparator,
-  TimelineDot,
-  TimelineConnector,
-  TimelineContent,
-  timelineOppositeContentClasses,
-} from '@mui/lab';
-import DashboardCard from '../shared/DashboardCard';
-import { formatAmount } from '../../utilities/utils'
-import type { Loading } from '../../types/loading';
-import Link from 'next/link';
+  Text,
+  Skeleton,
+  Stack,
+  Group,
+  ActionIcon,
+  useMantineTheme,
+} from "@mantine/core";
+import { IconCircle } from "@tabler/icons-react";
+import DashboardCard from "../shared/DashboardCard";
+import { formatAmount } from "../../utilities/utils";
+import type { Loading } from "../../types/loading";
+import Link from "next/link";
 
 const RecentDeposits = ({ isLoading }: Loading) => {
   const deposits = useQuery(api.deposits.listRecentDeposits);
+  const theme = useMantineTheme();
 
   const LoadingSkeleton = () => (
-    <>
+    <Stack gap="md">
       {[...Array(5)].map((_, index) => (
-        <TimelineItem key={index}>
-          <TimelineOppositeContent>
-            <Skeleton variant="text" width={80} />
-          </TimelineOppositeContent>
-          <TimelineSeparator>
-            <TimelineDot color="success" variant="outlined" />
-            <TimelineConnector />
-          </TimelineSeparator>
-          <TimelineContent>
-            <Skeleton variant="text" width={150} />
-            <Skeleton variant="text" width={100} />
-          </TimelineContent>
-        </TimelineItem>
+        <Group key={index} gap="md" align="flex-start">
+          <Skeleton height={12} width={80} />
+          <ActionIcon size="sm" variant="outline" color="green" disabled>
+            <IconCircle size={8} />
+          </ActionIcon>
+          <Stack gap="xs" style={{ flex: 1 }}>
+            <Skeleton height={16} width={150} />
+            <Skeleton height={14} width={100} />
+          </Stack>
+        </Group>
       ))}
-    </>
+    </Stack>
   );
-  
+
   return (
     <>
-    <Link href='deposit/history' style={{ textDecoration: 'none' }}>
-    <DashboardCard title="Recent Deposits" >
-      <Timeline
-        className="theme-timeline"
-        nonce={undefined}
-        onResize={undefined}
-        onResizeCapture={undefined}
-        sx={{
-          p: 0,
-          mb: '-40px',
-          marginLeft: '-12%',
-          '& .MuiTimelineConnector-root': {
-            width: '1px',
-            backgroundColor: '#efefef',
-          },
-          [`& .${timelineOppositeContentClasses.root}`]: {
-            paddingLeft: 0,
-
-          },
-        }}
-      >
-        {isLoading || !deposits ? (
-          <LoadingSkeleton />
-        ) : (
-          deposits.map((deposit: any) => (
-            <TimelineItem key={deposit._id}>
-              <TimelineOppositeContent>{deposit.depositDate}</TimelineOppositeContent>
-              <TimelineSeparator>
-                <TimelineDot color="success" variant="outlined" />
-                <TimelineConnector />
-              </TimelineSeparator>
-              <TimelineContent>
-                <Typography fontWeight="600">{deposit.depositNote} - {formatAmount(deposit.depositAmount)}</Typography>
-                <Typography>
-                  {deposit.name}
-                </Typography>
-              </TimelineContent>
-            </TimelineItem>
-          ))
-        )}
-      </Timeline>
-    </DashboardCard>
-    </Link>
+      <Link href="deposit/history" style={{ textDecoration: "none" }}>
+        <DashboardCard title="Recent Deposits">
+          <Stack gap="md">
+            {isLoading || !deposits ? (
+              <LoadingSkeleton />
+            ) : (
+              deposits.map((deposit: any, index: number) => (
+                <Group key={deposit._id} gap="md" align="flex-start">
+                  <Text size="sm" c="dimmed" style={{ minWidth: "80px" }}>
+                    {deposit.depositDate}
+                  </Text>
+                  <Stack gap={0} align="center">
+                    <ActionIcon
+                      size="sm"
+                      variant="outline"
+                      color="green"
+                      style={{
+                        borderColor: theme.colors.green[4],
+                        color: theme.colors.green[6],
+                      }}
+                    >
+                      <IconCircle size={8} />
+                    </ActionIcon>
+                    {index < deposits.length - 1 && (
+                      <div
+                        style={{
+                          width: "1px",
+                          height: "20px",
+                          backgroundColor: theme.colors.gray[2],
+                          marginTop: "4px",
+                        }}
+                      />
+                    )}
+                  </Stack>
+                  <Stack gap="xs" style={{ flex: 1 }}>
+                    <Text size="sm" fw={600}>
+                      {deposit.depositNote} -{" "}
+                      {formatAmount(deposit.depositAmount)}
+                    </Text>
+                    <Text size="sm" c="dimmed">
+                      {deposit.name}
+                    </Text>
+                  </Stack>
+                </Group>
+              ))
+            )}
+          </Stack>
+        </DashboardCard>
+      </Link>
     </>
   );
 };

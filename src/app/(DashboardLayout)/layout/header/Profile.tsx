@@ -1,94 +1,58 @@
 import React, { useState } from "react";
 import Link from "next/link";
-import {
-  Avatar,
-  Box,
-  Menu,
-  Button,
-  IconButton,
-  MenuItem,
-  ListItemIcon,
-  ListItemText,
-} from "@mui/material";
-
+import { Menu, Button, ActionIcon, Stack, Text } from "@mantine/core";
 import { IconListCheck, IconMail, IconUser } from "@tabler/icons-react";
 import { SignOutButton, UserButton, OrganizationSwitcher } from "@clerk/nextjs";
 
 const Profile = () => {
-  const [anchorEl2, setAnchorEl2] = useState(null);
-  const handleClick2 = (event: any) => {
-    setAnchorEl2(event.currentTarget);
-  };
-  const handleClose2 = () => {
-    setAnchorEl2(null);
-  };
+  const [opened, setOpened] = useState(false);
 
   return (
-    <Box>
-      <IconButton
-        size="large"
-        aria-label="show 11 new notifications"
-        color="inherit"
-        aria-controls="msgs-menu"
-        aria-haspopup="true"
-        sx={{
-          ...(typeof anchorEl2 === "object" && {
-            color: "primary.main",
-          }),
-        }}
-        // onClick={handleClick2}
-      >
-        <UserButton />
-      </IconButton>
-      {/* ------------------------------------------- */}
-      {/* Message Dropdown */}
-      {/* ------------------------------------------- */}
-      <Menu
-        id="msgs-menu"
-        anchorEl={anchorEl2}
-        keepMounted
-        open={Boolean(anchorEl2)}
-        onClose={handleClose2}
-        anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-        transformOrigin={{ horizontal: "right", vertical: "top" }}
-        sx={{
-          "& .MuiMenu-paper": {
-            width: "200px",
-          },
-        }}
-      >
-        <MenuItem>
-          <ListItemIcon>
-            <IconUser width={20} />
-          </ListItemIcon>
-          <ListItemText>My Profile</ListItemText>
-        </MenuItem>
-        <MenuItem>
-          <ListItemIcon>
-            <IconMail width={20} />
-          </ListItemIcon>
-          <ListItemText>My Account</ListItemText>
-        </MenuItem>
-        <MenuItem>
-          <ListItemIcon>
-            <IconListCheck width={20} />
-          </ListItemIcon>
-          <ListItemText>My Tasks</ListItemText>
-        </MenuItem>
-        <Box mt={1} py={1} px={2}>
+    <Menu
+      opened={opened}
+      onChange={setOpened}
+      width={200}
+      position="bottom-end"
+      shadow="md"
+    >
+      <Menu.Target>
+        <ActionIcon
+          size="lg"
+          variant="subtle"
+          color="gray"
+          aria-label="profile menu"
+        >
+          <UserButton />
+        </ActionIcon>
+      </Menu.Target>
+
+      <Menu.Dropdown>
+        <Menu.Item leftSection={<IconUser size={16} />}>
+          <Text size="sm">My Profile</Text>
+        </Menu.Item>
+        <Menu.Item leftSection={<IconMail size={16} />}>
+          <Text size="sm">My Account</Text>
+        </Menu.Item>
+        <Menu.Item leftSection={<IconListCheck size={16} />}>
+          <Text size="sm">My Tasks</Text>
+        </Menu.Item>
+
+        <Menu.Divider />
+
+        <Stack p="xs">
           <Button
-            href="/authentication/login"
-            variant="outlined"
-            color="primary"
             component={Link}
+            href="/authentication/login"
+            variant="outline"
+            color="blue"
             fullWidth
+            size="sm"
           >
             <SignOutButton />
           </Button>
-          
-        </Box>
-      </Menu>
-    </Box>
+        </Stack>
+      </Menu.Dropdown>
+    </Menu>
   );
 };
 

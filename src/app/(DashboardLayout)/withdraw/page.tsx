@@ -1,51 +1,44 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
+import { useState } from "react";
 import {
-  Grid,
-  Box,
-  TextField,
+  SimpleGrid,
+  TextInput,
   Button,
-  Typography,
+  Text,
   Paper,
-  InputAdornment,
   Container,
-  useMediaQuery,
-  Theme,
-  IconButton,
-} from '@mui/material';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import dayjs, { Dayjs } from 'dayjs';
-import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
-import { api } from '../../../../convex/_generated/api';
-import { useMutation, useQuery } from 'convex/react';
-import { useUser } from '@clerk/clerk-react';
-import { calculateAmount, formatDate } from '../utilities/utils';
-import Link from 'next/link';
-import {IconTableMinus} from '@tabler/icons-react';
-
-dayjs.extend(isSameOrBefore);
+  ActionIcon,
+  Stack,
+  Group,
+  useMantineTheme,
+} from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
+import PageContainer from "@/app/(DashboardLayout)/components/container/PageContainer";
+import { api } from "../../../../convex/_generated/api";
+import { useMutation, useQuery } from "convex/react";
+import { useUser } from "@clerk/clerk-react";
+import { calculateAmount, formatDate } from "../utilities/utils";
+import Link from "next/link";
+import { IconTableMinus } from "@tabler/icons-react";
 
 const WithdrawPage = () => {
   const { user, isLoaded } = useUser();
+  const theme = useMantineTheme();
+  const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
   const createWithdraw = useMutation(api.withdraws.createWithdraw);
   const createBalance = useMutation(api.balances.createBalance);
   const [withdrawAmount, setWithdrawAmount] = useState<number>(0);
-  const [withdrawDate, setWithdrawDate] = useState<Dayjs | null>(dayjs());
-  const [note, setNote] = useState<string>('');
+  const [withdrawDate, setWithdrawDate] = useState(
+    new Date().toLocaleDateString("en-US", { month: "long", day: "numeric" })
+  );
+  const [note, setNote] = useState<string>("");
   const currentBalanceData = useQuery(api.balances.getCurrentBalance);
 
   let currentBalance = 0;
   if (currentBalanceData) {
     currentBalance = currentBalanceData.balanceAmount;
   }
-
-  const isMobile = useMediaQuery((theme: Theme) =>
-    theme.breakpoints.down('sm')
-  );
 
   const totalAmount = withdrawAmount;
 
@@ -54,191 +47,143 @@ const WithdrawPage = () => {
 
     if (withdrawDate) {
       createWithdraw({
-        name: user?.firstName ?? 'User',
+        name: user?.firstName ?? "User",
         withdrawAmount: withdrawAmount,
-        withdrawDate: formatDate(withdrawDate),
+        withdrawDate: withdrawDate,
         withdrawNote: note,
       });
 
       createBalance({
         balanceAmount: Number(currentBalance) - withdrawAmount,
-        balanceDate: formatDate(withdrawDate),
+        balanceDate: withdrawDate,
       });
     } else {
-      console.error('No date selected');
+      console.error("No date selected");
     }
   };
 
   return (
     <PageContainer title="Withdraw" description="Withdraw funds">
-      <Container maxWidth="sm">
-        <Box
-          sx={{
-            transform: isMobile ? 'scale(0.9)' : 'none',
-            transformOrigin: 'top center',
+      <Container size="sm">
+        <div
+          style={{
+            transform: isMobile ? "scale(0.9)" : "none",
+            transformOrigin: "top center",
           }}
         >
           <Paper
-            elevation={3}
-            sx={{
-              p: 4,
-              marginX: -3,
-              bgcolor: 'background.paper',
-              borderRadius: 2,
-              minHeight: '70vh',
-              display: 'flex',
-              flexDirection: 'column',
-              width: 'screen',
+            shadow="md"
+            p="xl"
+            style={{
+              minHeight: "70vh",
+              display: "flex",
+              flexDirection: "column",
             }}
           >
-
-            <div style={{ display: 'flex', justifyContent: 'space-between'}}>
+            <Group justify="space-between" mb="lg">
               <div>
-                <Typography variant="h5" gutterBottom>
+                <Text size="xl" fw={600} mb="xs">
                   Withdraw Funds
-                </Typography>
-                <Typography variant="body2" color="textSecondary" paragraph>
+                </Text>
+                <Text size="sm" c="dimmed">
                   Select a date and enter the withdrawal details below.
-                </Typography>
+                </Text>
               </div>
 
-              <Box>
-                <Link href='/withdraw/history'>
-                <IconButton color="primary">
-                  <IconTableMinus />
-                </IconButton>
-                </Link>
-              </Box>
-            </div>
+              <ActionIcon
+                component={Link}
+                href="/withdraw/history"
+                size="lg"
+                variant="filled"
+                color="blue"
+              >
+                <IconTableMinus size={20} />
+              </ActionIcon>
+            </Group>
+
             <form
               onSubmit={handleSubmit}
               style={{
                 flexGrow: 1,
-                display: 'flex',
-                flexDirection: 'column',
-                marginTop: '50px',
+                display: "flex",
+                flexDirection: "column",
+                marginTop: "50px",
               }}
             >
-              <Box display="flex" flexDirection="column" gap={4} flexGrow={1}>
-                <TextField
-                  fullWidth
+              <Stack gap="lg" style={{ flexGrow: 1 }}>
+                <TextInput
                   label="Amount"
-                  type="text"
+                  type="number"
                   value={withdrawAmount}
                   onChange={(e) => setWithdrawAmount(Number(e.target.value))}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">₱</InputAdornment>
-                    ),
-                  }}
-                  variant="outlined"
-                  sx={{
-                    '& .MuiOutlinedInput-notchedOutline': {
-                      borderColor: 'rgba(0, 0, 0, 0.2)',
-                    },
-                  }}
+                  leftSection="₱"
+                  required
                 />
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DatePicker
-                    label="Withdrawal Date"
-                    format="MMMM D"
-                    value={withdrawDate}
-                    onChange={(newDate) => setWithdrawDate(newDate)}
-                    slotProps={{
-                      textField: {
-                        fullWidth: true,
-                        sx: {
-                          '& .MuiOutlinedInput-notchedOutline': {
-                            borderColor: 'rgba(0, 0, 0, 0.2)',
-                          },
-                        },
-                      },
-                    }}
-                  />
-                </LocalizationProvider>
-                <TextField
-                  fullWidth
+
+                <TextInput
+                  label="Withdrawal Date"
+                  value={withdrawDate}
+                  onChange={(e) => setWithdrawDate(e.target.value)}
+                  placeholder="e.g., January 15"
+                  required
+                />
+
+                <TextInput
                   label="Note"
                   multiline
                   rows={4}
                   value={note}
                   onChange={(e) => setNote(e.target.value)}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start"></InputAdornment>
-                    ),
-                  }}
-                  variant="outlined"
-                  sx={{
-                    '& .MuiOutlinedInput-notchedOutline': {
-                      borderColor: 'rgba(0, 0, 0, 0.2)',
-                    },
-                  }}
                 />
 
-                <Grid container spacing={2} justifyContent="space-between">
-                  <Grid item xs={6}>
-                    <Typography variant="body2" color="textSecondary">
+                <SimpleGrid cols={2} gap="md">
+                  <div>
+                    <Text size="sm" c="dimmed">
                       Current Balance:
-                    </Typography>
-                    <Typography variant="h4" fontWeight="medium" align="left">
+                    </Text>
+                    <Text size="xl" fw={500}>
                       ₱{currentBalance}
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography
-                      variant="body2"
-                      color="textSecondary"
-                      align="right"
-                    >
+                    </Text>
+                  </div>
+                  <div>
+                    <Text size="sm" c="dimmed" ta="right">
                       New Balance:
-                    </Typography>
-                    <Typography variant="h4" fontWeight="bold" align="right">
+                    </Text>
+                    <Text size="xl" fw={700} ta="right">
                       ₱{currentBalance - totalAmount}
-                    </Typography>
-                  </Grid>
-                </Grid>
-                <Box>
-                  <Typography variant="body2">
-                    Amount to be withdrawn:
-                  </Typography>
-                  <Typography variant="h5" fontWeight="bold" color="error.main">
+                    </Text>
+                  </div>
+                </SimpleGrid>
+
+                <div>
+                  <Text size="sm">Amount to be withdrawn:</Text>
+                  <Text size="lg" fw={700} c="red">
                     -₱{withdrawAmount.toFixed(2)}
-                  </Typography>
-                </Box>
-                <Box display="flex" justifyContent="flex-end" mt={2} gap={2}>
+                  </Text>
+                </div>
+
+                <Group justify="flex-end" gap="md" mt="lg">
                   <Button
                     variant="outlined"
-                    size={isMobile ? 'medium' : 'large'}
-                    sx={{
-                      color: 'black',
-                      borderColor: 'black',
-                      '&:hover': {
-                        borderColor: 'black',
-                        backgroundColor: 'rgba(0, 0, 0, 0.04)',
-                      },
-                    }}
+                    size={isMobile ? "md" : "lg"}
+                    color="gray"
                   >
                     Cancel
                   </Button>
                   <Button
                     type="submit"
-                    variant="contained"
-                    color="primary"
-                    size={isMobile ? 'medium' : 'large'}
+                    variant="filled"
+                    color="blue"
+                    size={isMobile ? "md" : "lg"}
                     disabled={totalAmount > currentBalance}
-                    sx={{
-                      bgcolor: 'black',
-                      '&:hover': { bgcolor: '#424242' },
-                    }}
                   >
                     Withdraw
                   </Button>
-                </Box>
-              </Box>
+                </Group>
+              </Stack>
             </form>
           </Paper>
-        </Box>
+        </div>
       </Container>
     </PageContainer>
   );

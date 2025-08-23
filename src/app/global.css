@@ -1,6 +1,18 @@
+/* Reset and base styles for Mantine */
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 /* Custom styles for Clerk components */
 .custom-button-class {
-  background-color: #5D87FF !important;
+  background-color: #5d87ff !important;
   color: white !important;
   padding: 10px 14px !important;
   font-size: 1rem !important;
@@ -12,8 +24,31 @@
 .custom-input-class {
   padding: 10px 14px !important;
   font-size: 1rem !important;
-  border: 1px solid #DFE5EF !important;
+  border: 1px solid #dfe5ef !important;
   border-radius: 4px !important;
+}
+
+/* Mantine compatibility overrides */
+.mantine-Text-root {
+  margin: 0;
+}
+
+.mantine-Paper-root {
+  border-radius: 7px;
+}
+
+/* Sidebar scrollbar styles */
+.sidebar-scrollbar::-webkit-scrollbar {
+  width: 7px;
+}
+
+.sidebar-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #e5eaef;
+  border-radius: 15px;
+}
+
+.sidebar-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 /* Add more custom styles as needed */

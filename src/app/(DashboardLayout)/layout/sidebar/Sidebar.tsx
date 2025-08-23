@@ -1,7 +1,8 @@
-import { useMediaQuery, Box, Drawer } from '@mui/material';
-import SidebarItems from './SidebarItems';
-import { Sidebar, Logo } from 'react-mui-sidebar';
-import BottomNavbar from '../bottomNavbar/BottomNavbar';
+import { Stack, useMantineTheme } from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
+import SidebarItems from "./SidebarItems";
+import BottomNavbar from "../bottomNavbar/BottomNavbar";
+import Logo from "../shared/logo/Logo";
 
 interface ItemType {
   isMobileSidebarOpen: boolean;
@@ -14,59 +15,47 @@ const MSidebar = ({
   onSidebarClose,
   isSidebarOpen,
 }: ItemType) => {
-  const lgUp = useMediaQuery((theme: any) => theme.breakpoints.up('lg'));
+  const theme = useMantineTheme();
+  const lgUp = useMediaQuery(`(min-width: ${theme.breakpoints.lg})`);
 
-  const sidebarWidth = '270px';
-
-  // Custom CSS for short scrollbar
-  const scrollbarStyles = {
-    '&::-webkit-scrollbar': {
-      width: '7px',
-    },
-    '&::-webkit-scrollbar-thumb': {
-      backgroundColor: '#eff2f7',
-      borderRadius: '15px',
-    },
-  };
+  const sidebarWidth = "270px";
 
   if (lgUp) {
     return (
-      <Box
-        sx={{
+      <Stack
+        style={{
           width: sidebarWidth,
           flexShrink: 0,
+          height: "100vh",
+          position: "fixed",
+          left: 0,
+          top: 0,
+          zIndex: 1000,
+          background: theme.white,
+          borderRight: `1px solid ${theme.colors.gray[2]}`,
+          overflowY: "auto",
+          overflowX: "hidden",
         }}
+        className="sidebar-scrollbar"
       >
         {/* Desktop sidebar content */}
-        <Drawer
-          anchor="left"
-          open={isSidebarOpen}
-          variant="permanent"
-          PaperProps={{
-            sx: {
-              boxSizing: 'border-box',
-              ...scrollbarStyles,
-            },
-          }}
-        >
-          <Box sx={{ height: '100%' }}>
-            <Sidebar
-              width={'270px'}
-              collapsewidth="80px"
-              open={isSidebarOpen}
-              themeColor="#5d87ff"
-              themeSecondaryColor="#49beff"
-              showProfile={false}
-            >
-              <Logo img="/images/logos/dark-logo-2.svg" />
+        <Stack style={{ height: "100%" }} gap={0}>
+          {/* Logo section */}
+          <Stack
+            p="md"
+            style={{
+              borderBottom: `1px solid ${theme.colors.gray[2]}`,
+            }}
+          >
+            <Logo />
+          </Stack>
 
-              <Box>
-                <SidebarItems />
-              </Box>
-            </Sidebar>
-          </Box>
-        </Drawer>
-      </Box>
+          {/* Navigation items */}
+          <Stack style={{ flex: 1 }} p="md">
+            <SidebarItems />
+          </Stack>
+        </Stack>
+      </Stack>
     );
   }
 

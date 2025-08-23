@@ -1,50 +1,44 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
+import { useState } from "react";
 import {
-  Grid,
-  Box,
-  TextField,
+  SimpleGrid,
+  TextInput,
   Button,
-  Typography,
+  Text,
   Paper,
-  InputAdornment,
   Container,
-  useMediaQuery,
-  Theme,
-  IconButton
-} from '@mui/material';
-import DashboardCard from '@/app/(DashboardLayout)/components/shared/DashboardCard';
-import { IconTablePlus } from '@tabler/icons-react'
-import { Add as AddIcon } from '@mui/icons-material';
-import { DateRangePicker } from '@mui/x-date-pickers-pro/DateRangePicker';
-import { SingleInputDateRangeField } from '@mui/x-date-pickers-pro/SingleInputDateRangeField';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import dayjs, { Dayjs } from 'dayjs';
-import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
-import { DateRange } from '@mui/x-date-pickers-pro';
-import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
-import { api } from '../../../../convex/_generated/api';
-import { useMutation, useQuery } from 'convex/react';
-import { useUser } from '@clerk/clerk-react';
-import { calculateAmount, formatDate } from '../utilities/utils';
-import Link from 'next/link';
-
-dayjs.extend(isSameOrBefore);
+  ActionIcon,
+  Stack,
+  Group,
+  useMantineTheme,
+} from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
+import DashboardCard from "@/app/(DashboardLayout)/components/shared/DashboardCard";
+import { IconTablePlus } from "@tabler/icons-react";
+import PageContainer from "@/app/(DashboardLayout)/components/container/PageContainer";
+import { api } from "../../../../convex/_generated/api";
+import { useMutation, useQuery } from "convex/react";
+import { useUser } from "@clerk/clerk-react";
+import { calculateAmount, formatDate } from "../utilities/utils";
+import Link from "next/link";
 
 const DepositPage = () => {
   const { user, isLoaded } = useUser();
+  const theme = useMantineTheme();
+  const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
   const createDeposit = useMutation(api.deposits.createDeposit);
   const createBalance = useMutation(api.balances.createBalance);
   const [depositAmount, setDepositAmount] = useState(
     Number(user?.unsafeMetadata.dailydeposit) || 0
   );
-  const [dateRange, setDateRange] = useState<[Dayjs | null, Dayjs | null]>([
-    dayjs(),
-    dayjs(),
-  ]);
-  const [note, setNote] = useState<string>('');
+  const [startDate, setStartDate] = useState(
+    new Date().toLocaleDateString("en-US", { month: "long", day: "numeric" })
+  );
+  const [endDate, setEndDate] = useState(
+    new Date().toLocaleDateString("en-US", { month: "long", day: "numeric" })
+  );
+  const [note, setNote] = useState<string>("");
   const currentBalanceData = useQuery(api.balances.getCurrentBalance);
 
   let currentBalance = 0;
@@ -52,221 +46,161 @@ const DepositPage = () => {
     currentBalance = currentBalanceData.balanceAmount;
   }
 
-  const isMobile = useMediaQuery((theme: Theme) =>
-    theme.breakpoints.down('sm')
-  );
-
-  const totalAmount = calculateAmount(depositAmount, dateRange);
+  // Simplified calculation - for now just use the deposit amount
+  const totalAmount = depositAmount;
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (dateRange[0]) {
-      const startDate = dayjs(dateRange[0]).startOf('day');
-      const endDate = dateRange[1]
-        ? dayjs(dateRange[1]).endOf('day')
-        : startDate.endOf('day');
-      let currentDate = startDate;
-
-      while (currentDate.isSameOrBefore(endDate, 'day')) {
-        createDeposit({
-          name: user?.firstName ?? 'User',
-          email: String(user?.emailAddresses) ?? 'User',
-          depositAmount: depositAmount,
-          depositDate: formatDate(currentDate),
-          depositNote: note,
-        });
-        currentDate = currentDate.add(1, 'day');
-      }
+    if (startDate) {
+      // For now, create a single deposit with the current date
+      createDeposit({
+        name: user?.firstName ?? "User",
+        email: String(user?.emailAddresses) ?? "User",
+        depositAmount: depositAmount,
+        depositDate: startDate,
+        depositNote: note,
+      });
 
       createBalance({
         balanceAmount: Number(currentBalance) + totalAmount,
-        balanceDate: formatDate(endDate),
+        balanceDate: startDate,
       });
     } else {
-      console.error('No date selected');
+      console.error("No date selected");
     }
   };
 
   return (
-    <PageContainer title="Deposit" 
-    
-    >
-      <Container maxWidth="sm">
-        <Box
-          sx={{
-            transform: isMobile ? 'scale(0.9)' : 'none',
-            transformOrigin: 'top center',
+    <PageContainer title="Deposit">
+      <Container size="sm">
+        <div
+          style={{
+            transform: isMobile ? "scale(0.9)" : "none",
+            transformOrigin: "top center",
           }}
         >
           <Paper
-            elevation={3}
-            sx={{
-              p: 4,
-              marginX: -3,
-              bgcolor: 'background.paper',
-              borderRadius: 2,
-              minHeight: '70vh',
-              display: 'flex',
-              flexDirection: 'column',
-              width: 'screen',
+            shadow="md"
+            p="xl"
+            style={{
+              minHeight: "70vh",
+              display: "flex",
+              flexDirection: "column",
             }}
           >
-            <div style={{ display: 'flex', justifyContent: 'space-between'}}>
+            <Group justify="space-between" mb="lg">
               <div>
-                <Typography variant="h5" gutterBottom>
+                <Text size="xl" fw={600} mb="xs">
                   Deposit Funds
-                </Typography>
-                <Typography variant="body2" color="textSecondary" paragraph>
+                </Text>
+                <Text size="sm" c="dimmed">
                   Select a date range and enter the deposit details below.
-                </Typography>
+                </Text>
               </div>
 
-              <Box>
-                <Link href='/deposit/history'>
-                <IconButton color="primary">
-                  <IconTablePlus />
-                </IconButton>
-                </Link>
-              </Box>
-            </div>
+              <ActionIcon
+                component={Link}
+                href="/deposit/history"
+                size="lg"
+                variant="filled"
+                color="blue"
+              >
+                <IconTablePlus size={20} />
+              </ActionIcon>
+            </Group>
+
             <form
               onSubmit={handleSubmit}
               style={{
                 flexGrow: 1,
-                display: 'flex',
-                flexDirection: 'column',
-                marginTop: '50px',
+                display: "flex",
+                flexDirection: "column",
+                marginTop: "50px",
               }}
             >
-              <Box display="flex" flexDirection="column" gap={4} flexGrow={1}>
-                <TextField
-                  fullWidth
+              <Stack gap="lg" style={{ flexGrow: 1 }}>
+                <TextInput
                   label="Amount"
-                  type="text"
+                  type="number"
                   value={depositAmount}
                   onChange={(e) => setDepositAmount(Number(e.target.value))}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">₱</InputAdornment>
-                    ),
-                  }}
-                  variant="outlined"
-                  sx={{
-                    '& .MuiOutlinedInput-notchedOutline': {
-                      borderColor: 'rgba(0, 0, 0, 0.2)',
-                    },
-                  }}
+                  leftSection="₱"
+                  required
                 />
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DateRangePicker
-                    slots={{ field: SingleInputDateRangeField }}
-                    format="MMMM D"
-                    label="Date Range"
-                    value={dateRange}
-                    onChange={(newValue: DateRange<Dayjs>) =>
-                      setDateRange(newValue)
-                    }
-                    slotProps={{
-                      field: {
-                        sx: {
-                          '& .MuiOutlinedInput-notchedOutline': {
-                            borderColor: 'rgba(0, 0, 0, 0.2)',
-                          },
-                        },
-                      },
-                      textField: {
-                        helperText: 'Select a single date or a date range',
-                      },
-                    }}
+
+                <SimpleGrid cols={2} gap="md">
+                  <TextInput
+                    label="Start Date"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                    placeholder="e.g., January 15"
+                    required
                   />
-                </LocalizationProvider>
-                <TextField
-                  fullWidth
+                  <TextInput
+                    label="End Date"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                    placeholder="e.g., January 20"
+                    required
+                  />
+                </SimpleGrid>
+
+                <TextInput
                   label="Note"
                   multiline
                   rows={4}
                   value={note}
                   onChange={(e) => setNote(e.target.value)}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start"></InputAdornment>
-                    ),
-                  }}
-                  variant="outlined"
-                  sx={{
-                    '& .MuiOutlinedInput-notchedOutline': {
-                      borderColor: 'rgba(0, 0, 0, 0.2)',
-                    },
-                  }}
                 />
 
-                <Grid container spacing={2} justifyContent="space-between">
-                  <Grid item xs={6}>
-                    <Typography variant="body2" color="textSecondary">
+                <SimpleGrid cols={2} gap="md">
+                  <div>
+                    <Text size="sm" c="dimmed">
                       Current Balance:
-                    </Typography>
-                    <Typography variant="h4" fontWeight="medium" align="left">
+                    </Text>
+                    <Text size="xl" fw={500}>
                       ₱{currentBalance}
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography
-                      variant="body2"
-                      color="textSecondary"
-                      align="right"
-                    >
+                    </Text>
+                  </div>
+                  <div>
+                    <Text size="sm" c="dimmed" ta="right">
                       New Balance:
-                    </Typography>
-                    <Typography variant="h4" fontWeight="bold" align="right">
+                    </Text>
+                    <Text size="xl" fw={700} ta="right">
                       ₱{currentBalance + totalAmount}
-                    </Typography>
-                  </Grid>
-                </Grid>
-                <Box>
-                  <Typography variant="body2">
-                    Total Amount to be added:
-                  </Typography>
-                  <Typography
-                    variant="h5"
-                    fontWeight="bold"
-                    color="success.main"
-                  >
+                    </Text>
+                  </div>
+                </SimpleGrid>
+
+                <div>
+                  <Text size="sm">Total Amount to be added:</Text>
+                  <Text size="lg" fw={700} c="green">
                     +₱{totalAmount.toFixed(2)}
-                  </Typography>
-                </Box>
-                <Box display="flex" justifyContent="flex-end" mt={2} gap={2}>
+                  </Text>
+                </div>
+
+                <Group justify="flex-end" gap="md" mt="lg">
                   <Button
                     variant="outlined"
-                    size={isMobile ? 'medium' : 'large'}
-                    sx={{
-                      color: 'black',
-                      borderColor: 'black',
-                      '&:hover': {
-                        borderColor: 'black',
-                        backgroundColor: 'rgba(0, 0, 0, 0.04)',
-                      },
-                    }}
+                    size={isMobile ? "md" : "lg"}
+                    color="gray"
                   >
                     Cancel
                   </Button>
                   <Button
                     type="submit"
-                    variant="contained"
-                    color="primary"
-                    size={isMobile ? 'medium' : 'large'}
-                    sx={{
-                      bgcolor: 'black',
-                      '&:hover': { bgcolor: '#424242' },
-                    }}
+                    variant="filled"
+                    color="blue"
+                    size={isMobile ? "md" : "lg"}
                   >
                     Deposit
                   </Button>
-                </Box>
-              </Box>
+                </Group>
+              </Stack>
             </form>
           </Paper>
-        </Box>
+        </div>
       </Container>
     </PageContainer>
   );

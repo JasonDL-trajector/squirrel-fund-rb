@@ -1,14 +1,5 @@
 import React from "react";
-// mui imports
-import {
-  ListItemIcon,
-  ListItem,
-  List,
-  styled,
-  ListItemText,
-  useTheme,
-  ListItemButton,
-} from "@mui/material";
+import { NavLink, useMantineTheme } from "@mantine/core";
 import Link from "next/link";
 
 type NavGroup = {
@@ -32,60 +23,24 @@ interface ItemType {
 
 const NavItem = ({ item, level, pathDirect, onClick }: ItemType) => {
   const Icon = item.icon;
-  const theme = useTheme();
+  const theme = useMantineTheme();
   const itemIcon = <Icon stroke={1.5} size="1.3rem" />;
 
-  const ListItemStyled = styled(ListItem)(() => ({
-    padding: 0,
-    ".MuiButtonBase-root": {
-      whiteSpace: "nowrap",
-      marginBottom: "2px",
-      padding: "8px 10px",
-      borderRadius: "8px",
-      backgroundColor: level > 1 ? "transparent !important" : "inherit",
-      color: theme.palette.text.secondary,
-      paddingLeft: "10px",
-      "&:hover": {
-        backgroundColor: theme.palette.primary.light,
-        color: theme.palette.primary.main,
-      },
-      "&.Mui-selected": {
-        color: "white",
-        backgroundColor: theme.palette.primary.main,
-        "&:hover": {
-          backgroundColor: theme.palette.primary.main,
-          color: "white",
-        },
-      },
-    },
-  }));
+  const isActive = pathDirect === item.href;
 
   return (
-    <List component="div" disablePadding key={item.id}>
-      <ListItemStyled>
-        <ListItemButton
-          component={Link}
-          href={item.href}
-          disabled={item.disabled}
-          selected={pathDirect === item.href}
-          target={item.external ? "_blank" : ""}
-          onClick={onClick}
-        >
-          <ListItemIcon
-            sx={{
-              minWidth: "36px",
-              p: "3px 0",
-              color: "inherit",
-            }}
-          >
-            {itemIcon}
-          </ListItemIcon>
-          <ListItemText>
-            <>{item.title}</>
-          </ListItemText>
-        </ListItemButton>
-      </ListItemStyled>
-    </List>
+    <NavLink
+      component={Link}
+      href={item.href}
+      label={item.title}
+      leftSection={itemIcon}
+      active={isActive}
+      disabled={item.disabled}
+      onClick={onClick}
+      variant="filled"
+      color={isActive ? "blue" : "gray"}
+      mb="xs"
+    />
   );
 };
 

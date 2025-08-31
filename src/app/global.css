@@ -1,54 +1,62 @@
-/* Reset and base styles for Mantine */
-* {
-  box-sizing: border-box;
-}
+/* Reset and base styles */
+* { box-sizing: border-box; }
 
-html,
-body {
+html, body {
   height: 100%;
   margin: 0;
   padding: 0;
 }
 
-/* Custom styles for Clerk components */
-.custom-button-class {
-  background-color: #5d87ff !important;
-  color: white !important;
-  padding: 10px 14px !important;
-  font-size: 1rem !important;
-  font-weight: 500 !important;
-  border-radius: 4px !important;
-  text-transform: none !important;
+/* Apple-like typography rendering */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+  background: #F5F5F7;
+  color: #1D1D1F;
 }
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background: #000000;
+    color: #F5F5F7;
+  }
+}
+
+/* Clerk component refinements (Apple accent + rounded) */
+.custom-button-class {
+  background-color: #0A84FF !important;
+  color: white !important;
+  padding: 10px 16px !important;
+  font-size: 1rem !important;
+  font-weight: 600 !important;
+  border-radius: 10px !important;
+  text-transform: none !important;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.04) !important;
+  transition: transform 120ms ease, box-shadow 150ms ease !important;
+}
+.custom-button-class:active { transform: translateY(1px); }
 
 .custom-input-class {
   padding: 10px 14px !important;
   font-size: 1rem !important;
-  border: 1px solid #dfe5ef !important;
-  border-radius: 4px !important;
+  border: 1px solid #E5E5EA !important;
+  border-radius: 10px !important;
+  background: white !important;
 }
 
 /* Mantine compatibility overrides */
-.mantine-Text-root {
-  margin: 0;
-}
-
-.mantine-Paper-root {
-  border-radius: 7px;
-}
+.mantine-Text-root { margin: 0; }
+.mantine-Paper-root { border-radius: 10px; }
 
 /* Sidebar scrollbar styles */
-.sidebar-scrollbar::-webkit-scrollbar {
-  width: 7px;
-}
-
+.sidebar-scrollbar::-webkit-scrollbar { width: 7px; height: 7px; }
 .sidebar-scrollbar::-webkit-scrollbar-thumb {
-  background-color: #e5eaef;
-  border-radius: 15px;
+  background-color: #E5E5EA;
+  border-radius: 16px;
 }
+.sidebar-scrollbar::-webkit-scrollbar-track { background: transparent; }
 
-.sidebar-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-/* Add more custom styles as needed */
+/* Subtle divider utility */
+.divider { border-color: #E5E5EA; }

@@ -1,149 +1,206 @@
-import { Plus_Jakarta_Sans } from "next/font/google";
-import { createTheme } from "@mantine/core";
+import { createTheme, rem } from "@mantine/core";
 
-export const plus = Plus_Jakarta_Sans({
-  weight: ["300", "400", "500", "600", "700"],
-  subsets: ["latin"],
-  display: "swap",
-  fallback: ["Helvetica", "Arial", "sans-serif"],
-});
+// Apple-inspired system font stack (avoids bundling SF fonts)
+const appleSystemStack = [
+  'ui-sans-serif',
+  '-apple-system',
+  'BlinkMacSystemFont',
+  'Segoe UI',
+  'Roboto',
+  'Helvetica Neue',
+  'Arial',
+  'Noto Sans',
+  'Apple Color Emoji',
+  'Segoe UI Emoji',
+  'Segoe UI Symbol',
+].join(", ");
 
+// Apple-like palettes (primary uses iOS accent blue, neutrals mimic iOS grays)
 export const mantineTheme = createTheme({
-  fontFamily: plus.style.fontFamily,
+  fontFamily: appleSystemStack,
   primaryColor: "blue",
+  defaultRadius: "md",
   colors: {
+    // iOS Blue (accent)
     blue: [
-      "#ECF2FF", // 0 - light
-      "#D6E4FF", // 1
-      "#B3D1FF", // 2
-      "#8BB8FF", // 3
-      "#5D87FF", // 4 - main primary
-      "#4570EA", // 5 - dark
-      "#3A5FD9", // 6
-      "#2F4EC8", // 7
-      "#243DB7", // 8
-      "#192CA6", // 9
+      "#E6F0FF", // 0
+      "#D1E4FF", // 1
+      "#A8CCFF", // 2
+      "#7FB2FF", // 3
+      "#4D9DFF", // 4
+      "#0A84FF", // 5 (primary)
+      "#0077F5", // 6
+      "#0066D6", // 7
+      "#0055B8", // 8
+      "#003F8A", // 9
     ],
-    cyan: [
-      "#E8F7FF", // 0 - light
-      "#D1EFFF", // 1
-      "#A3DFFF", // 2
-      "#75CFFF", // 3
-      "#49BEFF", // 4 - main secondary
-      "#23AFDB", // 5 - dark
-      "#1F9BC7", // 6
-      "#1B87B3", // 7
-      "#17739F", // 8
-      "#135F8B", // 9
-    ],
+    // iOS Green
     green: [
-      "#E6FFFA", // 0 - light
-      "#CCFFF5", // 1
-      "#99FFEB", // 2
-      "#66FFE1", // 3
-      "#13DEB9", // 4 - main success
-      "#02B3A9", // 5 - dark
-      "#029F97", // 6
-      "#018B85", // 7
-      "#017773", // 8
-      "#016361", // 9
+      "#EAFBF0",
+      "#D7F7E2",
+      "#B7EECA",
+      "#8DE6AF",
+      "#5EDA8F",
+      "#34C759", // primary success
+      "#28A64A",
+      "#1E8B3D",
+      "#177032",
+      "#0F4D22",
     ],
-    indigo: [
-      "#EBF3FE", // 0 - light
-      "#D7E7FD", // 1
-      "#AFCFFB", // 2
-      "#87B7F9", // 3
-      "#539BFF", // 4 - main info
-      "#1682D4", // 5 - dark
-      "#1475BF", // 6
-      "#1268AA", // 7
-      "#105B95", // 8
-      "#0E4E80", // 9
-    ],
+    // iOS Red
     red: [
-      "#FDEDE8", // 0 - light
-      "#FBDAD1", // 1
-      "#F7B5A3", // 2
-      "#F39075", // 3
-      "#FA896B", // 4 - main error
-      "#F3704D", // 5 - dark
-      "#DB663F", // 6
-      "#C35C31", // 7
-      "#AB5223", // 8
-      "#934815", // 9
+      "#FDEAEA",
+      "#FAD6D6",
+      "#F3B1B1",
+      "#EC8A8A",
+      "#E25E5E",
+      "#FF3B30", // error accent
+      "#E3342A",
+      "#C32C23",
+      "#A0241D",
+      "#761A14",
     ],
+    // iOS Orange (warning)
     yellow: [
-      "#FEF5E5", // 0 - light
-      "#FDEBCB", // 1
-      "#FBD797", // 2
-      "#F9C363", // 3
-      "#FFAE1F", // 4 - main warning
-      "#AE8E59", // 5 - dark
-      "#9D7F50", // 6
-      "#8C7047", // 7
-      "#7B613E", // 8
-      "#6A5235", // 9
+      "#FFF3E5",
+      "#FFE6CC",
+      "#FFCF99",
+      "#FFB766",
+      "#FF9D33",
+      "#FF9500", // warning accent
+      "#E08500",
+      "#C07200",
+      "#9D5E00",
+      "#6B3E00",
     ],
+    // iOS-style neutral grays
     gray: [
-      "#F2F6FA", // 0 - 100
-      "#EAEFF4", // 1 - 200
-      "#DFE5EF", // 2 - 300
-      "#7C8FAC", // 3 - 400
-      "#5A6A85", // 4 - 500
-      "#2A3547", // 5 - 600
-      "#252F3F", // 6
-      "#202937", // 7
-      "#1B232F", // 8
-      "#161D27", // 9
+      "#F5F5F7", // 0 - surfaces
+      "#EFEFF1", // 1
+      "#E5E5EA", // 2 - dividers
+      "#D1D1D6", // 3
+      "#C7C7CC", // 4
+      "#8E8E93", // 5 - secondary text
+      "#636366", // 6
+      "#3A3A3C", // 7
+      "#2C2C2E", // 8
+      "#1C1C1E", // 9 - dark surfaces
     ],
   },
   headings: {
-    fontFamily: plus.style.fontFamily,
+    fontFamily: appleSystemStack,
     sizes: {
-      h1: { fontSize: "2.25rem", lineHeight: "2.75rem", fontWeight: "600" },
-      h2: { fontSize: "1.875rem", lineHeight: "2.25rem", fontWeight: "600" },
-      h3: { fontSize: "1.5rem", lineHeight: "1.75rem", fontWeight: "600" },
-      h4: { fontSize: "1.3125rem", lineHeight: "1.6rem", fontWeight: "600" },
-      h5: { fontSize: "1.125rem", lineHeight: "1.6rem", fontWeight: "600" },
-      h6: { fontSize: "1rem", lineHeight: "1.2rem", fontWeight: "600" },
+      h1: { fontSize: rem(36), lineHeight: "2.75rem", fontWeight: "700" },
+      h2: { fontSize: rem(30), lineHeight: "2.25rem", fontWeight: "700" },
+      h3: { fontSize: rem(24), lineHeight: "1.75rem", fontWeight: "700" },
+      h4: { fontSize: rem(21), lineHeight: "1.6rem", fontWeight: "600" },
+      h5: { fontSize: rem(18), lineHeight: "1.6rem", fontWeight: "600" },
+      h6: { fontSize: rem(16), lineHeight: "1.4rem", fontWeight: "600" },
     },
   },
   fontSizes: {
-    xs: "0.75rem", // body2
-    sm: "0.875rem", // body1, subtitle1, subtitle2
-    md: "1rem", // h6
-    lg: "1.125rem", // h5
-    xl: "1.3125rem", // h4
-    "2xl": "1.5rem", // h3
-    "3xl": "1.875rem", // h2
-    "4xl": "2.25rem", // h1
+    xs: rem(12),
+    sm: rem(14),
+    md: rem(16),
+    lg: rem(18),
+    xl: rem(21),
+    "2xl": rem(24),
+    "3xl": rem(30),
+    "4xl": rem(36),
+  },
+  spacing: {
+    xs: rem(4),
+    sm: rem(8),
+    md: rem(12),
+    lg: rem(16),
+    xl: rem(24),
+    "2xl": rem(32),
   },
   lineHeights: {
-    xs: "1rem", // body2
-    sm: "1.334rem", // body1
-    md: "1.2rem", // h6, h5
-    lg: "1.6rem", // h4, h5
-    xl: "1.75rem", // h3
-    "2xl": "2.25rem", // h2
-    "3xl": "2.75rem", // h1
+    xs: "1rem",
+    sm: "1.35rem",
+    md: "1.5rem",
+    lg: "1.6rem",
+    xl: "1.75rem",
+    "2xl": "2.25rem",
+    "3xl": "2.75rem",
   },
   radius: {
-    xs: "4px",
-    sm: "6px",
-    md: "7px", // Card borderRadius
-    lg: "8px",
-    xl: "12px",
+    xs: "6px",
+    sm: "8px",
+    md: "10px", // default card/input radius
+    lg: "12px",
+    xl: "16px",
   },
   shadows: {
-    xs: "0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24)",
-    sm: "0 3px 6px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.12)",
-    md: "rgb(145 158 171 / 30%) 0px 0px 2px 0px, rgb(145 158 171 / 12%) 0px 12px 24px -4px",
-    lg: "0 10px 20px rgba(0, 0, 0, 0.15), 0 3px 6px rgba(0, 0, 0, 0.10)",
-    xl: "0 15px 25px rgba(0, 0, 0, 0.15), 0 5px 10px rgba(0, 0, 0, 0.05)",
+    // Subtle, soft shadows like iOS cards/sheets
+    xs: "0 1px 1px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)",
+    sm: "0 2px 6px rgba(0,0,0,0.06), 0 4px 10px rgba(0,0,0,0.04)",
+    md: "0 6px 16px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04)",
+    lg: "0 10px 24px rgba(0,0,0,0.10), 0 2px 6px rgba(0,0,0,0.06)",
+    xl: "0 16px 36px rgba(0,0,0,0.12)",
+  },
+  components: {
+    Button: {
+      defaultProps: {
+        radius: "md",
+        size: "md",
+        variant: "filled",
+      },
+      styles: {
+        root: {
+          fontWeight: 600,
+          transition: "transform 120ms ease, box-shadow 150ms ease",
+          boxShadow: "0 1px 0 rgba(0,0,0,0.04)",
+          '&:active': { transform: "translateY(1px)" },
+        },
+      },
+    },
+    Paper: {
+      defaultProps: { radius: "md", shadow: "sm" },
+    },
+    Card: {
+      defaultProps: { radius: "md", shadow: "sm", padding: "lg" },
+    },
+    TextInput: {
+      defaultProps: { radius: "md", size: "md" },
+      styles: {
+        input: {
+          transition: "border-color 120ms ease, box-shadow 150ms ease",
+        },
+      },
+    },
+    PasswordInput: {
+      defaultProps: { radius: "md", size: "md" },
+    },
+    Select: {
+      defaultProps: { radius: "md", size: "md" },
+    },
+    NumberInput: {
+      defaultProps: { radius: "md", size: "md" },
+    },
+    Tabs: {
+      defaultProps: { radius: "md" },
+    },
+    Tooltip: {
+      defaultProps: { radius: "sm" },
+    },
+    Modal: {
+      defaultProps: { radius: "lg", shadow: "lg" },
+    },
+    Menu: {
+      defaultProps: { radius: "md", shadow: "sm" },
+    },
+    ActionIcon: {
+      defaultProps: { radius: "md" },
+    },
+    Switch: {
+      defaultProps: { radius: "xl" },
+    },
   },
   other: {
-    divider: "#e5eaef",
-    disabledBackground: "rgba(73,82,88,0.12)",
-    hoverBackground: "#f6f9fc",
+    divider: "#E5E5EA",
+    disabledBackground: "rgba(60,60,67,0.12)",
+    hoverBackground: "#F5F5F7",
   },
 });

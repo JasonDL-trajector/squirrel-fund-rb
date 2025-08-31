@@ -7,10 +7,13 @@ import {
   Modal,
   TextInput,
   Button,
+  Box,
   useMantineTheme,
+  Skeleton,
 } from "@mantine/core";
 import { IconArrowDownRight, IconCurrencyPeso } from "@tabler/icons-react";
 import DashboardCard from "@/app/(DashboardLayout)/components/shared/DashboardCard";
+import EmptyState from "../shared/EmptyState";
 import { useUser } from "@clerk/nextjs";
 import type { Loading } from "../../types/loading";
 
@@ -111,31 +114,42 @@ const DailyDeposit = ({ isLoading }: Loading) => {
         }
       >
         <>
-          <Text
-            size="3xl"
-            fw={700}
-            mt="-20px"
-            onClick={handleOpenModal}
-            style={{ cursor: "pointer" }}
-          >
-            ₱{dailydeposit}
-          </Text>
-          <Stack direction="row" gap="xs" my="xs" align="center">
-            <ActionIcon
-              size="sm"
-              variant="filled"
-              color="red"
-              style={{ backgroundColor: errorlight }}
-            >
-              <IconArrowDownRight size={16} color="#FA896B" />
-            </ActionIcon>
-            <Text size="sm" fw={600}>
-              +9%
-            </Text>
-            <Text size="sm" c="dimmed">
-              last year
-            </Text>
-          </Stack>
+          {isLoading ? (
+            <Skeleton height={48} width="60%" />
+          ) : dailydeposit === 0 ? (
+            <EmptyState
+              title="Daily deposit not set"
+              description="Set a daily deposit amount to start tracking your daily savings."
+            />
+          ) : (
+            <>
+              <Text
+                size="3xl"
+                fw={700}
+                mt="-20px"
+                onClick={handleOpenModal}
+                style={{ cursor: "pointer" }}
+              >
+                ₱{dailydeposit}
+              </Text>
+              <Box style={{ display: "flex", gap: theme.spacing.xs, margin: `${theme.spacing.xs} 0`, alignItems: "center" }}>
+                <ActionIcon
+                  size="sm"
+                  variant="filled"
+                  color="red"
+                  style={{ backgroundColor: errorlight }}
+                >
+                  <IconArrowDownRight size={16} color="#FA896B" />
+                </ActionIcon>
+                <Text size="sm" fw={600}>
+                  +9%
+                </Text>
+                <Text size="sm" c="dimmed">
+                  last year
+                </Text>
+              </Box>
+            </>
+          )}
         </>
       </DashboardCard>
 

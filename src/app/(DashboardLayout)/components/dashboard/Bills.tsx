@@ -1,20 +1,8 @@
 import React, { useState } from "react";
-import {
-  Text,
-  Table,
-  Badge,
-  Skeleton,
-  ActionIcon,
-  Modal,
-  TextInput,
-  Button,
-  Select,
-  Group,
-  useMantineTheme,
-  Stack,
-} from "@mantine/core";
-import { IconPlus } from "@tabler/icons-react";
+import { Text, Badge, Skeleton, ActionIcon, Modal, TextInput, Button, Select, Group, Stack, Box } from "@mantine/core";
+import { IconPlus, IconChevronRight } from "@tabler/icons-react";
 import DashboardCard from "../shared/DashboardCard";
+import PullToRefreshHint from "@/components/PullToRefreshHint";
 import type { Loading } from "../../types/loading";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../../convex/_generated/api";
@@ -26,7 +14,6 @@ const Bills = ({ isLoading }: Loading) => {
   const createBill = useMutation(api.bills.createBill);
   const updateBill = useMutation(api.bills.updateBill);
   const deleteBill = useMutation(api.bills.deleteBill);
-  const theme = useMantineTheme();
   const [openModal, setOpenModal] = useState(false);
   const [editingBill, setEditingBill] = useState<any | null>(null);
   const [newBill, setNewBill] = useState<Omit<any, "_id">>({
@@ -118,91 +105,49 @@ const Bills = ({ isLoading }: Loading) => {
           variant="filled"
           color="blue"
           onClick={handleOpenModal}
+          aria-label="Add bill"
         >
           <IconPlus size={20} />
         </ActionIcon>
       }
     >
       <>
-        <div style={{ overflow: "auto", maxWidth: "80vw" }}>
-          <Table>
-            <Table.Thead>
-              <Table.Tr>
-                <Table.Th>
-                  <Text size="sm" fw={600}>
-                    Name
-                  </Text>
-                </Table.Th>
-                <Table.Th>
-                  <Text size="sm" fw={600}>
-                    Amount
-                  </Text>
-                </Table.Th>
-                <Table.Th>
-                  <Text size="sm" fw={600}>
-                    Status
-                  </Text>
-                </Table.Th>
-                <Table.Th>
-                  <Text size="sm" fw={600}>
-                    Due Date
-                  </Text>
-                </Table.Th>
-              </Table.Tr>
-            </Table.Thead>
-            <Table.Tbody>
-              {isLoading || !bills
-                ? Array.from(new Array(5)).map((_, index) => (
-                    <Table.Tr key={index}>
-                      <Table.Td>
-                        <Skeleton height={20} />
-                      </Table.Td>
-                      <Table.Td>
-                        <Skeleton height={20} />
-                      </Table.Td>
-                      <Table.Td>
-                        <Skeleton height={30} width={80} />
-                      </Table.Td>
-                      <Table.Td>
-                        <Skeleton height={30} width={80} />
-                      </Table.Td>
-                    </Table.Tr>
-                  ))
-                : bills.map((bill) => (
-                    <Table.Tr
-                      key={bill._id}
-                      onClick={() => handleBillClick(bill)}
-                      style={{ cursor: "pointer" }}
-                    >
-                      <Table.Td>
-                        <Text size="sm" fw={600}>
+        <PullToRefreshHint />
+        <Box className="ios-list">
+          <Stack gap={0}>
+            {isLoading || !bills
+              ? Array.from({ length: 5 }).map((_, i) => (
+                  <Box key={i} className="ios-list-item" p="md">
+                    <Skeleton height={18} radius="sm" />
+                  </Box>
+                ))
+              : bills.map((bill) => (
+                  <Box
+                    key={bill._id}
+                    className="ios-list-item"
+                    p="md"
+                    style={{ cursor: "pointer" }}
+                    onClick={() => handleBillClick(bill)}
+                  >
+                    <Group justify="space-between" align="center" wrap="nowrap">
+                      <Stack gap={2} style={{ minWidth: 0 }}>
+                        <Text size="sm" fw={600} style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                           {bill.name}
                         </Text>
-                      </Table.Td>
-                      <Table.Td>
-                        <Text size="sm" c="dimmed">
-                          ₱{bill.amount.toFixed(2)}
-                        </Text>
-                      </Table.Td>
-                      <Table.Td>
-                        <Badge
-                          color={getStatusColor(bill.status)}
-                          variant="light"
-                          size="sm"
-                        >
+                        <Text size="xs" c="dimmed">Due {bill.dueDate}</Text>
+                      </Stack>
+                      <Group gap="xs" wrap="nowrap" style={{ flexShrink: 0 }}>
+                        <Badge color={getStatusColor(bill.status)} variant="light" size="sm">
                           {bill.status}
                         </Badge>
-                      </Table.Td>
-                      <Table.Td>
-                        <Badge color="blue" variant="light" size="sm">
-                          {bill.dueDate}
-                        </Badge>
-                      </Table.Td>
-                    </Table.Tr>
-                  ))}
-            </Table.Tbody>
-          </Table>
-        </div>
+                        <Text size="sm" fw={600}>₱{bill.amount.toFixed(2)}</Text>
+                        <IconChevronRight size={16} color="#8E8E93" />
+                      </Group>
+                    </Group>
+                  </Box>
+                ))}
+          </Stack>
+        </Box>
         <Modal
           opened={openModal}
           onClose={handleCloseModal}

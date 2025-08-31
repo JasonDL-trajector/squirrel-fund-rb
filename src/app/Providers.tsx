@@ -1,5 +1,6 @@
 "use client";
 import { MantineProvider } from '@mantine/core';
+import { Notifications } from '@mantine/notifications';
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { ClerkProvider, useAuth } from "@clerk/nextjs";
 import { ConvexProviderWithClerk } from "convex/react-clerk";
@@ -22,6 +23,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
       }}
     >
       <MantineProvider theme={mantineTheme} defaultColorScheme="light">
+        <Notifications position="top-right" />
         <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
           {children}
         </ConvexProviderWithClerk>

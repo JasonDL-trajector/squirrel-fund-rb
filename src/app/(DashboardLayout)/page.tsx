@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { SimpleGrid, useMantineTheme } from "@mantine/core";
+import { SimpleGrid, Stack, Text, useMantineTheme, Box } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import PageContainer from "@/app/(DashboardLayout)/components/container/PageContainer";
 // components
@@ -28,34 +28,59 @@ const Dashboard = () => {
 
   return (
     <PageContainer title="Squirrel Fund" description="Squirrel Fund">
-      <div>
-        <SimpleGrid cols={{ base: 1, md: 2 }} spacing={isMobile ? "lg" : "md"}>
-          <BalanceHistory isLoading={isLoading} />
-          <TabularSummary isLoading={isLoading} />
-        </SimpleGrid>
+      <Stack gap="lg">
+        <Box>
+          <Text size="3xl" fw={800} mb="sm">Dashboard</Text>
+        </Box>
+        <Box>
+          <Text size="xs" c="dimmed" mb={4}>
+            Overview
+          </Text>
+          <SimpleGrid cols={{ base: 1, sm: 2 }} spacing={'md'}>
+            <Box style={{ width: '100%' }}>
+              <CurrentBalance isLoading={isLoading} />
+            </Box>
+            <Box style={{ width: '100%' }}>
+              <DailyDeposit isLoading={isLoading} />
+            </Box>
+          </SimpleGrid>
+        </Box>
 
-        <SimpleGrid
-          cols={{ base: 1, sm: 2 }}
-          spacing={isMobile ? "sm" : "md"}
-          mt="md"
-        >
-          <CurrentBalance isLoading={isLoading} />
-          <DailyDeposit isLoading={isLoading} />
-        </SimpleGrid>
+        <Box>
+          <Text size="xs" c="dimmed" mb={4}>
+            Activity
+          </Text>
+          <SimpleGrid cols={{ base: 1, md: 2 }} spacing='md'>
+            <Box style={{ width: '100%' }}>
+              <BalanceHistory isLoading={isLoading} />
+            </Box>
+            <Box style={{ width: '100%' }}>
+              <TabularSummary isLoading={isLoading} />
+            </Box>
+          </SimpleGrid>
+        </Box>
 
-        <SimpleGrid
-          cols={{ base: 1, md: 2 }}
-          spacing={isMobile ? "lg" : "md"}
-          mt="md"
-        >
-          <RecentDeposits isLoading={isLoading} />
-          <RecentWithdrawals isLoading={isLoading} />
-        </SimpleGrid>
+        <Box>
+          <Text size="xs" c="dimmed" mb={4}>
+            Recent
+          </Text>
+          <SimpleGrid cols={{ base: 1, md: 2 }} spacing='md'>
+            <Box style={{ width: '100%' }}>
+              <RecentDeposits isLoading={isLoading} />
+            </Box>
+            <Box style={{ width: '100%' }}>
+              <RecentWithdrawals isLoading={isLoading} />
+            </Box>
+          </SimpleGrid>
+        </Box>
 
-        <div style={{ marginBottom: theme.spacing.lg }}>
+        <Box style={{ marginBottom: theme.spacing.xl }}>
+          <Text size="xs" c="dimmed" mb={4}>
+            Scheduled
+          </Text>
           <Bills isLoading={isLoading} />
-        </div>
-      </div>
+        </Box>
+      </Stack>
     </PageContainer>
   );
 };

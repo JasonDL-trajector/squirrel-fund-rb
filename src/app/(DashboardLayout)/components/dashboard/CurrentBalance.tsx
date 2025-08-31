@@ -1,20 +1,11 @@
 import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
-import {
-  Group,
-  Stack,
-  Text,
-  ActionIcon,
-  Skeleton,
-  Modal,
-  TextInput,
-  Button,
-  useMantineTheme,
-} from "@mantine/core";
+import { Group, Stack, Text, ActionIcon, Skeleton, Modal, TextInput, Button, useMantineTheme, Box } from "@mantine/core";
 import { IconArrowUpLeft } from "@tabler/icons-react";
 
 import DashboardCard from "@/app/(DashboardLayout)/components/shared/DashboardCard";
+import EmptyState from "../shared/EmptyState";
 import type { Loading } from "../../types/loading";
 import { api } from "../../../../../convex/_generated/api";
 import { useMutation, useQuery } from "convex/react";
@@ -121,6 +112,11 @@ const CurrentBalance = ({ isLoading }: Loading) => {
               <Skeleton height={20} width="60%" />
               <Skeleton height={20} width="40%" />
             </>
+          ) : currentBalance === 0 ? (
+            <EmptyState
+              title="No current balance"
+              description="You don't have a recorded current balance yet. Make a deposit to start tracking your balance."
+            />
           ) : (
             <>
               <Text
@@ -173,7 +169,7 @@ const CurrentBalance = ({ isLoading }: Loading) => {
             </>
           )}
         </Stack>
-        <div style={{ width: "150px", height: "150px" }}>
+        <Box style={{ width: "150px", height: "150px" }}>
           {isLoading ? (
             <Skeleton height={150} width={150} radius="50%" />
           ) : (
@@ -185,7 +181,7 @@ const CurrentBalance = ({ isLoading }: Loading) => {
               width={"100%"}
             />
           )}
-        </div>
+        </Box>
       </Group>
     </DashboardCard>
   );

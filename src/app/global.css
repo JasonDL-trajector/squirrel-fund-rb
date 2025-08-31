@@ -9,6 +9,7 @@ html, body {
 
 /* Apple-like typography rendering */
 body {
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
@@ -17,12 +18,7 @@ body {
   color: #1D1D1F;
 }
 
-@media (prefers-color-scheme: dark) {
-  body {
-    background: #000000;
-    color: #F5F5F7;
-  }
-}
+/* Dark mode disabled to avoid conflicts */
 
 /* Clerk component refinements (Apple accent + rounded) */
 .custom-button-class {
@@ -60,3 +56,36 @@ body {
 
 /* Subtle divider utility */
 .divider { border-color: #E5E5EA; }
+
+/* iOS card + list utilities for consistent look */
+.ios-card {
+  background: #ffffff;
+  border: 1px solid #E5E5EA;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06), 0 4px 10px rgba(0,0,0,0.04);
+}
+
+.ios-list {
+  background: #ffffff;
+  border: 1px solid #E5E5EA;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.ios-list-item + .ios-list-item {
+  border-top: 1px solid #E5E5EA;
+}
+
+.ios-tint-blue { color: #0A84FF; }
+.ios-bg-tint-blue { background-color: #0A84FF; color: #fff; }
+
+
+/* Mobile full-bleed cards/lists */
+@media (max-width: 48rem) {
+  .ios-card,
+  .ios-list {
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+  }
+}

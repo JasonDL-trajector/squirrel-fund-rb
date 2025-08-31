@@ -1,98 +1,57 @@
 import React from "react";
 import { Skeleton, useMantineTheme } from "@mantine/core";
 import DashboardCard from "@/app/(DashboardLayout)/components/shared/DashboardCard";
-import dynamic from "next/dynamic";
-const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
+import { AreaChart } from "@mantine/charts";
+import EmptyState from "../shared/EmptyState";
 import type { Loading } from "../../types/loading";
 import { useQuery } from "convex/react";
 import { api } from "../../../../../convex/_generated/api";
 import Link from "next/link";
+import { useMediaQuery } from "@mantine/hooks";
 
 const BalanceHistory = ({ isLoading }: Loading) => {
   const listBalances = useQuery(api.balances.listBalances);
 
-  // chart color
+  // chart color and responsive
   const theme = useMantineTheme();
-  const primary = theme.colors.blue[6];
+  const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
+  // Prepare data for the chart (ensure chronological order and valid Date parsing)
+  const sortedBalances = (Array.isArray(listBalances) ? [...listBalances] : []).sort(
+    (a: any, b: any) =>
+      new Date(a.balanceDate).getTime() - new Date(b.balanceDate).getTime()
+  );
 
-  // Prepare data for the chart
-  const categories = listBalances?.map((balance) => balance.balanceDate) || [];
-  const balanceData =
-    listBalances?.map((balance) => balance.balanceAmount) || [];
-
-  // chart options
-  const optionscolumnchart: any = {
-    chart: {
-      type: "line",
-      fontFamily: "'Plus Jakarta Sans', sans-serif;",
-      foreColor: "#adb0bb",
-      toolbar: {
-        show: true,
-      },
-      height: 370,
-    },
-    colors: [primary],
-    stroke: {
-      curve: "smooth",
-      width: 3,
-    },
-    dataLabels: {
-      enabled: false,
-    },
-    legend: {
-      show: false,
-    },
-    grid: {
-      borderColor: "rgba(0,0,0,0.1)",
-      strokeDashArray: 3,
-      xaxis: {
-        lines: {
-          show: false,
-        },
-      },
-    },
-    yaxis: {
-      tickAmount: 4,
-    },
-    xaxis: {
-      categories: categories,
-      axisBorder: {
-        show: false,
-      },
-      tickAmount: Math.min(5, categories.length),
-      labels: {
-        rotate: -45,
-        style: {
-          fontSize: "12px",
-        },
-      },
-    },
-    tooltip: {
-      theme: "dark",
-      fillSeriesColor: false,
-    },
-  };
-
-  const seriescolumnchart: any = [
-    {
-      name: "Balance",
-      data: balanceData,
-    },
-  ];
+  // convert sorted balances into Mantine AreaChart data format
+  const chartData = sortedBalances.map((b: any) => {
+    const parsed = new Date(b.balanceDate);
+    // use ISO date string (YYYY-MM-DD) as dataKey so Mantine renders x-axis nicely
+    const dateKey = !isNaN(parsed.getTime())
+      ? parsed.toISOString().slice(0, 10)
+      : String(b.balanceDate);
+    return {
+      date: dateKey,
+      Balance: Number(b.balanceAmount) || 0,
+    };
+  });
 
   return (
     <>
       <Link href="/balance-history" style={{ textDecoration: "none" }}>
         <DashboardCard title="Balance History">
-          {isLoading || !listBalances ? (
-            <Skeleton height={370} width="100%" />
+          {isLoading ? (
+            <Skeleton height={isMobile ? 80 : 320} width="100%" />
+          ) : Array.isArray(listBalances) && listBalances.length === 0 ? (
+            <EmptyState
+              title="No balance history"
+              description="You haven't recorded any balances yet. Make a deposit to create your first balance."
+            />
           ) : (
-            <Chart
-              options={optionscolumnchart}
-              series={seriescolumnchart}
-              type="line"
-              height={370}
-              width={"100%"}
+            <AreaChart
+              h={isMobile ? 80 : 320}
+              data={chartData}
+              dataKey="date"
+              series={[{ name: "Balance", color: "blue.6" }]}
+              curveType="monotone"
             />
           )}
         </DashboardCard>

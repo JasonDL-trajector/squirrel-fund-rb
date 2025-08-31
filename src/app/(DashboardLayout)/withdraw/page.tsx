@@ -1,37 +1,30 @@
 "use client";
 
 import { useState } from "react";
-import {
-  SimpleGrid,
-  TextInput,
-  Button,
-  Text,
-  Paper,
-  Container,
-  ActionIcon,
-  Stack,
-  Group,
-  useMantineTheme,
-} from "@mantine/core";
+import { SimpleGrid, TextInput, Button, Text, Container, ActionIcon, Stack, Group, useMantineTheme, Box } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import PageContainer from "@/app/(DashboardLayout)/components/container/PageContainer";
 import { api } from "../../../../convex/_generated/api";
 import { useMutation, useQuery } from "convex/react";
 import { useUser } from "@clerk/clerk-react";
-import { calculateAmount, formatDate } from "../utilities/utils";
+//
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { showNotification } from '@mantine/notifications';
 import { IconTableMinus } from "@tabler/icons-react";
+import { DatePickerInput } from "@mantine/dates";
+import '@mantine/dates/styles.css';
 
 const WithdrawPage = () => {
-  const { user, isLoaded } = useUser();
+  const { user } = useUser();
   const theme = useMantineTheme();
   const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
   const createWithdraw = useMutation(api.withdraws.createWithdraw);
   const createBalance = useMutation(api.balances.createBalance);
   const [withdrawAmount, setWithdrawAmount] = useState<number>(0);
-  const [withdrawDate, setWithdrawDate] = useState(
-    new Date().toLocaleDateString("en-US", { month: "long", day: "numeric" })
-  );
+  const router = useRouter();
+  // Mantine v8 DatePickerInput uses ISO date strings 'YYYY-MM-DD' for value/onChange
+  const [withdrawDate, setWithdrawDate] = useState<string | null>(new Date().toISOString().slice(0, 10));
   const [note, setNote] = useState<string>("");
   const currentBalanceData = useQuery(api.balances.getCurrentBalance);
 
@@ -42,21 +35,37 @@ const WithdrawPage = () => {
 
   const totalAmount = withdrawAmount;
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+ 
     if (withdrawDate) {
-      createWithdraw({
+      // withdrawDate is an ISO string 'YYYY-MM-DD' from Mantine v8 picker — convert for backend
+      const wd = new Date(withdrawDate);
+      const withdrawDateString = wd.toLocaleDateString("en-US", {
+        month: "long",
+        day: "numeric",
+        year: "numeric",
+      });
+ 
+      await createWithdraw({
         name: user?.firstName ?? "User",
         withdrawAmount: withdrawAmount,
-        withdrawDate: withdrawDate,
+        withdrawDate: withdrawDateString,
         withdrawNote: note,
       });
-
-      createBalance({
+ 
+      await createBalance({
         balanceAmount: Number(currentBalance) - withdrawAmount,
-        balanceDate: withdrawDate,
+        balanceDate: withdrawDateString,
       });
+ 
+      // show success notification then redirect to dashboard after successful withdraw
+      showNotification({
+        title: "Withdraw successful",
+        message: `Withdrew ₱${withdrawAmount.toFixed(2)} from your balance`,
+        color: "red",
+      });
+      router.push("/");
     } else {
       console.error("No date selected");
     }
@@ -64,31 +73,17 @@ const WithdrawPage = () => {
 
   return (
     <PageContainer title="Withdraw" description="Withdraw funds">
-      <Container size="sm">
-        <div
-          style={{
-            transform: isMobile ? "scale(0.9)" : "none",
-            transformOrigin: "top center",
-          }}
-        >
-          <Paper
-            shadow="md"
-            p="xl"
-            style={{
-              minHeight: "70vh",
-              display: "flex",
-              flexDirection: "column",
-            }}
-          >
-            <Group justify="space-between" mb="lg">
-              <div>
-                <Text size="xl" fw={600} mb="xs">
+      <Container size="sm" px="md">
+        <Box>
+          <Group justify="space-between" align="center" mb="md">
+              <Box style={{ minWidth: 0, flex: 1 }}>
+                <Text size="3xl" fw={800} mb="xs">
                   Withdraw Funds
                 </Text>
                 <Text size="sm" c="dimmed">
                   Select a date and enter the withdrawal details below.
                 </Text>
-              </div>
+              </Box>
 
               <ActionIcon
                 component={Link}
@@ -96,94 +91,72 @@ const WithdrawPage = () => {
                 size="lg"
                 variant="filled"
                 color="blue"
+                aria-label="Withdraw history"
               >
                 <IconTableMinus size={20} />
               </ActionIcon>
             </Group>
 
-            <form
-              onSubmit={handleSubmit}
-              style={{
-                flexGrow: 1,
-                display: "flex",
-                flexDirection: "column",
-                marginTop: "50px",
-              }}
-            >
-              <Stack gap="lg" style={{ flexGrow: 1 }}>
-                <TextInput
-                  label="Amount"
-                  type="number"
-                  value={withdrawAmount}
-                  onChange={(e) => setWithdrawAmount(Number(e.target.value))}
-                  leftSection="₱"
-                  required
-                />
+            <form onSubmit={handleSubmit}>
+              <Stack gap="lg">
+                <Box className="ios-card" style={{ padding: 12 }}>
+                  <Stack gap="md">
+                    <TextInput
+                      label="Amount"
+                      type="number"
+                      value={withdrawAmount}
+                      onChange={(e) => setWithdrawAmount(Number(e.target.value))}
+                      leftSection="₱"
+                      required
+                    />
 
-                <TextInput
-                  label="Withdrawal Date"
-                  value={withdrawDate}
-                  onChange={(e) => setWithdrawDate(e.target.value)}
-                  placeholder="e.g., January 15"
-                  required
-                />
+                    <DatePickerInput
+                      label="Withdrawal Date"
+                      placeholder="Select date"
+                      value={withdrawDate}
+                      onChange={setWithdrawDate}
+                      required
+                    />
 
-                <TextInput
-                  label="Note"
-                  multiline
-                  rows={4}
-                  value={note}
-                  onChange={(e) => setNote(e.target.value)}
-                />
+                    <TextInput label="Note" value={note} onChange={(e) => setNote(e.target.value)} />
+                  </Stack>
+                </Box>
 
-                <SimpleGrid cols={2} gap="md">
-                  <div>
-                    <Text size="sm" c="dimmed">
-                      Current Balance:
+                <Box className="ios-card" style={{ padding: 12 }}>
+                  <SimpleGrid cols={2} spacing="md">
+                    <Box>
+                      <Text size="sm" c="dimmed">
+                        Current Balance:
+                      </Text>
+                      <Text size="xl" fw={500}>
+                        ₱{currentBalance}
+                      </Text>
+                    </Box>
+                    <Box>
+                      <Text size="sm" c="dimmed" ta="right">
+                        New Balance:
+                      </Text>
+                      <Text size="xl" fw={700} ta="right">
+                        ₱{currentBalance - totalAmount}
+                      </Text>
+                    </Box>
+                  </SimpleGrid>
+                  <Box mt="sm">
+                    <Text size="sm">Amount to be withdrawn:</Text>
+                    <Text size="lg" fw={700} c="red">
+                      -₱{withdrawAmount.toFixed(2)}
                     </Text>
-                    <Text size="xl" fw={500}>
-                      ₱{currentBalance}
-                    </Text>
-                  </div>
-                  <div>
-                    <Text size="sm" c="dimmed" ta="right">
-                      New Balance:
-                    </Text>
-                    <Text size="xl" fw={700} ta="right">
-                      ₱{currentBalance - totalAmount}
-                    </Text>
-                  </div>
-                </SimpleGrid>
+                  </Box>
+                </Box>
 
-                <div>
-                  <Text size="sm">Amount to be withdrawn:</Text>
-                  <Text size="lg" fw={700} c="red">
-                    -₱{withdrawAmount.toFixed(2)}
-                  </Text>
-                </div>
-
-                <Group justify="flex-end" gap="md" mt="lg">
-                  <Button
-                    variant="outlined"
-                    size={isMobile ? "md" : "lg"}
-                    color="gray"
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    type="submit"
-                    variant="filled"
-                    color="blue"
-                    size={isMobile ? "md" : "lg"}
-                    disabled={totalAmount > currentBalance}
-                  >
+                <Stack mt="md">
+                  <Button type="submit" variant="filled" color="blue" size={isMobile ? "md" : "lg"} disabled={totalAmount > currentBalance} fullWidth>
                     Withdraw
                   </Button>
-                </Group>
+                </Stack>
               </Stack>
             </form>
-          </Paper>
-        </div>
+        </Box>
       </Container>
     </PageContainer>
   );

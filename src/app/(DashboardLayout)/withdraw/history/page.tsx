@@ -1,22 +1,12 @@
 "use client";
 import React, { useState } from "react";
-import {
-  Text,
-  Table,
-  Skeleton,
-  ActionIcon,
-  Modal,
-  TextInput,
-  Button,
-  Select,
-  Stack,
-  Group,
-} from "@mantine/core";
-import { IconPlus } from "@tabler/icons-react";
-import DashboardCard from "@/app/(DashboardLayout)/components/shared/DashboardCard";
+import { Text, Skeleton, ActionIcon, Modal, TextInput, Button, Stack, Group, Box, Container } from "@mantine/core";
+import { IconPlus, IconChevronRight } from "@tabler/icons-react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../../convex/_generated/api";
 import Link from "next/link";
+import PageContainer from "@/app/(DashboardLayout)/components/container/PageContainer";
+import PullToRefreshHint from "@/components/PullToRefreshHint";
 
 const WithdrawHistory = () => {
   const withdraws = useQuery(api.withdraws.listWithdraws);
@@ -30,6 +20,7 @@ const WithdrawHistory = () => {
     withdrawDate: new Date().toLocaleDateString("en-US", {
       month: "long",
       day: "numeric",
+      year: "numeric",
     }),
     withdrawNote: "",
   });
@@ -42,7 +33,6 @@ const WithdrawHistory = () => {
       withdrawDate: withdraw.withdrawDate,
       withdrawNote: withdraw.withdrawNote,
     });
-    console.log(newWithdrawal);
     setOpenModal(true);
   };
 
@@ -74,157 +64,83 @@ const WithdrawHistory = () => {
     }
   };
 
+  const rows = Array.isArray(withdraws) ? [...withdraws].reverse() : undefined;
+
   return (
-    <DashboardCard
-      title="Withdrawals History"
-      action={
-        <ActionIcon
-          component={Link}
-          href="/withdraw"
-          size="lg"
-          variant="filled"
-          color="blue"
-        >
-          <IconPlus size={20} />
-        </ActionIcon>
-      }
-    >
-      <>
-        <div style={{ overflow: "auto", maxWidth: "80vw", maxHeight: "500px" }}>
-          <Table>
-            <Table.Thead>
-              <Table.Tr>
-                <Table.Th>
-                  <Text size="sm" fw={600}>
-                    Date
-                  </Text>
-                </Table.Th>
-                <Table.Th>
-                  <Text size="sm" fw={600}>
-                    Name
-                  </Text>
-                </Table.Th>
-                <Table.Th>
-                  <Text size="sm" fw={600}>
-                    Amount
-                  </Text>
-                </Table.Th>
-                <Table.Th>
-                  <Text size="sm" fw={600}>
-                    Note
-                  </Text>
-                </Table.Th>
-              </Table.Tr>
-            </Table.Thead>
-            <Table.Tbody>
-              {!withdraws
-                ? Array.from(new Array(5)).map((_, index) => (
-                    <Table.Tr key={index}>
-                      <Table.Td>
-                        <Skeleton height={20} />
-                      </Table.Td>
-                      <Table.Td>
-                        <Skeleton height={20} />
-                      </Table.Td>
-                      <Table.Td>
-                        <Skeleton height={20} />
-                      </Table.Td>
-                      <Table.Td>
-                        <Skeleton height={20} />
-                      </Table.Td>
-                    </Table.Tr>
-                  ))
-                : withdraws.map((withdraw) => (
-                    <Table.Tr
-                      key={withdraw._id}
-                      onClick={() => handleOpenModal(withdraw)}
-                      style={{ cursor: "pointer" }}
-                    >
-                      <Table.Td>
-                        <Text size="sm">{withdraw.withdrawDate}</Text>
-                      </Table.Td>
-                      <Table.Td>
-                        <Text size="sm" fw={600}>
-                          {withdraw.name}
-                        </Text>
-                      </Table.Td>
-                      <Table.Td>
-                        <Text size="sm" c="dimmed">
-                          ₱{withdraw.withdrawAmount.toFixed(2)}
-                        </Text>
-                      </Table.Td>
-                      <Table.Td>
-                        <Text size="sm" c="dimmed">
+    <PageContainer title="Withdrawals History">
+      <Container size="sm" px="md">
+        <Group justify="space-between" align="flex-end" mb="md">
+          <Box style={{ minWidth: 0, flex: 1 }}>
+            <Text size="3xl" fw={800} mb="xs">Withdrawals</Text>
+            <Text size="sm" c="dimmed">Tap a row to edit or delete.</Text>
+          </Box>
+          <ActionIcon
+            component={Link}
+            href="/withdraw"
+            size="lg"
+            variant="filled"
+            color="blue"
+            aria-label="New withdrawal"
+          >
+            <IconPlus size={20} />
+          </ActionIcon>
+        </Group>
+
+        <PullToRefreshHint />
+        {(!rows || rows.length === 0) ? (
+          <Text size="sm" c="dimmed" ta="center" mt="md">
+            No withdrawals yet
+          </Text>
+        ) : (
+          <Box className="ios-list">
+            <Stack gap={0}>
+              {rows.map((withdraw, i) => (
+                <Box
+                  key={withdraw._id}
+                  className="ios-list-item"
+                  p="md"
+                  onClick={() => handleOpenModal(withdraw)}
+                  style={{ cursor: "pointer" }}
+                >
+                  <Group justify="space-between" align="center" wrap="nowrap">
+                    <Stack gap={2} style={{ minWidth: 0 }}>
+                      <Text size="sm" fw={600} style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{withdraw.name}</Text>
+                      <Text size="xs" c="dimmed">{withdraw.withdrawDate}</Text>
+                      {withdraw.withdrawNote && (
+                        <Text size="xs" c="dimmed" style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                           {withdraw.withdrawNote}
                         </Text>
-                      </Table.Td>
-                    </Table.Tr>
-                  ))}
-            </Table.Tbody>
-          </Table>
-        </div>
-        <Modal
-          opened={openModal}
-          onClose={handleCloseModal}
-          title={editingWithdrawal ? "Edit Withdrawal" : "Add a Withdrawal"}
-          size="sm"
-          centered
-        >
+                      )}
+                    </Stack>
+                    <Group gap="xs" wrap="nowrap" style={{ flexShrink: 0 }}>
+                      <Text size="sm" fw={600} c="red">-₱{withdraw.withdrawAmount.toFixed(2)}</Text>
+                      <IconChevronRight size={16} color="#8E8E93" />
+                    </Group>
+                  </Group>
+                </Box>
+              ))}
+            </Stack>
+          </Box>
+        )}
+
+        <Modal opened={openModal} onClose={handleCloseModal} title={editingWithdrawal ? "Edit Withdrawal" : "Add a Withdrawal"} size="sm" centered>
           <form onSubmit={handleSubmit}>
             <Stack gap="md">
-              <TextInput
-                label="Name"
-                name="name"
-                value={newWithdrawal.name}
-                onChange={handleInputChange}
-                required
-              />
-              <TextInput
-                label="Amount"
-                name="withdrawAmount"
-                type="number"
-                value={newWithdrawal.withdrawAmount}
-                onChange={handleInputChange}
-                required
-              />
-              <TextInput
-                label="Withdrawal Date"
-                name="withdrawDate"
-                value={newWithdrawal.withdrawDate}
-                onChange={(e) =>
-                  setNewWithdrawal({
-                    ...newWithdrawal,
-                    withdrawDate: e.target.value,
-                  })
-                }
-                placeholder="e.g., January 15"
-                required
-              />
-              <TextInput
-                label="Note"
-                name="withdrawNote"
-                value={newWithdrawal.withdrawNote}
-                onChange={handleInputChange}
-              />
+              <TextInput label="Name" name="name" value={newWithdrawal.name} onChange={handleInputChange} required />
+              <TextInput label="Amount" name="withdrawAmount" type="number" value={newWithdrawal.withdrawAmount} onChange={handleInputChange} required />
+              <TextInput label="Withdrawal Date" name="withdrawDate" value={newWithdrawal.withdrawDate} onChange={(e) => setNewWithdrawal({ ...newWithdrawal, withdrawDate: e.target.value })} placeholder="e.g., January 15" required />
+              <TextInput label="Note" name="withdrawNote" value={newWithdrawal.withdrawNote} onChange={handleInputChange} />
               <Group justify="space-between">
                 {editingWithdrawal && (
-                  <Button
-                    variant="filled"
-                    color="red"
-                    onClick={handleDeleteWithdrawal}
-                  >
-                    Delete
-                  </Button>
+                  <Button variant="filled" color="red" onClick={handleDeleteWithdrawal}>Delete</Button>
                 )}
-                <Button type="submit" color="blue">
-                  {editingWithdrawal ? "Update" : "Add"}
-                </Button>
+                <Button type="submit" color="blue">{editingWithdrawal ? "Update" : "Add"}</Button>
               </Group>
             </Stack>
           </form>
         </Modal>
-      </>
-    </DashboardCard>
+      </Container>
+    </PageContainer>
   );
 };
 

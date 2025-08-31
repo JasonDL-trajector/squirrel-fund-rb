@@ -1,19 +1,11 @@
 "use client";
 import React, { useState } from "react";
-import {
-  Text,
-  Table,
-  Skeleton,
-  ActionIcon,
-  Modal,
-  TextInput,
-  Button,
-  Stack,
-  Group,
-} from "@mantine/core";
+import { Text, Skeleton, Modal, TextInput, Button, Stack, Group, Box, Container } from "@mantine/core";
+import { IconChevronRight } from "@tabler/icons-react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
-import DashboardCard from "@/app/(DashboardLayout)/components/shared/DashboardCard";
+import PageContainer from "@/app/(DashboardLayout)/components/container/PageContainer";
+import PullToRefreshHint from "@/components/PullToRefreshHint";
 
 const BalanceHistory = () => {
   const balancesBase = useQuery(api.balances.listBalances);
@@ -29,6 +21,7 @@ const BalanceHistory = () => {
     balanceDate: new Date().toLocaleDateString("en-US", {
       month: "long",
       day: "numeric",
+      year: "numeric",
     }),
   });
 
@@ -68,101 +61,60 @@ const BalanceHistory = () => {
   };
 
   return (
-    <DashboardCard title="Balance History">
-      <>
-        <div style={{ overflow: "auto", maxWidth: "80vw", maxHeight: "500px" }}>
-          <Table>
-            <Table.Thead>
-              <Table.Tr>
-                <Table.Th>
-                  <Text size="sm" fw={600}>
-                    Date
-                  </Text>
-                </Table.Th>
-                <Table.Th>
-                  <Text size="sm" fw={600}>
-                    Amount
-                  </Text>
-                </Table.Th>
-              </Table.Tr>
-            </Table.Thead>
-            <Table.Tbody>
-              {!balances
-                ? Array.from(new Array(5)).map((_, index) => (
-                    <Table.Tr key={index}>
-                      <Table.Td>
-                        <Skeleton height={20} />
-                      </Table.Td>
-                      <Table.Td>
-                        <Skeleton height={20} />
-                      </Table.Td>
-                    </Table.Tr>
-                  ))
-                : balances.map((balance) => (
-                    <Table.Tr
-                      key={balance._id}
-                      onClick={() => handleOpenModal(balance)}
-                      style={{ cursor: "pointer" }}
-                    >
-                      <Table.Td>
-                        <Text size="sm">{balance.balanceDate}</Text>
-                      </Table.Td>
-                      <Table.Td>
-                        <Text size="sm">
-                          ₱{balance.balanceAmount.toFixed(2)}
-                        </Text>
-                      </Table.Td>
-                    </Table.Tr>
-                  ))}
-            </Table.Tbody>
-          </Table>
-        </div>
-        <Modal
-          opened={openModal}
-          onClose={handleCloseModal}
-          title={editingBalance ? "Edit Balance" : "Add a Balance"}
-          size="sm"
-          centered
-        >
+    <PageContainer title="Balance History">
+      <Container size="sm" px="md">
+        <Group justify="space-between" align="flex-end" mb="md">
+          <Box style={{ minWidth: 0, flex: 1 }}>
+            <Text size="3xl" fw={800} mb="xs">Balance History</Text>
+            <Text size="sm" c="dimmed">Tap a row to edit or delete.</Text>
+          </Box>
+        </Group>
+
+        <PullToRefreshHint />
+        <Box className="ios-list">
+          <Stack gap={0}>
+            {!balances
+              ? Array.from({ length: 6 }).map((_, i) => (
+                  <Box key={i} className="ios-list-item" p="md">
+                    <Skeleton height={18} radius="sm" />
+                  </Box>
+                ))
+              : balances.map((balance: any, i: number) => (
+                  <Box
+                    key={balance._id}
+                    className="ios-list-item"
+                    p="md"
+                    onClick={() => handleOpenModal(balance)}
+                    style={{ cursor: "pointer" }}
+                  >
+                    <Group justify="space-between" align="center" wrap="nowrap">
+                      <Text size="sm" c="dimmed">{balance.balanceDate}</Text>
+                      <Group gap="xs" wrap="nowrap" style={{ flexShrink: 0 }}>
+                        <Text size="sm" fw={600}>₱{balance.balanceAmount.toFixed(2)}</Text>
+                        <IconChevronRight size={16} color="#8E8E93" />
+                      </Group>
+                    </Group>
+                  </Box>
+                ))}
+          </Stack>
+        </Box>
+
+        <Modal opened={openModal} onClose={handleCloseModal} title={editingBalance ? "Edit Balance" : "Add a Balance"} size="sm" centered>
           <form onSubmit={handleSubmit}>
             <Stack gap="md">
-              <TextInput
-                label="Amount"
-                name="balanceAmount"
-                type="number"
-                value={newBalance.balanceAmount}
-                onChange={handleInputChange}
-                required
-              />
-              <TextInput
-                label="Date"
-                name="balanceDate"
-                value={newBalance.balanceDate}
-                onChange={(e) =>
-                  setNewBalance({ ...newBalance, balanceDate: e.target.value })
-                }
-                placeholder="e.g., January 15"
-                required
-              />
+              <TextInput label="Amount" name="balanceAmount" type="number" value={newBalance.balanceAmount} onChange={handleInputChange} required />
+              <TextInput label="Date" name="balanceDate" value={newBalance.balanceDate} onChange={(e) => setNewBalance({ ...newBalance, balanceDate: e.target.value })} placeholder="e.g., January 15" required />
               <Group justify="space-between">
                 {editingBalance && (
-                  <Button
-                    variant="filled"
-                    color="red"
-                    onClick={handleDeleteBalance}
-                  >
-                    Delete
-                  </Button>
+                  <Button variant="filled" color="red" onClick={handleDeleteBalance}>Delete</Button>
                 )}
-                <Button type="submit" color="blue">
-                  {editingBalance ? "Update" : "Add"}
-                </Button>
+                <Button type="submit" color="blue">{editingBalance ? "Update" : "Add"}</Button>
               </Group>
             </Stack>
           </form>
         </Modal>
-      </>
-    </DashboardCard>
+      </Container>
+    </PageContainer>
   );
 };
 

@@ -23,14 +23,7 @@ export default function RootLayout({
       </Unauthenticated>
 
       <Authenticated>
-        <Stack
-          className="mainwrapper"
-          style={{
-            minHeight: "100vh",
-            width: "100%",
-          }}
-          gap={0}
-        >
+        <Stack className="mainwrapper" style={{ minHeight: "100vh", width: "100%" }} gap={0}>
           <Sidebar
             isSidebarOpen={isSidebarOpen}
             isMobileSidebarOpen={false}
@@ -42,19 +35,17 @@ export default function RootLayout({
               flexGrow: 1,
               zIndex: 1,
               backgroundColor: "transparent",
-              marginLeft: lgUp ? "270px" : "0", // Account for fixed sidebar
+              marginLeft: lgUp ? "270px" : "0",
             }}
             gap={0}
           >
             <Header toggleMobileSidebar={() => {}} />
-            <Container
-              size="lg"
-              py="md"
-              style={{
-                paddingBottom: !lgUp ? "80px" : "20px", // Increased bottom padding for mobile
-              }}
-            >
-              <Stack style={{ minHeight: "calc(100vh - 170px)" }} gap={0}>
+            <Container px={'xl'} py={'xl'} mb={'xl'} style={{
+              paddingTop: "8px",
+              paddingBottom: !lgUp ? "calc(84px + env(safe-area-inset-bottom))" : "24px",
+              width: "100%",
+            }}>
+              <Stack gap="md" style={{ minHeight: "calc(100vh - 170px)" }}>
                 {children}
               </Stack>
             </Container>

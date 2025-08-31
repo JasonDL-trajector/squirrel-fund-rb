@@ -1,14 +1,9 @@
 import React, { useState, useEffect } from "react";
-import {
-  Paper,
-  Text,
-  Table,
-  Skeleton,
-  useMantineTheme,
-  Stack,
-} from "@mantine/core";
+import { Text, Table, Skeleton, useMantineTheme, Stack, Box } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { IconCheck } from "@tabler/icons-react";
+import DashboardCard from "@/app/(DashboardLayout)/components/shared/DashboardCard";
+import EmptyState from "../shared/EmptyState";
 import type { Loading } from "../../types/loading";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../../../convex/_generated/api";
@@ -31,6 +26,7 @@ const TabularSummary = ({ isLoading }: Loading) => {
           startDate.toLocaleDateString("en-US", {
             month: "long",
             day: "numeric",
+            year: "numeric",
           })
         );
         startDate.setDate(startDate.getDate() + 1);
@@ -64,82 +60,85 @@ const TabularSummary = ({ isLoading }: Loading) => {
   );
 
   const checkDepositExists = (deposits: any, email: string, date: string) => {
+    if (!Array.isArray(deposits)) return false;
+    // Create a date object from the date string to normalize it
+    const targetDate = new Date(date);
+    const targetDateString = targetDate.toLocaleDateString("en-US", {
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    });
+    
     return deposits.some(
-      (deposit: { email: string; depositDate: string }) =>
-        deposit.email === email && deposit.depositDate === date
+      (deposit: { email: string; depositDate: string }) => {
+        // Normalize the deposit date for comparison
+        const depositDate = new Date(deposit.depositDate);
+        const depositDateString = depositDate.toLocaleDateString("en-US", {
+          month: "long",
+          day: "numeric",
+          year: "numeric",
+        });
+        
+        return deposit.email === email && depositDateString === targetDateString;
+      }
     );
   };
 
   return (
-    <Paper
-      shadow="md"
-      p="md"
-      style={{
-        height: "100%",
-        transform: isMobile ? "scale(0.95)" : "none",
-        transformOrigin: "top center",
-      }}
-    >
-      <Stack gap="lg">
-        <Text
-          size="xl"
-          fw={600}
-          style={{
-            borderBottom: `1px solid ${theme.colors.gray[2]}`,
-            paddingBottom: theme.spacing.md,
-          }}
-        >
-          Tabular Summary
-        </Text>
-        <div style={{ maxHeight: 400, overflow: "auto" }}>
-          <Table size="sm">
-            <Table.Thead>
-              <Table.Tr>
-                <Table.Th align="center">Date</Table.Th>
-                <Table.Th align="center">Jason</Table.Th>
-                <Table.Th align="center">Ely</Table.Th>
-              </Table.Tr>
-            </Table.Thead>
-            {loading ? (
-              <LoadingSkeleton />
-            ) : (
-              <Table.Tbody>
-                {dateRange.map((date, index) => {
-                  const jasonDepositExists = checkDepositExists(
-                    deposits,
-                    "jasondl0517@gmail.com",
-                    date
-                  );
-                  const elyDepositExists = checkDepositExists(
-                    deposits,
-                    "deunachristelanne@gmail.com",
-                    date
-                  );
+    <DashboardCard title="Tabular Summary">
+      <Box style={{ maxHeight: 400, overflow: "auto" }}>
+        <Table>
+          <Table.Thead>
+            <Table.Tr>
+              <Table.Th align="center">Date</Table.Th>
+              <Table.Th align="center">Jason</Table.Th>
+              <Table.Th align="center">Ely</Table.Th>
+            </Table.Tr>
+          </Table.Thead>
+          {loading ? (
+            <LoadingSkeleton />
+          ) : Array.isArray(deposits) && deposits.length === 0 ? (
+            <EmptyState
+              title="No deposits yet"
+              description="There are no deposits recorded in the system."
+            />
+          ) : (
+            <Table.Tbody>
+              {dateRange.map((date, index) => {
+                const jasonDepositExists = checkDepositExists(
+                  deposits,
+                  "jasondl0517@gmail.com",
+                  date
+                );
+                const elyDepositExists = checkDepositExists(
+                  deposits,
+                  "deunachristelanne@gmail.com",
+                  date
+                );
 
-                  return (
-                    <Table.Tr key={index}>
-                      <Table.Td align="center">
-                        <Text size="sm">{date}</Text>
-                      </Table.Td>
-                      <Table.Td align="center">
-                        {jasonDepositExists ? (
-                          <IconCheck size={16} color={theme.colors.green[6]} />
-                        ) : null}
-                      </Table.Td>
-                      <Table.Td align="center">
-                        {elyDepositExists ? (
-                          <IconCheck size={16} color={theme.colors.green[6]} />
-                        ) : null}
-                      </Table.Td>
-                    </Table.Tr>
-                  );
-                })}
-              </Table.Tbody>
-            )}
-          </Table>
-        </div>
-      </Stack>
-    </Paper>
+                return (
+                  <Table.Tr key={index}>
+                    <Table.Td>
+                      <Text size="sm">{date}</Text>
+                    </Table.Td>
+                    <Table.Td align="center">
+                      {jasonDepositExists ? (
+                        <IconCheck size={16} color={theme.colors.green[6]} />
+                      ) : null}
+                    </Table.Td>
+                    <Table.Td align="center">
+                      {elyDepositExists ? (
+                        <IconCheck size={16} color={theme.colors.green[6]} />
+                      ) : null}
+                    </Table.Td>
+                  </Table.Tr>
+                );
+              })}
+            </Table.Tbody>
+          )}
+        </Table>
+      </Box>
+    </DashboardCard>
   );
 };
 

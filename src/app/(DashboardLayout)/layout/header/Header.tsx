@@ -1,5 +1,5 @@
 import React from "react";
-import { Group, ActionIcon, useMantineTheme } from "@mantine/core";
+import { Group, ActionIcon, Text, useMantineTheme } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import Profile from "./Profile";
 import { IconBellRinging } from "@tabler/icons-react";
@@ -23,10 +23,12 @@ const Header = ({ toggleMobileSidebar }: ItemType) => {
         position: "sticky",
         top: 0,
         zIndex: 1000,
-        background: theme.white,
-        borderBottom: `1px solid ${theme.colors.gray[2]}`,
-        backdropFilter: "blur(4px)",
-        minHeight: lgUp ? "70px" : "60px",
+        background: "rgba(255,255,255,0.75)",
+        borderBottom: `0.5px solid ${theme.colors.gray[2]}`,
+        backdropFilter: "saturate(180%) blur(12px)",
+        WebkitBackdropFilter: "saturate(180%) blur(12px)",
+        paddingTop: `calc(${theme.spacing.md} + env(safe-area-inset-top))`,
+        minHeight: lgUp ? "72px" : "64px",
       }}
     >
       {lgUp ? (
@@ -45,7 +47,7 @@ const Header = ({ toggleMobileSidebar }: ItemType) => {
         </>
       ) : (
         <>
-          <Logo />
+          <Text fw={700} size="xl">Squirrel Fund</Text>
           <Profile />
         </>
       )}

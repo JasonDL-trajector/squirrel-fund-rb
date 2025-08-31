@@ -1,5 +1,5 @@
 import React from "react";
-import { Paper, Text, Group, Stack, useMantineTheme } from "@mantine/core";
+import { Card, Text, Group, Stack, useMantineTheme, Box } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 
 type Props = {
@@ -10,8 +10,9 @@ type Props = {
   cardheading?: string | JSX.Element;
   headtitle?: string | JSX.Element;
   headsubtitle?: string | JSX.Element;
-  children?: JSX.Element;
+  children?: React.ReactNode;
   middlecontent?: string | JSX.Element;
+  borderless?: boolean;
 };
 
 const DashboardCard = ({
@@ -24,19 +25,18 @@ const DashboardCard = ({
   headtitle,
   headsubtitle,
   middlecontent,
+  borderless,
 }: Props) => {
   const theme = useMantineTheme();
   const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
 
   return (
-    <Paper
-      shadow="md"
-      p="md"
-      style={{
-        height: "100%",
-        transform: isMobile ? "scale(0.95)" : "none",
-        transformOrigin: "top center",
-      }}
+    <Card
+    
+      shadow={isMobile ? "sm" : "md"}
+      radius={isMobile ? 0 : "lg"}
+      p={'md'}
+     
     >
       {cardheading ? (
         <Stack gap="xs">
@@ -53,8 +53,14 @@ const DashboardCard = ({
             <Group
               justify="space-between"
               align="center"
-              pb="md"
-              style={{ borderBottom: `1px solid ${theme.colors.gray[2]}` }}
+              style={{
+                borderBottom: `1px solid ${theme.colors.gray[1]}`,
+                paddingBottom: isMobile ? theme.spacing.sm : theme.spacing.md,
+                paddingTop: isMobile ? theme.spacing.sm : theme.spacing.md,
+                // Always keep a consistent inner gutter so content doesn't touch edges
+                paddingLeft: theme.spacing.md,
+                paddingRight: theme.spacing.md,
+              }}
             >
               <Stack gap="xs">
                 {title && (
@@ -71,14 +77,16 @@ const DashboardCard = ({
               {action}
             </Group>
           ) : null}
-
-          {children}
+ 
+          <Box style={{ padding: theme.spacing.md }}>
+            {children}
+          </Box>
         </Stack>
       )}
-
+ 
       {middlecontent}
       {footer}
-    </Paper>
+    </Card>
   );
 };
 

@@ -1,5 +1,5 @@
 import React from "react";
-import { Group, ActionIcon, Paper, Text, useMantineTheme } from "@mantine/core";
+import { Group, ActionIcon, Paper, Text, useMantineTheme, Stack } from "@mantine/core";
 import { usePathname, useRouter } from "next/navigation";
 import {
   IconLayoutDashboard,
@@ -38,35 +38,41 @@ const BottomNavbar = () => {
 
   return (
     <Paper
-      shadow="md"
+      shadow="sm"
       style={{
         position: "fixed",
         bottom: 0,
         left: 0,
         right: 0,
         zIndex: 1300,
-        paddingBottom: theme.spacing.xs,
+        background: "rgba(255,255,255,0.75)",
+        backdropFilter: "saturate(180%) blur(20px)",
+        WebkitBackdropFilter: "saturate(180%) blur(20px)",
+        borderTop: `0.5px solid ${theme.colors.gray[2]}`,
+        paddingBottom: `calc(${theme.spacing.xs} + env(safe-area-inset-bottom))`,
       }}
     >
-      <Group justify="space-around" p="md">
+      <Group justify="space-around" p="sm">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = pathname === item.value;
 
           return (
-            <Group
+            <Stack
               key={item.value}
-              gap="xs"
+              gap={4}
+              align="center"
               style={{ cursor: "pointer" }}
               onClick={() => router.push(item.value)}
             >
               <ActionIcon
-                size="lg"
+                size={36}
                 variant={isActive ? "filled" : "subtle"}
                 color={isActive ? "blue" : "gray"}
                 aria-label={item.label}
+                radius="xl"
               >
-                <Icon size="1.5rem" stroke={1.5} />
+                <Icon size={22} stroke={1.6} />
               </ActionIcon>
               <Text
                 size="xs"
@@ -75,7 +81,7 @@ const BottomNavbar = () => {
               >
                 {item.label}
               </Text>
-            </Group>
+            </Stack>
           );
         })}
       </Group>

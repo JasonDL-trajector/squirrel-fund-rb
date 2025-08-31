@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { Paper, Stack, Text, useMantineTheme, Anchor } from "@mantine/core";
+import { Paper, Stack, Text, useMantineTheme, Anchor, Group } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 // components
 import PageContainer from "@/app/(DashboardLayout)/components/container/PageContainer";
@@ -50,8 +50,7 @@ const Register2 = () => {
                 </Text>
               }
               subtitle={
-                <Stack
-                  direction="row"
+                <Group
                   gap="xs"
                   justify="center"
                   align="center"
@@ -70,7 +69,7 @@ const Register2 = () => {
                   >
                     Sign In
                   </Anchor>
-                </Stack>
+                </Group>
               }
             />
           </Paper>

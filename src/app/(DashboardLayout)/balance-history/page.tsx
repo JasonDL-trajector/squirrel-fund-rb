@@ -1,12 +1,42 @@
 "use client";
 import React, { useState } from "react";
-import { Text, Skeleton, Modal, TextInput, Button, Stack, Group, Box, Container } from "@mantine/core";
+import {
+  Text,
+  Skeleton,
+  Modal,
+  TextInput,
+  Button,
+  Stack,
+  Group,
+  Box,
+  Container,
+  NumberInput,
+} from "@mantine/core";
 import { IconChevronRight } from "@tabler/icons-react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import PageContainer from "@/app/(DashboardLayout)/components/container/PageContainer";
 import PullToRefreshHint from "@/components/PullToRefreshHint";
 import { formatDisplayDate, ensureYear } from "@/utils/date";
+import { useForm } from "@mantine/form";
+import { zodResolver } from "mantine-form-zod-resolver";
+import { z } from "zod";
+import { notifications } from "@mantine/notifications";
+
+const balanceSchema = z.object({
+  balanceAmount: z.coerce.number().nonnegative("Enter a valid amount"),
+  balanceDate: z
+    .string()
+    .min(1, "Enter a valid date")
+    .refine(
+      (date) => {
+        // Validate date format and ensure it's a valid date
+        const parsed = new Date(date);
+        return !isNaN(parsed.getTime());
+      },
+      { message: "Enter a valid date format" }
+    ),
+});
 
 const BalanceHistory = () => {
   const balancesBase = useQuery(api.balances.listBalances);
@@ -17,47 +47,72 @@ const BalanceHistory = () => {
   const deleteBalance = useMutation(api.balances.deleteBalance);
   const [openModal, setOpenModal] = useState(false);
   const [editingBalance, setEditingBalance] = useState<any | null>(null);
-  const [newBalance, setNewBalance] = useState<Omit<any, "_id">>({
-    balanceAmount: 0,
-    balanceDate: new Date().toLocaleDateString("en-US", {
-      month: "long",
-      day: "numeric",
-      year: "numeric",
-    }),
+
+  const form = useForm({
+    mode: "controlled",
+    initialValues: {
+      balanceAmount: 0,
+      balanceDate: new Date().toLocaleDateString("en-US", {
+        month: "long",
+        day: "numeric",
+        year: "numeric",
+      }),
+    },
+    validate: zodResolver(balanceSchema),
   });
 
   const handleOpenModal = (balance: any) => {
     setEditingBalance(balance);
-    setNewBalance({
+    form.setValues({
       balanceAmount: balance.balanceAmount,
-      balanceDate: balance.balanceDate,
+      balanceDate: ensureYear(balance.balanceDate),
     });
+    form.clearErrors();
+    form.setTouched({ balanceAmount: false, balanceDate: false });
     setOpenModal(true);
   };
 
   const handleCloseModal = () => setOpenModal(false);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setNewBalance({ ...newBalance, [name]: value });
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (editingBalance) {
+  const handleSubmit = form.onSubmit(async (values) => {
+    if (!editingBalance) return;
+    try {
       await updateBalance({
         id: editingBalance._id,
-        balanceAmount: Number(newBalance.balanceAmount),
-        balanceDate: formatDisplayDate(newBalance.balanceDate),
+        balanceAmount: Number(values.balanceAmount),
+        balanceDate: formatDisplayDate(values.balanceDate),
+      });
+      notifications.show({
+        title: "Balance updated",
+        message: "Balance has been updated successfully",
+        color: "green",
+      });
+      handleCloseModal();
+    } catch (e) {
+      notifications.show({
+        title: "Update failed",
+        message: e instanceof Error ? e.message : "An error occurred",
+        color: "red",
       });
     }
-    handleCloseModal();
-  };
+  });
 
   const handleDeleteBalance = async () => {
-    if (editingBalance) {
+    if (!editingBalance) return;
+    try {
       await deleteBalance({ id: editingBalance._id });
+      notifications.show({
+        title: "Balance deleted",
+        message: "Balance has been deleted successfully",
+        color: "green",
+      });
       handleCloseModal();
+    } catch (e) {
+      notifications.show({
+        title: "Delete failed",
+        message: e instanceof Error ? e.message : "An error occurred",
+        color: "red",
+      });
     }
   };
 
@@ -66,15 +121,19 @@ const BalanceHistory = () => {
       <Container size="sm" px="md">
         <Group justify="space-between" align="flex-end" mb="md">
           <Box style={{ minWidth: 0, flex: 1 }}>
-            <Text size="3xl" fw={800} mb="xs">Balance History</Text>
-            <Text size="sm" c="dimmed">Tap a row to edit or delete.</Text>
+            <Text size="3xl" fw={800} mb="xs">
+              Balance History
+            </Text>
+            <Text size="sm" c="dimmed">
+              Tap a row to edit or delete.
+            </Text>
           </Box>
         </Group>
 
         <PullToRefreshHint />
         <Box className="ios-list">
           <Stack gap={0}>
-            {!balances
+            {balancesBase === undefined
               ? Array.from({ length: 6 }).map((_, i) => (
                   <Box key={i} className="ios-list-item" p="md">
                     <Skeleton height={18} radius="sm" />
@@ -89,9 +148,13 @@ const BalanceHistory = () => {
                     style={{ cursor: "pointer" }}
                   >
                     <Group justify="space-between" align="center" wrap="nowrap">
-                      <Text size="sm" c="dimmed">{ensureYear(balance.balanceDate)}</Text>
+                      <Text size="sm" c="dimmed">
+                        {ensureYear(balance.balanceDate)}
+                      </Text>
                       <Group gap="xs" wrap="nowrap" style={{ flexShrink: 0 }}>
-                        <Text size="sm" fw={600}>₱{balance.balanceAmount.toFixed(2)}</Text>
+                        <Text size="sm" fw={600}>
+                          ₱{balance.balanceAmount.toFixed(2)}
+                        </Text>
                         <IconChevronRight size={16} color="#8E8E93" />
                       </Group>
                     </Group>
@@ -100,16 +163,42 @@ const BalanceHistory = () => {
           </Stack>
         </Box>
 
-        <Modal opened={openModal} onClose={handleCloseModal} title={editingBalance ? "Edit Balance" : "Add a Balance"} size="sm" centered>
+        <Modal
+          opened={openModal}
+          onClose={handleCloseModal}
+          title={editingBalance ? "Edit Balance" : "Add a Balance"}
+          size="sm"
+          centered
+          radius="lg"
+        >
           <form onSubmit={handleSubmit}>
             <Stack gap="md">
-              <TextInput label="Amount" name="balanceAmount" type="number" value={newBalance.balanceAmount} onChange={handleInputChange} required />
-              <TextInput label="Date" name="balanceDate" value={newBalance.balanceDate} onChange={(e) => setNewBalance({ ...newBalance, balanceDate: e.target.value })} placeholder="e.g., January 15, 2025" required />
+              <NumberInput
+                label="Amount"
+                leftSection="₱"
+                min={0}
+                {...form.getInputProps("balanceAmount")}
+                key={form.key("balanceAmount")}
+              />
+              <TextInput
+                label="Date"
+                {...form.getInputProps("balanceDate")}
+                key={form.key("balanceDate")}
+                placeholder="e.g., January 15, 2025"
+              />
               <Group justify="space-between">
                 {editingBalance && (
-                  <Button variant="filled" color="red" onClick={handleDeleteBalance}>Delete</Button>
+                  <Button
+                    variant="filled"
+                    color="red"
+                    onClick={handleDeleteBalance}
+                  >
+                    Delete
+                  </Button>
                 )}
-                <Button type="submit" color="blue">{editingBalance ? "Update" : "Add"}</Button>
+                <Button type="submit" color="blue">
+                  {editingBalance ? "Update" : "Add"}
+                </Button>
               </Group>
             </Stack>
           </form>

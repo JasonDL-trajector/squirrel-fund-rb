@@ -18,11 +18,7 @@
   ],
   "icons": [
     { "src": "/android-chrome-192x192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
-    { "src": "/android-chrome-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" },
-    { "src": "/apple-touch-icon.png", "sizes": "120x120", "type": "image/png" },
-    { "src": "/apple-touch-icon.png", "sizes": "152x152", "type": "image/png" },
-    { "src": "/apple-touch-icon.png", "sizes": "167x167", "type": "image/png" },
-    { "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }
+    { "src": "/android-chrome-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
   ],
   "shortcuts": [
     {
@@ -46,18 +42,5 @@
       "type": "image/png",
       "label": "Dashboard"
     }
-  ],
-  "ios": {
-    "apple-touch-icon": [
-      { "src": "/apple-touch-icon.png", "sizes": "120x120" },
-      { "src": "/apple-touch-icon.png", "sizes": "152x152" },
-      { "src": "/apple-touch-icon.png", "sizes": "167x167" },
-      { "src": "/apple-touch-icon.png", "sizes": "180x180" }
-    ],
-    "statusBarStyle": "black-translucent",
-    "splash_screens": [
-      { "src": "/apple-touch-icon.png", "sizes": "828x1792", "media": "(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2)" },
-      { "src": "/apple-touch-icon.png", "sizes": "1640x2360", "media": "(device-width: 820px) and (device-height: 1180px) and (-webkit-device-pixel-ratio: 2)" }
-    ]
-  }
+  ]
 }

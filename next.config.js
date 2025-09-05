@@ -8,9 +8,9 @@ const nextConfig = {
     const securityHeaders = [
       { key: 'X-Content-Type-Options', value: 'nosniff' },
       { key: 'X-Frame-Options', value: 'DENY' },
-      { key: 'Referrer-Policy', value: 'no-referrer' },
-      { key: 'Permissions-Policy', value: 'geolocation=(), microphone=(), camera=(), payment=()' },
-      { key: 'Cross-Origin-Opener-Policy', value: 'same-origin' },
+      { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+      { key: 'Permissions-Policy', value: 'geolocation=(self), microphone=(self), camera=(self), payment=(self)' },
+      { key: 'Cross-Origin-Opener-Policy', value: 'same-origin-allow-popups' },
       { key: 'Cross-Origin-Resource-Policy', value: 'same-origin' },
       // Strict-Transport-Security is only effective over HTTPS (expected in production)
       { key: 'Strict-Transport-Security', value: 'max-age=63072000; includeSubDomains; preload' },
@@ -27,16 +27,13 @@ const nextConfig = {
         source: '/manifest.json',
         headers: [
           { key: 'Content-Type', value: 'application/manifest+json; charset=utf-8' },
-          { key: 'Cache-Control', value: 'public, max-age=86400, must-revalidate' },
+          { key: 'Cache-Control', value: 'public, max-age=0, must-revalidate' },
         ],
       },
-      // Icons and static PWA assets
-      {
-        source: '/:all*(png|svg|ico)',
-        headers: [
-          { key: 'Cache-Control', value: 'public, max-age=604800, immutable' },
-        ],
-      },
+      // Icons and static PWA assets (targeted to avoid staling dynamic media)
+      { source: '/favicon:all*', headers: [ { key: 'Cache-Control', value: 'public, max-age=604800, immutable' } ] },
+      { source: '/apple-touch-:all*', headers: [ { key: 'Cache-Control', value: 'public, max-age=604800, immutable' } ] },
+      { source: '/android-chrome-:all*', headers: [ { key: 'Cache-Control', value: 'public, max-age=604800, immutable' } ] },
       // Next.js build assets
       {
         source: '/_next/static/:path*',

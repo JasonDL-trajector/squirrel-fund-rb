@@ -10,8 +10,13 @@ import {
   Box,
   useMantineTheme,
   Skeleton,
+  Group,
 } from "@mantine/core";
-import { IconArrowDownRight, IconCurrencyPeso } from "@tabler/icons-react";
+import {
+  IconArrowDownRight,
+  IconCurrencyPeso,
+  IconDeviceFloppy,
+} from "@tabler/icons-react";
 import DashboardCard from "@/app/(DashboardLayout)/components/shared/DashboardCard";
 import EmptyState from "../shared/EmptyState";
 import { useUser } from "@clerk/nextjs";
@@ -132,7 +137,14 @@ const DailyDeposit = ({ isLoading }: Loading) => {
               >
                 ₱{dailydeposit}
               </Text>
-              <Box style={{ display: "flex", gap: theme.spacing.xs, margin: `${theme.spacing.xs} 0`, alignItems: "center" }}>
+              <Box
+                style={{
+                  display: "flex",
+                  gap: theme.spacing.xs,
+                  margin: `${theme.spacing.xs} 0`,
+                  alignItems: "center",
+                }}
+              >
                 <ActionIcon
                   size="sm"
                   variant="filled"
@@ -159,6 +171,10 @@ const DailyDeposit = ({ isLoading }: Loading) => {
         title="Edit Daily Deposit"
         size="sm"
         centered
+        radius="lg"
+        zIndex={2000}
+        overlayProps={{ blur: 4, opacity: 0.3 }}
+        withinPortal
       >
         <form onSubmit={handleSubmit}>
           <Stack gap="md">
@@ -169,9 +185,15 @@ const DailyDeposit = ({ isLoading }: Loading) => {
               onChange={handleDepositChange}
               required
             />
-            <Button type="submit" color="blue">
-              Save
-            </Button>
+            <Group justify="flex-end" gap="sm">
+              <Button
+                type="submit"
+                color="blue"
+                leftSection={<IconDeviceFloppy size={16} />}
+              >
+                Save
+              </Button>
+            </Group>
           </Stack>
         </form>
       </Modal>

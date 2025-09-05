@@ -1,8 +1,19 @@
 import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
-import { Group, Stack, Text, ActionIcon, Skeleton, Modal, TextInput, Button, useMantineTheme, Box } from "@mantine/core";
-import { IconArrowUpLeft } from "@tabler/icons-react";
+import {
+  Group,
+  Stack,
+  Text,
+  ActionIcon,
+  Skeleton,
+  Modal,
+  TextInput,
+  Button,
+  useMantineTheme,
+  Box,
+} from "@mantine/core";
+import { IconArrowUpLeft, IconDeviceFloppy } from "@tabler/icons-react";
 
 import DashboardCard from "@/app/(DashboardLayout)/components/shared/DashboardCard";
 import EmptyState from "../shared/EmptyState";
@@ -58,20 +69,22 @@ const CurrentBalance = ({ isLoading }: Loading) => {
   const optionscolumnchart: any = {
     chart: {
       type: "donut",
-      fontFamily: "'Plus Jakarta Sans', sans-serif;",
-      foreColor: "#adb0bb",
-      toolbar: {
-        show: false,
-      },
-      height: 155,
+      fontFamily: theme.fontFamily,
+      foreColor: "var(--mantine-color-gray-6)",
+      toolbar: { show: false },
+      height: 160,
     },
-    colors: [primary, primarylight, "#F9F9FD"],
+    colors: [
+      "var(--mantine-color-blue-6)",
+      "var(--mantine-color-blue-0)",
+      "var(--mantine-color-gray-1)",
+    ],
     plotOptions: {
       pie: {
         startAngle: 0,
         endAngle: 360,
         donut: {
-          size: "75%",
+          size: "76%",
           background: "transparent",
         },
       },
@@ -80,23 +93,13 @@ const CurrentBalance = ({ isLoading }: Loading) => {
       theme: "light",
       fillSeriesColor: false,
     },
-    stroke: {
-      show: false,
-    },
-    dataLabels: {
-      enabled: false,
-    },
-    legend: {
-      show: false,
-    },
+    stroke: { show: false },
+    dataLabels: { enabled: false },
+    legend: { show: false },
     responsive: [
       {
         breakpoint: 991,
-        options: {
-          chart: {
-            width: 120,
-          },
-        },
+        options: { chart: { width: 120 } },
       },
     ],
   };
@@ -108,9 +111,9 @@ const CurrentBalance = ({ isLoading }: Loading) => {
         <Stack style={{ flex: 1 }}>
           {isLoading ? (
             <>
-              <Skeleton height={40} width="80%" />
-              <Skeleton height={20} width="60%" />
-              <Skeleton height={20} width="40%" />
+              <Skeleton height={40} width="80%" radius="md" />
+              <Skeleton height={20} width="60%" radius="md" />
+              <Skeleton height={20} width="40%" radius="md" />
             </>
           ) : currentBalance === 0 ? (
             <EmptyState
@@ -122,6 +125,7 @@ const CurrentBalance = ({ isLoading }: Loading) => {
               <Text
                 size="3xl"
                 fw={700}
+                c="var(--mantine-color-text)"
                 style={{ cursor: "pointer" }}
                 onClick={handleOpenModal}
               >
@@ -129,12 +133,22 @@ const CurrentBalance = ({ isLoading }: Loading) => {
               </Text>
               <Group gap="xs" align="center">
                 <ActionIcon
-                  size="sm"
+                  size="md"
                   variant="filled"
                   color="green"
-                  style={{ backgroundColor: successlight }}
+                  radius="xl"
+                  styles={{
+                    root: {
+                      backgroundColor: "var(--mantine-color-green-0)",
+                      transition: "background 120ms ease, transform 120ms ease",
+                      "&:hover": {
+                        backgroundColor: "var(--mantine-color-green-1)",
+                      },
+                      "&:active": { transform: "translateY(1px)" },
+                    },
+                  }}
                 >
-                  <IconArrowUpLeft size={16} color="#39B69A" />
+                  <IconArrowUpLeft size={16} color={theme.colors.green[6]} />
                 </ActionIcon>
                 <Text size="sm" fw={600} c="green">
                   +9%
@@ -150,6 +164,10 @@ const CurrentBalance = ({ isLoading }: Loading) => {
                 title="Edit Current Balance"
                 size="sm"
                 centered
+                radius="lg"
+                zIndex={2000}
+                overlayProps={{ blur: 4, opacity: 0.3 }}
+                withinPortal
               >
                 <form onSubmit={handleSubmit}>
                   <Stack gap="md">
@@ -160,9 +178,15 @@ const CurrentBalance = ({ isLoading }: Loading) => {
                       onChange={handleBalanceChange}
                       required
                     />
-                    <Button type="submit" color="blue">
-                      Save
-                    </Button>
+                    <Group justify="flex-end" gap="sm">
+                      <Button
+                        type="submit"
+                        color="blue"
+                        leftSection={<IconDeviceFloppy size={16} />}
+                      >
+                        Save
+                      </Button>
+                    </Group>
                   </Stack>
                 </form>
               </Modal>

@@ -1,7 +1,10 @@
 /* Reset and base styles */
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 
-html, body {
+html,
+body {
   height: 100%;
   margin: 0;
   padding: 0;
@@ -9,232 +12,173 @@ html, body {
 
 /* Apple-like typography rendering */
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text",
+    "SF Pro Display", "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-  font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
-  background: #F5F5F7;
-  color: #1D1D1F;
+  font-feature-settings:
+    "kern" 1,
+    "liga" 1,
+    "calt" 1;
+  background: #f5f5f7;
+  color: #1d1d1f;
 }
 
 /* Dark mode disabled to avoid conflicts */
 
 /* Clerk component refinements (Apple accent + rounded) */
 .custom-button-class {
-  background-color: #0A84FF !important;
+  background-color: #0a84ff !important;
   color: white !important;
   padding: 10px 16px !important;
   font-size: 1rem !important;
   font-weight: 600 !important;
   border-radius: 10px !important;
   text-transform: none !important;
-  box-shadow: 0 1px 0 rgba(0,0,0,0.04) !important;
-  transition: transform 120ms ease, box-shadow 150ms ease !important;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04) !important;
+  transition:
+    transform 120ms ease,
+    box-shadow 150ms ease !important;
 }
-.custom-button-class:active { transform: translateY(1px); }
+.custom-button-class:active {
+  transform: translateY(1px);
+}
 
 .custom-input-class {
   padding: 10px 14px !important;
   font-size: 1rem !important;
-  border: 1px solid #E5E5EA !important;
+  border: 1px solid #e5e5ea !important;
   border-radius: 10px !important;
   background: white !important;
 }
 
 /* Mantine compatibility overrides */
-.mantine-Text-root { margin: 0; }
-.mantine-Paper-root { border-radius: 10px; }
+.mantine-Text-root {
+  margin: 0;
+}
+.mantine-Paper-root {
+  border-radius: 10px;
+}
 
 /* Sidebar scrollbar styles */
-.sidebar-scrollbar::-webkit-scrollbar { width: 7px; height: 7px; }
+.sidebar-scrollbar::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
 .sidebar-scrollbar::-webkit-scrollbar-thumb {
-  background-color: #E5E5EA;
+  background-color: #e5e5ea;
   border-radius: 16px;
 }
-.sidebar-scrollbar::-webkit-scrollbar-track { background: transparent; }
+.sidebar-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
 
 /* Subtle divider utility */
-.divider { border-color: #E5E5EA; }
-
-/* iOS card + list utilities for consistent look */
-.ios-card {
-  background: #ffffff;
-  border: 1px solid #E5E5EA;
-  border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.06), 0 4px 10px rgba(0,0,0,0.04);
+.divider {
+  border-color: #e5e5ea;
 }
 
-.ios-list {
-  background: #ffffff;
-  border: 1px solid #E5E5EA;
-  border-radius: 12px;
-  overflow: hidden;
-}
-
-.ios-list-item + .ios-list-item {
-  border-top: 1px solid #E5E5EA;
-}
-
-.ios-tint-blue { color: #0A84FF; }
-.ios-bg-tint-blue { background-color: #0A84FF; color: #fff; }
-
-
-/* Mobile full-bleed cards/lists */
+/* iOS card + list utilities for consistent look */ /* Mobile full-bleed cards/lists */
 @media (max-width: 48rem) {
-  .ios-card,
-  .ios-list {
-    border-radius: 0;
-    border-left: none;
-    border-right: none;
-  }
 }
 
 /* ==========================
    iOS Design System Additions
    ========================== */
 
-/* Safe area helpers */
-:root {
-  --safe-top: env(safe-area-inset-top);
-  --safe-right: env(safe-area-inset-right);
-  --safe-bottom: env(safe-area-inset-bottom);
-  --safe-left: env(safe-area-inset-left);
-  --ios-blue: #0A84FF;
-  --ios-gray-2: #E5E5EA;
-  --ios-gray-6: #8E8E93;
-  --ios-bg: #FFFFFF;
-  --ios-bg-secondary: #F2F2F7;
+/* Grouped list styling */ /* Dividers / separators */
+.divider-hairline {
+  border-top: 0.5px solid var(--mantine-color-gray-2);
+}
+.separator:before {
+  content: "";
+  display: block;
+  height: 1px;
+  background: var(--mantine-color-gray-2);
+  transform: scaleY(0.5);
 }
 
-.safe-area-padding { padding: var(--safe-top) var(--safe-right) var(--safe-bottom) var(--safe-left); }
-.safe-area-top { padding-top: var(--safe-top); }
-.safe-area-bottom { padding-bottom: var(--safe-bottom); }
-
-/* Grouped list styling */
-.ios-grouped-list {
-  margin: 12px 0;
-  background: transparent;
-}
-.ios-section {
-  margin: 16px 0;
-}
-.ios-section-header,
-.ios-section-footer {
-  color: rgba(60,60,67,0.6);
-  font-size: 0.88rem;
-  padding: 6px 16px;
-}
-.ios-section-header { padding-bottom: 4px; }
-.ios-section-footer { padding-top: 6px; }
-.ios-section-card {
-  background: var(--ios-bg);
-  border: 1px solid var(--ios-gray-2);
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.06), 0 4px 10px rgba(0,0,0,0.04);
-}
-.ios-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 14px 16px;
-  background: var(--ios-bg);
-}
-.ios-item + .ios-item { border-top: 0.5px solid var(--ios-gray-2); }
-.ios-item-description { color: rgba(60,60,67,0.6); font-size: 0.95rem; }
-
-/* Dividers / separators */
-.divider-hairline { border-top: 0.5px solid var(--ios-gray-2); }
-.separator:before { content: ""; display: block; height: 1px; background: var(--ios-gray-2); transform: scaleY(0.5); }
-
-/* Background patterns */
-.ios-background {
-  background: radial-gradient(1200px 400px at 50% -50%, #ffffff 0%, #f6f7fb 60%, #f2f3f7 100%);
-}
-
-/* Interactive elements */
-.btn-ios {
-  background: var(--ios-blue);
-  color: #fff;
-  border: none;
-  border-radius: 12px;
-  padding: 12px 16px;
-  font-weight: 600;
-  box-shadow: 0 1px 0 rgba(0,0,0,0.04);
-  transition: transform 120ms ease, box-shadow 150ms ease, background 150ms ease;
-}
-.btn-ios:active { transform: translateY(1px); }
-@media (hover: hover) {
-  .btn-ios:hover { filter: brightness(0.98); }
-}
-.highlight-ios { background: rgba(10,132,255,0.12); }
+/* Background patterns */ /* Interactive elements */
 
 /* Loading spinner & progress */
-@keyframes spin { to { transform: rotate(360deg); } }
-.ios-spinner {
-  width: 24px; height: 24px; border-radius: 50%;
-  border: 2px solid rgba(10,132,255,0.25);
-  border-top-color: var(--ios-blue);
-  animation: spin 0.8s linear infinite;
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+} /* Alerts / notifications */ /* Typography utilities */ /* Link styling */
+a {
+  color: var(--mantine-color-blue-6);
+  text-decoration: none;
 }
-.ios-progress {
-  height: 4px; border-radius: 999px; overflow: hidden; background: #E5E5EA;
+a:hover {
+  text-decoration: underline;
 }
-.ios-progress > span {
-  display: block; height: 100%; background: var(--ios-blue);
-  transition: width 180ms ease;
+::selection {
+  background: rgba(10, 132, 255, 0.25);
+  color: #000;
 }
-
-/* Alerts / notifications */
-.ios-alert {
-  background: #fff; border: 1px solid var(--ios-gray-2); border-radius: 12px; padding: 16px;
-  box-shadow: 0 8px 30px rgba(0,0,0,0.18);
-}
-.ios-alert-title { font-weight: 700; margin-bottom: 8px; }
-.ios-alert-message { color: rgba(60,60,67,0.75); }
-
-/* Typography utilities */
-.ios-large-title { font-size: 2.125rem; line-height: 2.75rem; font-weight: 700; }
-.ios-title1 { font-size: 1.75rem; line-height: 2.25rem; font-weight: 700; }
-.ios-title2 { font-size: 1.375rem; line-height: 1.8rem; font-weight: 700; }
-.ios-headline { font-size: 1.0625rem; line-height: 1.5rem; font-weight: 600; }
-.ios-body { font-size: 1.0625rem; line-height: 1.5rem; }
-.ios-callout { font-size: 1rem; line-height: 1.45rem; }
-.ios-subheadline { font-size: 0.9375rem; line-height: 1.4rem; }
-.ios-footnote { font-size: 0.8125rem; line-height: 1.2rem; }
-.ios-caption2 { font-size: 0.6875rem; line-height: 1rem; }
-
-/* Link styling */
-a { color: var(--ios-blue); text-decoration: none; }
-a:hover { text-decoration: underline; }
-::selection { background: rgba(10,132,255,0.25); color: #000; }
 
 /* Accessibility */
-:focus-visible { outline: 3px solid rgba(10,132,255,0.6); outline-offset: 2px; border-radius: 8px; }
+:focus-visible {
+  outline: 3px solid rgba(10, 132, 255, 0.6);
+  outline-offset: 2px;
+  border-radius: 8px;
+}
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation: none !important; transition: none !important; }
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
 }
 @media (forced-colors: active) {
-  .ios-card, .ios-list, .ios-section-card, .ios-alert { outline: 1px solid CanvasText; }
 }
 
 /* Device-specific tweaks */
-@media (max-width: 414px) { /* iPhone 11 width */
-  .tabbar-touch-target { padding-bottom: calc(12px + var(--safe-bottom)); }
-}
-@media (min-width: 820px) { /* iPad Air M2 logical width */
-  .tap-target-lg { min-height: 48px; padding: 12px 18px; }
-  .hoverable:hover { filter: brightness(0.98); }
+@media (min-width: 820px) {
+  /* iPad Air M2 logical width */
+  .tap-target-lg {
+    min-height: 48px;
+    padding: 12px 18px;
+  }
+  .hoverable:hover {
+    filter: brightness(0.98);
+  }
 }
 
 /* Utility classes */
-.rounded-10 { border-radius: 10px; }
-.shadow-ios { box-shadow: 0 6px 16px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04); }
-.p-4 { padding: 1rem; }
-.px-4 { padding-left: 1rem; padding-right: 1rem; }
-.py-2 { padding-top: .5rem; padding-bottom: .5rem; }
-.mt-2 { margin-top: .5rem; }
-.mb-2 { margin-bottom: .5rem; }
-.text-secondary { color: rgba(60,60,67,0.6); }
-.text-strong { font-weight: 700; }
+.rounded-10 {
+  border-radius: 10px;
+}
+.shadow-ios {
+  box-shadow:
+    0 6px 16px rgba(0, 0, 0, 0.08),
+    0 1px 2px rgba(0, 0, 0, 0.04);
+}
+.p-4 {
+  padding: 1rem;
+}
+.px-4 {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+.py-2 {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+.mt-2 {
+  margin-top: 0.5rem;
+}
+.mb-2 {
+  margin-bottom: 0.5rem;
+}
+.text-secondary {
+  color: rgba(60, 60, 67, 0.6);
+}
+.text-strong {
+  font-weight: 700;
+}
+
+/* iOS surface and navigation helpers */ /* Card structural helpers */ /* Touch target helpers */

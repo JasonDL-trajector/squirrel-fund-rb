@@ -11,10 +11,17 @@ import {
   Group,
   Stack,
   Box,
+  NumberInput,
 } from "@mantine/core";
-import { IconPlus, IconChevronRight } from "@tabler/icons-react";
+import { DatePickerInput } from "@mantine/dates";
+import "@mantine/dates/styles.css";
+import {
+  IconPlus,
+  IconChevronRight,
+  IconTrash,
+  IconDeviceFloppy,
+} from "@tabler/icons-react";
 import DashboardCard from "../shared/DashboardCard";
-import PullToRefreshHint from "@/components/PullToRefreshHint";
 import type { Loading } from "../../types/loading";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../../convex/_generated/api";
@@ -40,6 +47,7 @@ const Bills = ({ isLoading }: Loading) => {
   const deleteBill = useMutation(api.bills.deleteBill);
   const [openModal, setOpenModal] = useState(false);
   const [editingBill, setEditingBill] = useState<any | null>(null);
+  const [dueDate, setDueDate] = useState<Date | null>(new Date());
 
   const form = useForm({
     mode: "uncontrolled",
@@ -59,25 +67,34 @@ const Bills = ({ isLoading }: Loading) => {
   const handleOpenModal = () => {
     setEditingBill(null);
     form.reset();
+    setDueDate(new Date());
     setOpenModal(true);
   };
 
   const handleCloseModal = () => setOpenModal(false);
 
   const handleSubmit = form.onSubmit(async (values) => {
+    const dateStr = dueDate
+      ? dueDate.toLocaleDateString("en-US", {
+          month: "long",
+          day: "numeric",
+          year: "numeric",
+        })
+      : values.dueDate;
+
     if (editingBill) {
       await updateBill({
         id: editingBill._id,
         name: values.name,
         amount: Number(values.amount),
-        dueDate: formatDisplayDate(values.dueDate),
+        dueDate: formatDisplayDate(dateStr),
         status: values.status,
       });
     } else {
       await createBill({
         name: values.name,
         amount: Number(values.amount),
-        dueDate: formatDisplayDate(values.dueDate),
+        dueDate: formatDisplayDate(dateStr),
         status: values.status,
       });
     }
@@ -92,6 +109,13 @@ const Bills = ({ isLoading }: Loading) => {
       dueDate: bill.dueDate,
       status: bill.status,
     });
+    // Parse persisted display date back to Date for the picker
+    try {
+      const parsed = new Date(ensureYear(bill.dueDate));
+      setDueDate(isNaN(parsed.getTime()) ? new Date() : parsed);
+    } catch {
+      setDueDate(new Date());
+    }
     setOpenModal(true);
   };
 
@@ -122,21 +146,36 @@ const Bills = ({ isLoading }: Loading) => {
       }
     >
       <>
-        <PullToRefreshHint />
-        <Box className="ios-list">
+        <Box
+          style={{
+            background: "var(--mantine-color-white)",
+            border: "1px solid var(--mantine-color-gray-2)",
+            borderRadius: 12,
+            overflow: "hidden",
+          }}
+        >
           <Stack gap={0}>
             {isLoading || !bills
               ? Array.from({ length: 5 }).map((_, i) => (
-                  <Box key={i} className="ios-list-item" p="md">
+                  <Box
+                    key={i}
+                    p="md"
+                    style={{
+                      borderBottom: "1px solid var(--mantine-color-gray-1)",
+                    }}
+                  >
                     <Skeleton height={18} radius="sm" />
                   </Box>
                 ))
               : bills.map((bill) => (
                   <Box
                     key={bill._id}
-                    className="ios-list-item"
                     p="md"
-                    style={{ cursor: "pointer" }}
+                    style={{
+                      cursor: "pointer",
+                      background: "var(--mantine-color-white)",
+                      borderBottom: "1px solid var(--mantine-color-gray-1)",
+                    }}
                     onClick={() => handleBillClick(bill)}
                   >
                     <Group justify="space-between" align="center" wrap="nowrap">
@@ -167,7 +206,10 @@ const Bills = ({ isLoading }: Loading) => {
                         <Text size="sm" fw={600}>
                           ₱{bill.amount.toFixed(2)}
                         </Text>
-                        <IconChevronRight size={16} color="#8E8E93" />
+                        <IconChevronRight
+                          size={16}
+                          color="var(--mantine-color-gray-5)"
+                        />
                       </Group>
                     </Group>
                   </Box>
@@ -180,6 +222,9 @@ const Bills = ({ isLoading }: Loading) => {
           title={editingBill ? "Edit Bill" : "Add a Bill"}
           size="sm"
           centered
+          radius="lg"
+          zIndex={2000}
+          overlayProps={{ blur: 4, opacity: 0.3 }}
         >
           <form onSubmit={handleSubmit}>
             <Stack gap="md">
@@ -189,17 +234,42 @@ const Bills = ({ isLoading }: Loading) => {
                 {...form.getInputProps("name")}
                 key={form.key("name")}
               />
-              <TextInput
+              <NumberInput
                 label="Amount"
-                type="number"
+                leftSection="₱"
+                min={0}
+                hideControls
                 required
                 {...form.getInputProps("amount")}
                 key={form.key("amount")}
               />
-              <TextInput
+              <DatePickerInput
                 label="Due Date"
-                placeholder="e.g., January 15, 2025"
+                placeholder="Pick date"
+                value={dueDate}
+                dropdownType="popover"
+                popoverProps={{
+                  withinPortal: true,
+                  zIndex: 3001,
+                  position: "bottom-start",
+                }}
+                onChange={(d: any) => {
+                  const next = d instanceof Date ? d : d ? new Date(d) : null;
+                  setDueDate(next);
+                  const s = next
+                    ? next.toLocaleDateString("en-US", {
+                        month: "long",
+                        day: "numeric",
+                        year: "numeric",
+                      })
+                    : "";
+                  form.setFieldValue("dueDate", s);
+                }}
                 required
+              />
+              {/* Hidden field to satisfy form schema */}
+              <TextInput
+                type="hidden"
                 {...form.getInputProps("dueDate")}
                 key={form.key("dueDate")}
               />
@@ -210,21 +280,38 @@ const Bills = ({ isLoading }: Loading) => {
                   { value: "Paid", label: "Paid" },
                 ]}
                 required
+                comboboxProps={{
+                  withinPortal: true,
+                  zIndex: 3001,
+                  position: "bottom-start",
+                }}
                 {...form.getInputProps("status")}
                 key={form.key("status")}
               />
-              <Group justify="space-between">
+              <Group justify="flex-end" gap="sm">
                 {editingBill && (
                   <Button
-                    variant="filled"
+                    type="button"
+                    variant="light"
                     color="red"
+                    leftSection={<IconTrash size={16} />}
                     onClick={handleDeleteBill}
                   >
-                    Delete Bill
+                    Delete
                   </Button>
                 )}
-                <Button type="submit" color="blue">
-                  {editingBill ? "Update Bill" : "Add Bill"}
+                <Button
+                  type="submit"
+                  color="blue"
+                  leftSection={
+                    editingBill ? (
+                      <IconDeviceFloppy size={16} />
+                    ) : (
+                      <IconPlus size={16} />
+                    )
+                  }
+                >
+                  {editingBill ? "Update" : "Add"}
                 </Button>
               </Group>
             </Stack>

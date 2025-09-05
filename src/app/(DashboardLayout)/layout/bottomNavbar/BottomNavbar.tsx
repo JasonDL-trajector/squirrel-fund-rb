@@ -1,5 +1,12 @@
 import React from "react";
-import { Group, ActionIcon, Paper, Text, useMantineTheme, Stack } from "@mantine/core";
+import {
+  Group,
+  ActionIcon,
+  Paper,
+  Text,
+  useMantineTheme,
+  Stack,
+} from "@mantine/core";
 import { usePathname, useRouter } from "next/navigation";
 import {
   IconLayoutDashboard,
@@ -39,19 +46,21 @@ const BottomNavbar = () => {
   return (
     <Paper
       shadow="sm"
-      style={{
-        position: "fixed",
-        bottom: 0,
-        left: 0,
-        right: 0,
-        zIndex: 1300,
-        background: "rgba(255,255,255,0.75)",
-        backdropFilter: "saturate(180%) blur(20px)",
-        WebkitBackdropFilter: "saturate(180%) blur(20px)",
-        borderTop: `0.5px solid ${theme.colors.gray[2]}`,
-        paddingBottom: `calc(${theme.spacing.xs} + env(safe-area-inset-bottom))`,
+      styles={{
+        root: {
+          position: "fixed",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          zIndex: 1300,
+          background: "rgba(255,255,255,0.8)",
+          backdropFilter: "saturate(180%) blur(20px)",
+          WebkitBackdropFilter: "saturate(180%) blur(20px)",
+          borderTop: "0.5px solid var(--mantine-color-gray-2)",
+          paddingBottom: `calc(${theme.spacing.xs} + env(safe-area-inset-bottom))`,
+          boxShadow: theme.other?.ios?.shadows?.level1,
+        },
       }}
-      className="safe-area-bottom"
     >
       <Group justify="space-around" p="sm">
         {navItems.map((item) => {
@@ -72,7 +81,13 @@ const BottomNavbar = () => {
                 color={isActive ? "blue" : "gray"}
                 aria-label={item.label}
                 radius="xl"
-                className="tabbar-touch-target"
+                styles={{
+                  root: {
+                    transition: "background 120ms ease, transform 120ms ease",
+                    "&:hover": { background: "var(--mantine-color-gray-0)" },
+                    "&:active": { transform: "translateY(1px)" },
+                  },
+                }}
               >
                 <Icon size={22} stroke={1.6} />
               </ActionIcon>

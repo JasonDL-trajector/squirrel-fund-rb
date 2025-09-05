@@ -28,58 +28,68 @@ const Dashboard = () => {
 
   return (
     <PageContainer title="Squirrel Fund" description="Squirrel Fund">
-      <Stack gap="lg">
+      <Stack
+        gap="lg"
+        styles={{ root: { backgroundColor: "var(--mantine-color-gray-0)" } }}
+      >
         <Box>
-          <Text size="3xl" fw={800} mb="sm">
+          <Text
+            size="3xl"
+            fw={800}
+            c="var(--mantine-color-text)"
+            mt="xs"
+            mb="xs"
+          >
             Dashboard
           </Text>
         </Box>
-        <Box>
-          <Text size="xs" c="dimmed" mb={4}>
-            Overview
-          </Text>
-          <SimpleGrid cols={{ base: 1, sm: 2 }} spacing={"md"}>
-            <Box style={{ width: "100%" }}>
+
+        <Box p="md">
+          <SimpleGrid
+            cols={{ base: 1, sm: 2, md: 2 }}
+            spacing="md"
+            style={{ alignItems: "stretch" }}
+          >
+            <Box style={{ width: "100%", height: "100%" }}>
               <CurrentBalance isLoading={isLoading} />
             </Box>
-            <Box style={{ width: "100%" }}>
+            <Box style={{ width: "100%", height: "100%" }}>
               <DailyDeposit isLoading={isLoading} />
             </Box>
           </SimpleGrid>
         </Box>
 
-        <Box>
-          <Text size="xs" c="dimmed" mb={4}>
-            Activity
-          </Text>
-          <SimpleGrid cols={{ base: 1, md: 2 }} spacing="md">
-            <Box style={{ width: "100%" }}>
+        <Box p="md">
+          <SimpleGrid
+            cols={{ base: 1, sm: 2, md: 2 }}
+            spacing="md"
+            style={{ alignItems: "stretch" }}
+          >
+            <Box style={{ width: "100%", height: "100%" }}>
               <BalanceHistory isLoading={isLoading} />
             </Box>
-            <Box style={{ width: "100%" }}>
+            <Box style={{ width: "100%", height: "100%" }}>
               <TabularSummary isLoading={isLoading} />
             </Box>
           </SimpleGrid>
         </Box>
 
-        <Box>
-          <Text size="xs" c="dimmed" mb={4}>
-            Recent
-          </Text>
-          <SimpleGrid cols={{ base: 1, md: 2 }} spacing="md">
-            <Box style={{ width: "100%" }}>
+        <Box p="md">
+          <SimpleGrid
+            cols={{ base: 1, sm: 2, md: 2 }}
+            spacing="md"
+            style={{ alignItems: "stretch" }}
+          >
+            <Box style={{ width: "100%", height: "100%" }}>
               <RecentDeposits isLoading={isLoading} />
             </Box>
-            <Box style={{ width: "100%" }}>
+            <Box style={{ width: "100%", height: "100%" }}>
               <RecentWithdrawals isLoading={isLoading} />
             </Box>
           </SimpleGrid>
         </Box>
 
-        <Box style={{ marginBottom: theme.spacing.xl }}>
-          <Text size="xs" c="dimmed" mb={4}>
-            Scheduled
-          </Text>
+        <Box p="md">
           <Bills isLoading={isLoading} />
         </Box>
       </Stack>

@@ -12,11 +12,14 @@ import {
   Container,
   NumberInput,
 } from "@mantine/core";
-import { IconChevronRight } from "@tabler/icons-react";
+import {
+  IconChevronRight,
+  IconTrash,
+  IconDeviceFloppy,
+} from "@tabler/icons-react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import PageContainer from "@/app/(DashboardLayout)/components/container/PageContainer";
-import PullToRefreshHint from "@/components/PullToRefreshHint";
 import { formatDisplayDate, ensureYear } from "@/utils/date";
 import { useForm } from "@mantine/form";
 import { zodResolver } from "mantine-form-zod-resolver";
@@ -130,22 +133,37 @@ const BalanceHistory = () => {
           </Box>
         </Group>
 
-        <PullToRefreshHint />
-        <Box className="ios-list">
+        <Box
+          style={{
+            background: "var(--mantine-color-white)",
+            border: "1px solid var(--mantine-color-gray-2)",
+            borderRadius: 12,
+            overflow: "hidden",
+          }}
+        >
           <Stack gap={0}>
             {balancesBase === undefined
               ? Array.from({ length: 6 }).map((_, i) => (
-                  <Box key={i} className="ios-list-item" p="md">
+                  <Box
+                    key={i}
+                    p="md"
+                    style={{
+                      borderBottom: "1px solid var(--mantine-color-gray-1)",
+                    }}
+                  >
                     <Skeleton height={18} radius="sm" />
                   </Box>
                 ))
               : balances.map((balance: any, i: number) => (
                   <Box
                     key={balance._id}
-                    className="ios-list-item"
                     p="md"
                     onClick={() => handleOpenModal(balance)}
-                    style={{ cursor: "pointer" }}
+                    style={{
+                      cursor: "pointer",
+                      background: "var(--mantine-color-white)",
+                      borderBottom: "1px solid var(--mantine-color-gray-1)",
+                    }}
                   >
                     <Group justify="space-between" align="center" wrap="nowrap">
                       <Text size="sm" c="dimmed">
@@ -155,7 +173,10 @@ const BalanceHistory = () => {
                         <Text size="sm" fw={600}>
                           ₱{balance.balanceAmount.toFixed(2)}
                         </Text>
-                        <IconChevronRight size={16} color="#8E8E93" />
+                        <IconChevronRight
+                          size={16}
+                          color="var(--mantine-color-gray-5)"
+                        />
                       </Group>
                     </Group>
                   </Box>
@@ -170,6 +191,9 @@ const BalanceHistory = () => {
           size="sm"
           centered
           radius="lg"
+          zIndex={2000}
+          overlayProps={{ blur: 4, opacity: 0.3 }}
+          withinPortal
         >
           <form onSubmit={handleSubmit}>
             <Stack gap="md">
@@ -186,17 +210,23 @@ const BalanceHistory = () => {
                 key={form.key("balanceDate")}
                 placeholder="e.g., January 15, 2025"
               />
-              <Group justify="space-between">
+              <Group justify="flex-end" gap="sm">
                 {editingBalance && (
                   <Button
-                    variant="filled"
+                    type="button"
+                    variant="light"
                     color="red"
+                    leftSection={<IconTrash size={16} />}
                     onClick={handleDeleteBalance}
                   >
                     Delete
                   </Button>
                 )}
-                <Button type="submit" color="blue">
+                <Button
+                  type="submit"
+                  color="blue"
+                  leftSection={<IconDeviceFloppy size={16} />}
+                >
                   {editingBalance ? "Update" : "Add"}
                 </Button>
               </Group>

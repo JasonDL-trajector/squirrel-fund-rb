@@ -19,16 +19,19 @@ const Header = ({ toggleMobileSidebar }: ItemType) => {
       justify="space-between"
       align="center"
       p="md"
-      style={{
-        position: "sticky",
-        top: 0,
-        zIndex: 1000,
-        background: "rgba(255,255,255,0.75)",
-        borderBottom: `0.5px solid ${theme.colors.gray[2]}`,
-        backdropFilter: "saturate(180%) blur(12px)",
-        WebkitBackdropFilter: "saturate(180%) blur(12px)",
-        paddingTop: `calc(${theme.spacing.md} + env(safe-area-inset-top))`,
-        minHeight: lgUp ? "72px" : "64px",
+      styles={{
+        root: {
+          position: "sticky",
+          top: 0,
+          zIndex: 1000,
+          background: "rgba(255,255,255,0.8)",
+          borderBottom: "0.5px solid var(--mantine-color-gray-2)",
+          backdropFilter: "saturate(180%) blur(20px)",
+          WebkitBackdropFilter: "saturate(180%) blur(20px)",
+          paddingTop: `calc(${theme.spacing.md} + env(safe-area-inset-top))`,
+          minHeight: lgUp ? "72px" : "64px",
+          boxShadow: theme.other?.ios?.shadows?.level1,
+        },
       }}
     >
       {lgUp ? (
@@ -38,7 +41,15 @@ const Header = ({ toggleMobileSidebar }: ItemType) => {
               size="lg"
               variant="subtle"
               color="gray"
+              radius="xl"
               aria-label="show notifications"
+              styles={{
+                root: {
+                  transition: "background 120ms ease, transform 120ms ease",
+                  "&:hover": { background: "var(--mantine-color-gray-0)" },
+                  "&:active": { transform: "translateY(1px)" },
+                },
+              }}
             >
               <IconBellRinging size="21" stroke="1.5" />
             </ActionIcon>
@@ -47,7 +58,9 @@ const Header = ({ toggleMobileSidebar }: ItemType) => {
         </>
       ) : (
         <>
-          <Text fw={700} size="xl">Squirrel Fund</Text>
+          <Text fw={700} size="xl" c="var(--mantine-color-text)">
+            Squirrel Fund
+          </Text>
           <Profile />
         </>
       )}

@@ -1,5 +1,4 @@
 import DashboardCard from "@/app/(DashboardLayout)/components/shared/DashboardCard";
-import PullToRefreshHint from "@/components/PullToRefreshHint";
 import { useQuery } from "convex/react";
 import { api } from "../../../../../convex/_generated/api";
 import EmptyState from "../shared/EmptyState";
@@ -13,10 +12,21 @@ const RecentWithdrawals = ({ isLoading }: Loading) => {
   const withdraws = useQuery(api.withdraws.listRecentWithdraws);
 
   const LoadingSkeleton = () => (
-    <Box className="ios-list">
+    <Box
+      style={{
+        background: "var(--mantine-color-white)",
+        border: "1px solid var(--mantine-color-gray-2)",
+        borderRadius: 12,
+        overflow: "hidden",
+      }}
+    >
       <Stack gap={0}>
         {[...Array(5)].map((_, i) => (
-          <Box key={i} className="ios-list-item" p="md">
+          <Box
+            key={i}
+            p="md"
+            style={{ borderBottom: "1px solid var(--mantine-color-gray-1)" }}
+          >
             <Skeleton height={18} radius="sm" />
           </Box>
         ))}
@@ -26,7 +36,6 @@ const RecentWithdrawals = ({ isLoading }: Loading) => {
 
   return (
     <DashboardCard title="Recent Withdrawals">
-      <PullToRefreshHint />
       {isLoading ? (
         <LoadingSkeleton />
       ) : !withdraws || withdraws.length === 0 ? (
@@ -35,20 +44,49 @@ const RecentWithdrawals = ({ isLoading }: Loading) => {
         </Text>
       ) : (
         <Link href="withdraw/history" style={{ textDecoration: "none" }}>
-          <Box className="ios-list">
+          <Box
+            style={{
+              background: "var(--mantine-color-white)",
+              border: "1px solid var(--mantine-color-gray-2)",
+              borderRadius: 12,
+              overflow: "hidden",
+            }}
+          >
             <Stack gap={0}>
               {withdraws.map((withdraw: any) => (
-                <Box key={withdraw._id} className="ios-list-item" p="md">
+                <Box
+                  key={withdraw._id}
+                  p="md"
+                  style={{
+                    background: "var(--mantine-color-white)",
+                    borderBottom: "1px solid var(--mantine-color-gray-1)",
+                  }}
+                >
                   <Group justify="space-between" align="center" wrap="nowrap">
                     <Stack gap={2} style={{ minWidth: 0 }}>
-                      <Text size="sm" fw={600} style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      <Text
+                        size="sm"
+                        fw={600}
+                        style={{
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
                         {withdraw.withdrawNote || withdraw.name}
                       </Text>
-                      <Text size="xs" c="dimmed">{withdraw.withdrawDate}</Text>
+                      <Text size="xs" c="dimmed">
+                        {withdraw.withdrawDate}
+                      </Text>
                     </Stack>
                     <Group gap="xs" wrap="nowrap" style={{ flexShrink: 0 }}>
-                      <Text size="sm" fw={600} c="red">-{formatAmount(withdraw.withdrawAmount)}</Text>
-                      <IconChevronRight size={16} color="#8E8E93" />
+                      <Text size="sm" fw={600} c="red">
+                        -{formatAmount(withdraw.withdrawAmount)}
+                      </Text>
+                      <IconChevronRight
+                        size={16}
+                        color="var(--mantine-color-gray-5)"
+                      />
                     </Group>
                   </Group>
                 </Box>

@@ -12,6 +12,7 @@ import {
   Group,
   useMantineTheme,
   Box,
+  Paper,
 } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { IconTablePlus } from "@tabler/icons-react";
@@ -119,7 +120,7 @@ const DepositPage = () => {
     <PageContainer title="Deposit">
       <Container size="sm" px="md">
         <Box>
-          <Group justify="space-between" align="center" mb="md">
+          <Group justify="space-between" align="flex-start" mb="md">
             <Box style={{ minWidth: 0, flex: 1 }}>
               <Text size="3xl" fw={800} mb="xs">
                 Deposit Funds
@@ -144,7 +145,16 @@ const DepositPage = () => {
 
           <form onSubmit={handleSubmit}>
             <Stack gap="lg">
-              <Box className="ios-card" style={{ padding: 12 }}>
+              <Paper
+                p="md"
+                styles={{
+                  root: {
+                    background: "var(--mantine-color-white)",
+                    border: "1px solid var(--mantine-color-gray-2)",
+                    borderRadius: 12,
+                  },
+                }}
+              >
                 <Stack gap="md">
                   <TextInput
                     label="Amount"
@@ -169,9 +179,18 @@ const DepositPage = () => {
                     key={form.key("note")}
                   />
                 </Stack>
-              </Box>
+              </Paper>
 
-              <Box className="ios-card" style={{ padding: 12 }}>
+              <Paper
+                p="md"
+                styles={{
+                  root: {
+                    background: "var(--mantine-color-white)",
+                    border: "1px solid var(--mantine-color-gray-2)",
+                    borderRadius: 12,
+                  },
+                }}
+              >
                 <SimpleGrid cols={2} spacing="md">
                   <Box>
                     <Text size="sm" c="dimmed">
@@ -200,7 +219,7 @@ const DepositPage = () => {
                     +{peso.format(totalAmount)}
                   </Text>
                 </Box>
-              </Box>
+              </Paper>
 
               <Stack mt="md">
                 <Button

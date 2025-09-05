@@ -23,28 +23,47 @@ export default function RootLayout({
       </Unauthenticated>
 
       <Authenticated>
-        <Stack className="mainwrapper" style={{ minHeight: "100vh", width: "100%" }} gap={0}>
+        <Stack
+          gap={0}
+          styles={{
+            root: {
+              minHeight: "100vh",
+              width: "100%",
+              backgroundColor: "var(--mantine-color-gray-0)",
+            },
+          }}
+        >
           <Sidebar
             isSidebarOpen={isSidebarOpen}
             isMobileSidebarOpen={false}
             onSidebarClose={() => {}}
           />
           <Stack
-            className="page-wrapper"
-            style={{
-              flexGrow: 1,
-              zIndex: 1,
-              backgroundColor: "transparent",
-              marginLeft: lgUp ? "270px" : "0",
-            }}
             gap={0}
+            styles={{
+              root: {
+                flexGrow: 1,
+                zIndex: 1,
+                backgroundColor: "transparent",
+                marginLeft: lgUp ? "270px" : "0",
+              },
+            }}
           >
             <Header toggleMobileSidebar={() => {}} />
-            <Container px={'xl'} py={'xl'} mb={'xl'} style={{
-              paddingTop: "8px",
-              paddingBottom: !lgUp ? "calc(84px + env(safe-area-inset-bottom))" : "24px",
-              width: "100%",
-            }}>
+            <Container
+              px={"xl"}
+              py={"xl"}
+              mb={"xl"}
+              role="main"
+              styles={{ root: { backgroundColor: "transparent" } }}
+              style={{
+                paddingTop: "8px",
+                paddingBottom: !lgUp
+                  ? "calc(84px + env(safe-area-inset-bottom))"
+                  : "24px",
+                width: "100%",
+              }}
+            >
               <Stack gap="md" style={{ minHeight: "calc(100vh - 170px)" }}>
                 {children}
               </Stack>

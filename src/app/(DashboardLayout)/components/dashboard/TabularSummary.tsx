@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Text, Table, Skeleton, useMantineTheme, Stack, Box } from "@mantine/core";
+import {
+  Text,
+  Table,
+  Skeleton,
+  useMantineTheme,
+  Stack,
+  Box,
+} from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { IconCheck } from "@tabler/icons-react";
 import DashboardCard from "@/app/(DashboardLayout)/components/shared/DashboardCard";
@@ -68,31 +75,63 @@ const TabularSummary = ({ isLoading }: Loading) => {
       day: "numeric",
       year: "numeric",
     });
-    
-    return deposits.some(
-      (deposit: { email: string; depositDate: string }) => {
-        // Normalize the deposit date for comparison
-        const depositDate = new Date(deposit.depositDate);
-        const depositDateString = depositDate.toLocaleDateString("en-US", {
-          month: "long",
-          day: "numeric",
-          year: "numeric",
-        });
-        
-        return deposit.email === email && depositDateString === targetDateString;
-      }
-    );
+
+    return deposits.some((deposit: { email: string; depositDate: string }) => {
+      // Normalize the deposit date for comparison
+      const depositDate = new Date(deposit.depositDate);
+      const depositDateString = depositDate.toLocaleDateString("en-US", {
+        month: "long",
+        day: "numeric",
+        year: "numeric",
+      });
+
+      return deposit.email === email && depositDateString === targetDateString;
+    });
   };
 
   return (
     <DashboardCard title="Tabular Summary">
-      <Box style={{ maxHeight: 400, overflow: "auto" }}>
-        <Table>
-          <Table.Thead>
+      <Box
+        style={{
+          maxHeight: 420,
+          overflow: "auto",
+          WebkitOverflowScrolling: "touch",
+          borderRadius: 12,
+        }}
+      >
+        <Table
+          styles={{
+            tr: {
+              backgroundColor: "var(--mantine-color-white)",
+              borderBottom: "1px solid var(--mantine-color-gray-1)",
+            },
+          }}
+        >
+          <Table.Thead
+            style={{
+              position: "sticky",
+              top: 0,
+              zIndex: 2,
+              background: "var(--mantine-color-white)",
+              boxShadow: "0 1px 0 var(--mantine-color-gray-2)",
+            }}
+          >
             <Table.Tr>
-              <Table.Th align="center">Date</Table.Th>
-              <Table.Th align="center">Jason</Table.Th>
-              <Table.Th align="center">Ely</Table.Th>
+              <Table.Th align="center">
+                <Text size="sm" fw={600} c="var(--mantine-color-text)">
+                  Date
+                </Text>
+              </Table.Th>
+              <Table.Th align="center">
+                <Text size="sm" fw={600} c="var(--mantine-color-text)">
+                  Jason
+                </Text>
+              </Table.Th>
+              <Table.Th align="center">
+                <Text size="sm" fw={600} c="var(--mantine-color-text)">
+                  Ely
+                </Text>
+              </Table.Th>
             </Table.Tr>
           </Table.Thead>
           {loading ? (
@@ -117,18 +156,31 @@ const TabularSummary = ({ isLoading }: Loading) => {
                 );
 
                 return (
-                  <Table.Tr key={index}>
+                  <Table.Tr
+                    key={index}
+                    style={{
+                      borderTop: "1px solid var(--mantine-color-gray-1)",
+                    }}
+                  >
                     <Table.Td>
-                      <Text size="sm">{date}</Text>
+                      <Text size="sm" c="var(--mantine-color-text)">
+                        {date}
+                      </Text>
                     </Table.Td>
                     <Table.Td align="center">
                       {jasonDepositExists ? (
-                        <IconCheck size={16} color={theme.colors.green[6]} />
+                        <IconCheck
+                          size={16}
+                          color="var(--mantine-color-green-6)"
+                        />
                       ) : null}
                     </Table.Td>
                     <Table.Td align="center">
                       {elyDepositExists ? (
-                        <IconCheck size={16} color={theme.colors.green[6]} />
+                        <IconCheck
+                          size={16}
+                          color="var(--mantine-color-green-6)"
+                        />
                       ) : null}
                     </Table.Td>
                   </Table.Tr>

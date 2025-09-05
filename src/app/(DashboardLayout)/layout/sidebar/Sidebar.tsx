@@ -23,35 +23,43 @@ const MSidebar = ({
   if (lgUp) {
     return (
       <Stack
-        style={{
-          width: sidebarWidth,
-          flexShrink: 0,
-          height: "100vh",
-          position: "fixed",
-          left: 0,
-          top: 0,
-          zIndex: 1000,
-          background: theme.white,
-          borderRight: `1px solid ${theme.colors.gray[2]}`,
-          overflowY: "auto",
-          overflowX: "hidden",
+        styles={{
+          root: {
+            width: sidebarWidth,
+            flexShrink: 0,
+            height: "100vh",
+            position: "fixed",
+            left: 0,
+            top: 0,
+            zIndex: 1000,
+            background: "var(--mantine-color-white)",
+            borderRight: "1px solid var(--mantine-color-gray-2)",
+            overflowY: "auto",
+            overflowX: "hidden",
+            backdropFilter: "saturate(180%) blur(16px)",
+            WebkitBackdropFilter: "saturate(180%) blur(16px)",
+            paddingTop: `calc(${theme.spacing.md} + env(safe-area-inset-top))`,
+            boxShadow: theme.other?.ios?.shadows?.level1,
+          },
         }}
-        className="sidebar-scrollbar"
       >
         {/* Desktop sidebar content */}
         <Stack style={{ height: "100%" }} gap={0}>
           {/* Logo section */}
           <Stack
             p="md"
-            style={{
-              borderBottom: `1px solid ${theme.colors.gray[2]}`,
+            styles={{
+              root: {
+                borderBottom: "1px solid var(--mantine-color-gray-2)",
+                background: "transparent",
+              },
             }}
           >
             <Logo />
           </Stack>
 
           {/* Navigation items */}
-          <Stack style={{ flex: 1 }} p="md">
+          <Stack p="md" gap="xs" styles={{ root: { flex: 1 } }}>
             <SidebarItems />
           </Stack>
         </Stack>

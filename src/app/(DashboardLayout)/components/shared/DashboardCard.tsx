@@ -32,12 +32,25 @@ const DashboardCard = ({
 
   return (
     <Card
-      className={!isMobile ? "ios-card" : undefined}
       shadow={isMobile ? "sm" : "md"}
-      radius={isMobile ? 0 : "lg"}
-      p={"md"}
+      radius={isMobile ? "lg" : "lg"}
+      p="md"
       withBorder
-      style={{ background: "#fff" }}
+      styles={{
+        root: {
+          background: isMobile
+            ? "var(--mantine-color-white)"
+            : "rgba(255,255,255,0.75)",
+          border: "1px solid var(--mantine-color-gray-2)",
+          backdropFilter: isMobile ? undefined : "saturate(180%) blur(16px)",
+          WebkitBackdropFilter: isMobile
+            ? undefined
+            : "saturate(180%) blur(16px)",
+          height: "100%",
+          display: "flex",
+          flexDirection: "column",
+        },
+      }}
     >
       {cardheading ? (
         <Stack gap="xs">
@@ -54,23 +67,24 @@ const DashboardCard = ({
             <Group
               justify="space-between"
               align="center"
-              style={{
-                borderBottom: `0.5px solid ${theme.colors.gray[2]}`,
-                paddingBottom: isMobile ? theme.spacing.sm : theme.spacing.md,
-                paddingTop: isMobile ? theme.spacing.sm : theme.spacing.md,
-                // Always keep a consistent inner gutter so content doesn't touch edges
-                paddingLeft: theme.spacing.md,
-                paddingRight: theme.spacing.md,
+              styles={{
+                root: {
+                  borderBottom: "0.5px solid var(--mantine-color-gray-2)",
+                  paddingBottom: isMobile ? theme.spacing.sm : theme.spacing.md,
+                  paddingTop: isMobile ? theme.spacing.sm : theme.spacing.md,
+                  paddingLeft: theme.spacing.md,
+                  paddingRight: theme.spacing.md,
+                },
               }}
             >
               <Stack gap="xs">
                 {title && (
-                  <Text size="xl" fw={600} className="ios-headline">
+                  <Text size="xl" fw={600} c="var(--mantine-color-text)">
                     {title}
                   </Text>
                 )}
                 {subtitle && (
-                  <Text size="sm" c="dimmed" className="text-secondary">
+                  <Text size="sm" c="dimmed">
                     {subtitle}
                   </Text>
                 )}
@@ -78,7 +92,13 @@ const DashboardCard = ({
               {action}
             </Group>
           ) : null}
-          <Box style={{ padding: theme.spacing.md }} className="safe-area-bottom">
+          <Box
+            style={{
+              padding: theme.spacing.md,
+              paddingBottom: `calc(${theme.spacing.md} + env(safe-area-inset-bottom))`,
+              flex: 1,
+            }}
+          >
             {children}
           </Box>
         </Stack>

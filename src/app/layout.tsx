@@ -7,8 +7,8 @@ export const metadata: Metadata = {
   description: "Manage your finances with Squirrel Fund",
   manifest: "/manifest.json",
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#0A84FF" },
-    { media: "(prefers-color-scheme: dark)", color: "#0A84FF" },
+    { media: "(prefers-color-scheme: light)", color: "#FFFFFF" },
+    { media: "(prefers-color-scheme: dark)", color: "#000000" },
   ],
   icons: {
     icon: [
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
   },
   appleWebApp: {
     capable: true,
-    statusBarStyle: "black-translucent",
+    statusBarStyle: "default",
     title: "Squirrel Fund",
   },
   formatDetection: { telephone: false },
@@ -34,7 +34,6 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
   viewportFit: "cover",
 };
 
@@ -78,7 +77,7 @@ export default function RootLayout({
         />
 
         {/* PWA meta */}
-        <meta name="theme-color" content="#0A84FF" />
+        <meta name="theme-color" content="#FFFFFF" />
         <link rel="manifest" href="/manifest.json" crossOrigin="use-credentials" />
 
         {/* Preconnect / DNS prefetch */}

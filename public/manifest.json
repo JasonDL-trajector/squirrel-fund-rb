@@ -4,6 +4,7 @@
   "description": "Manage your finances with Squirrel Fund",
   "lang": "en-US",
   "dir": "ltr",
+  "id": "/",
   "scope": "/",
   "start_url": "/?source=pwa",
   "display": "standalone",

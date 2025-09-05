@@ -7,6 +7,7 @@ import { api } from "../../../../../convex/_generated/api";
 import Link from "next/link";
 import PageContainer from "@/app/(DashboardLayout)/components/container/PageContainer";
 import PullToRefreshHint from "@/components/PullToRefreshHint";
+import { formatDisplayDate, ensureYear } from "@/utils/date";
 
 const WithdrawHistory = () => {
   const withdraws = useQuery(api.withdraws.listWithdraws);
@@ -50,7 +51,7 @@ const WithdrawHistory = () => {
         id: editingWithdrawal._id,
         name: newWithdrawal.name,
         withdrawAmount: Number(newWithdrawal.withdrawAmount),
-        withdrawDate: newWithdrawal.withdrawDate,
+        withdrawDate: formatDisplayDate(newWithdrawal.withdrawDate),
         withdrawNote: newWithdrawal.withdrawNote,
       });
     }
@@ -105,7 +106,7 @@ const WithdrawHistory = () => {
                   <Group justify="space-between" align="center" wrap="nowrap">
                     <Stack gap={2} style={{ minWidth: 0 }}>
                       <Text size="sm" fw={600} style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{withdraw.name}</Text>
-                      <Text size="xs" c="dimmed">{withdraw.withdrawDate}</Text>
+                      <Text size="xs" c="dimmed">{ensureYear(withdraw.withdrawDate)}</Text>
                       {withdraw.withdrawNote && (
                         <Text size="xs" c="dimmed" style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                           {withdraw.withdrawNote}
@@ -128,7 +129,7 @@ const WithdrawHistory = () => {
             <Stack gap="md">
               <TextInput label="Name" name="name" value={newWithdrawal.name} onChange={handleInputChange} required />
               <TextInput label="Amount" name="withdrawAmount" type="number" value={newWithdrawal.withdrawAmount} onChange={handleInputChange} required />
-              <TextInput label="Withdrawal Date" name="withdrawDate" value={newWithdrawal.withdrawDate} onChange={(e) => setNewWithdrawal({ ...newWithdrawal, withdrawDate: e.target.value })} placeholder="e.g., January 15" required />
+              <TextInput label="Withdrawal Date" name="withdrawDate" value={newWithdrawal.withdrawDate} onChange={(e) => setNewWithdrawal({ ...newWithdrawal, withdrawDate: e.target.value })} placeholder="e.g., January 15, 2025" required />
               <TextInput label="Note" name="withdrawNote" value={newWithdrawal.withdrawNote} onChange={handleInputChange} />
               <Group justify="space-between">
                 {editingWithdrawal && (

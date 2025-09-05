@@ -7,6 +7,7 @@ import { api } from "../../../../../convex/_generated/api";
 import Link from "next/link";
 import PageContainer from "@/app/(DashboardLayout)/components/container/PageContainer";
 import PullToRefreshHint from "@/components/PullToRefreshHint";
+import { formatDisplayDate, ensureYear } from "@/utils/date";
 
 const DepositsHistory = () => {
   const deposits = useQuery(api.deposits.listDeposits);
@@ -50,7 +51,7 @@ const DepositsHistory = () => {
         id: editingDeposit._id,
         name: newDeposit.name,
         depositAmount: Number(newDeposit.depositAmount),
-        depositDate: newDeposit.depositDate,
+        depositDate: formatDisplayDate(newDeposit.depositDate),
         depositNote: newDeposit.depositNote,
       });
     }
@@ -105,7 +106,7 @@ const DepositsHistory = () => {
                   <Group justify="space-between" align="center" wrap="nowrap">
                     <Stack gap={2} style={{ minWidth: 0 }}>
                       <Text size="sm" fw={600} style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{deposit.name}</Text>
-                      <Text size="xs" c="dimmed">{deposit.depositDate}</Text>
+                      <Text size="xs" c="dimmed">{ensureYear(deposit.depositDate)}</Text>
                       {deposit.depositNote && (
                         <Text size="xs" c="dimmed" style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                           {deposit.depositNote}
@@ -128,7 +129,7 @@ const DepositsHistory = () => {
             <Stack gap="md">
               <TextInput label="Name" name="name" value={newDeposit.name} onChange={handleInputChange} required />
               <TextInput label="Amount" name="depositAmount" type="number" value={newDeposit.depositAmount} onChange={handleInputChange} required />
-              <TextInput label="Deposit Date" name="depositDate" value={newDeposit.depositDate} onChange={(e) => setNewDeposit({ ...newDeposit, depositDate: e.target.value })} placeholder="e.g., January 15" required />
+              <TextInput label="Deposit Date" name="depositDate" value={newDeposit.depositDate} onChange={(e) => setNewDeposit({ ...newDeposit, depositDate: e.target.value })} placeholder="e.g., January 15, 2025" required />
               <TextInput label="Note" name="depositNote" value={newDeposit.depositNote} onChange={handleInputChange} />
               <Group justify="space-between">
                 {editingDeposit && (

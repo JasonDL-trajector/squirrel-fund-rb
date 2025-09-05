@@ -8,6 +8,7 @@ import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../../convex/_generated/api";
 import { Id } from "../../../../../convex/_generated/dataModel";
 import { ConvexError } from "convex/values";
+import { formatDisplayDate, ensureYear } from "@/utils/date";
 
 const Bills = ({ isLoading }: Loading) => {
   const bills = useQuery(api.bills.listBills);
@@ -22,6 +23,7 @@ const Bills = ({ isLoading }: Loading) => {
     dueDate: new Date().toLocaleDateString("en-US", {
       month: "long",
       day: "numeric",
+      year: "numeric",
     }),
     status: "Unpaid",
   });
@@ -34,6 +36,7 @@ const Bills = ({ isLoading }: Loading) => {
       dueDate: new Date().toLocaleDateString("en-US", {
         month: "long",
         day: "numeric",
+        year: "numeric",
       }),
       status: "Unpaid",
     });
@@ -66,14 +69,14 @@ const Bills = ({ isLoading }: Loading) => {
         id: editingBill._id,
         name: editingBill.name,
         amount: Number(editingBill.amount),
-        dueDate: editingBill.dueDate,
+        dueDate: formatDisplayDate(editingBill.dueDate),
         status: editingBill.status,
       });
     } else {
       await createBill({
         name: newBill.name,
         amount: Number(newBill.amount),
-        dueDate: newBill.dueDate,
+        dueDate: formatDisplayDate(newBill.dueDate),
         status: newBill.status,
       });
     }
@@ -134,7 +137,7 @@ const Bills = ({ isLoading }: Loading) => {
                         <Text size="sm" fw={600} style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                           {bill.name}
                         </Text>
-                        <Text size="xs" c="dimmed">Due {bill.dueDate}</Text>
+                        <Text size="xs" c="dimmed">Due {ensureYear(bill.dueDate)}</Text>
                       </Stack>
                       <Group gap="xs" wrap="nowrap" style={{ flexShrink: 0 }}>
                         <Badge color={getStatusColor(bill.status)} variant="light" size="sm">
@@ -177,7 +180,7 @@ const Bills = ({ isLoading }: Loading) => {
                 name="dueDate"
                 value={editingBill ? editingBill.dueDate : newBill.dueDate}
                 onChange={handleInputChange}
-                placeholder="e.g., January 15"
+                placeholder="e.g., January 15, 2025"
                 required
               />
               <Select

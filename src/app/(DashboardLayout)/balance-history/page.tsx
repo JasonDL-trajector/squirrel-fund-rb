@@ -6,6 +6,7 @@ import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import PageContainer from "@/app/(DashboardLayout)/components/container/PageContainer";
 import PullToRefreshHint from "@/components/PullToRefreshHint";
+import { formatDisplayDate, ensureYear } from "@/utils/date";
 
 const BalanceHistory = () => {
   const balancesBase = useQuery(api.balances.listBalances);
@@ -47,7 +48,7 @@ const BalanceHistory = () => {
       await updateBalance({
         id: editingBalance._id,
         balanceAmount: Number(newBalance.balanceAmount),
-        balanceDate: newBalance.balanceDate,
+        balanceDate: formatDisplayDate(newBalance.balanceDate),
       });
     }
     handleCloseModal();
@@ -88,7 +89,7 @@ const BalanceHistory = () => {
                     style={{ cursor: "pointer" }}
                   >
                     <Group justify="space-between" align="center" wrap="nowrap">
-                      <Text size="sm" c="dimmed">{balance.balanceDate}</Text>
+                      <Text size="sm" c="dimmed">{ensureYear(balance.balanceDate)}</Text>
                       <Group gap="xs" wrap="nowrap" style={{ flexShrink: 0 }}>
                         <Text size="sm" fw={600}>₱{balance.balanceAmount.toFixed(2)}</Text>
                         <IconChevronRight size={16} color="#8E8E93" />
@@ -103,7 +104,7 @@ const BalanceHistory = () => {
           <form onSubmit={handleSubmit}>
             <Stack gap="md">
               <TextInput label="Amount" name="balanceAmount" type="number" value={newBalance.balanceAmount} onChange={handleInputChange} required />
-              <TextInput label="Date" name="balanceDate" value={newBalance.balanceDate} onChange={(e) => setNewBalance({ ...newBalance, balanceDate: e.target.value })} placeholder="e.g., January 15" required />
+              <TextInput label="Date" name="balanceDate" value={newBalance.balanceDate} onChange={(e) => setNewBalance({ ...newBalance, balanceDate: e.target.value })} placeholder="e.g., January 15, 2025" required />
               <Group justify="space-between">
                 {editingBalance && (
                   <Button variant="filled" color="red" onClick={handleDeleteBalance}>Delete</Button>

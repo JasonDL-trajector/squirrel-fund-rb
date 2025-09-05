@@ -8,6 +8,7 @@ import { useQuery } from "convex/react";
 import { api } from "../../../../../convex/_generated/api";
 import Link from "next/link";
 import { useMediaQuery } from "@mantine/hooks";
+import { parseToISO, formatDisplayDate } from "@/utils/date";
 
 const BalanceHistory = ({ isLoading }: Loading) => {
   const listBalances = useQuery(api.balances.listBalances);
@@ -15,24 +16,20 @@ const BalanceHistory = ({ isLoading }: Loading) => {
   // chart color and responsive
   const theme = useMantineTheme();
   const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
-  // Prepare data for the chart (ensure chronological order and valid Date parsing)
-  const sortedBalances = (Array.isArray(listBalances) ? [...listBalances] : []).sort(
-    (a: any, b: any) =>
-      new Date(a.balanceDate).getTime() - new Date(b.balanceDate).getTime()
+  // Prepare data for the chart: robust parsing + chronological order
+  const base = Array.isArray(listBalances) ? listBalances : [];
+  const hydrated = base.map((b: any) => ({
+    ...b,
+    iso: typeof b.balanceDate === "string" ? parseToISO(b.balanceDate) : null,
+  }));
+  const valid = hydrated.filter((b: any) => b.iso !== null);
+  const sorted = valid.sort(
+    (a: any, b: any) => new Date(a.iso!).getTime() - new Date(b.iso!).getTime()
   );
-
-  // convert sorted balances into Mantine AreaChart data format
-  const chartData = sortedBalances.map((b: any) => {
-    const parsed = new Date(b.balanceDate);
-    // use ISO date string (YYYY-MM-DD) as dataKey so Mantine renders x-axis nicely
-    const dateKey = !isNaN(parsed.getTime())
-      ? parsed.toISOString().slice(0, 10)
-      : String(b.balanceDate);
-    return {
-      date: dateKey,
-      Balance: Number(b.balanceAmount) || 0,
-    };
-  });
+  const chartData = sorted.map((b: any) => ({
+    date: b.iso!,
+    Balance: Number(b.balanceAmount) || 0,
+  }));
 
   return (
     <>
@@ -52,6 +49,12 @@ const BalanceHistory = ({ isLoading }: Loading) => {
               dataKey="date"
               series={[{ name: "Balance", color: "blue.6" }]}
               curveType="monotone"
+              xAxisProps={{
+                tickFormatter: (value: string) => formatDisplayDate(value),
+              }}
+              tooltipProps={{
+                labelFormatter: (value: string) => formatDisplayDate(value),
+              }}
             />
           )}
         </DashboardCard>

@@ -1,14 +1,37 @@
 import React, { useState } from "react";
-import { Text, Badge, Skeleton, ActionIcon, Modal, TextInput, Button, Select, Group, Stack, Box } from "@mantine/core";
+import {
+  Text,
+  Badge,
+  Skeleton,
+  ActionIcon,
+  Modal,
+  TextInput,
+  Button,
+  Select,
+  Group,
+  Stack,
+  Box,
+} from "@mantine/core";
 import { IconPlus, IconChevronRight } from "@tabler/icons-react";
 import DashboardCard from "../shared/DashboardCard";
 import PullToRefreshHint from "@/components/PullToRefreshHint";
 import type { Loading } from "../../types/loading";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../../convex/_generated/api";
-import { Id } from "../../../../../convex/_generated/dataModel";
-import { ConvexError } from "convex/values";
 import { formatDisplayDate, ensureYear } from "@/utils/date";
+import { useForm } from "@mantine/form";
+import { zodResolver } from "mantine-form-zod-resolver";
+import { z } from "zod";
+
+const billSchema = z.object({
+  name: z
+    .string()
+    .min(1, "Bill name is required")
+    .max(100, "Name cannot exceed 100 characters"),
+  amount: z.number().positive("Amount must be greater than 0"),
+  dueDate: z.string().min(1, "Due date is required"),
+  status: z.enum(["Unpaid", "Paid"], { required_error: "Status is required" }),
+});
 
 const Bills = ({ isLoading }: Loading) => {
   const bills = useQuery(api.bills.listBills);
@@ -17,20 +40,10 @@ const Bills = ({ isLoading }: Loading) => {
   const deleteBill = useMutation(api.bills.deleteBill);
   const [openModal, setOpenModal] = useState(false);
   const [editingBill, setEditingBill] = useState<any | null>(null);
-  const [newBill, setNewBill] = useState<Omit<any, "_id">>({
-    name: "",
-    amount: 0,
-    dueDate: new Date().toLocaleDateString("en-US", {
-      month: "long",
-      day: "numeric",
-      year: "numeric",
-    }),
-    status: "Unpaid",
-  });
 
-  const handleOpenModal = () => {
-    setEditingBill(null);
-    setNewBill({
+  const form = useForm({
+    mode: "uncontrolled",
+    initialValues: {
       name: "",
       amount: 0,
       dueDate: new Date().toLocaleDateString("en-US", {
@@ -38,53 +51,47 @@ const Bills = ({ isLoading }: Loading) => {
         day: "numeric",
         year: "numeric",
       }),
-      status: "Unpaid",
-    });
+      status: "Unpaid" as "Unpaid" | "Paid",
+    },
+    validate: zodResolver(billSchema),
+  });
+
+  const handleOpenModal = () => {
+    setEditingBill(null);
+    form.reset();
     setOpenModal(true);
   };
 
   const handleCloseModal = () => setOpenModal(false);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    if (editingBill) {
-      setEditingBill({ ...editingBill, [name]: value });
-    } else {
-      setNewBill({ ...newBill, [name]: value });
-    }
-  };
-
-  const handleStatusChange = (value: string | null) => {
-    if (editingBill) {
-      setEditingBill({ ...editingBill, status: value });
-    } else {
-      setNewBill({ ...newBill, status: value });
-    }
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = form.onSubmit(async (values) => {
     if (editingBill) {
       await updateBill({
         id: editingBill._id,
-        name: editingBill.name,
-        amount: Number(editingBill.amount),
-        dueDate: formatDisplayDate(editingBill.dueDate),
-        status: editingBill.status,
+        name: values.name,
+        amount: Number(values.amount),
+        dueDate: formatDisplayDate(values.dueDate),
+        status: values.status,
       });
     } else {
       await createBill({
-        name: newBill.name,
-        amount: Number(newBill.amount),
-        dueDate: formatDisplayDate(newBill.dueDate),
-        status: newBill.status,
+        name: values.name,
+        amount: Number(values.amount),
+        dueDate: formatDisplayDate(values.dueDate),
+        status: values.status,
       });
     }
     handleCloseModal();
-  };
+  });
 
   const handleBillClick = (bill: any) => {
     setEditingBill(bill);
+    form.setValues({
+      name: bill.name,
+      amount: bill.amount,
+      dueDate: bill.dueDate,
+      status: bill.status,
+    });
     setOpenModal(true);
   };
 
@@ -134,16 +141,32 @@ const Bills = ({ isLoading }: Loading) => {
                   >
                     <Group justify="space-between" align="center" wrap="nowrap">
                       <Stack gap={2} style={{ minWidth: 0 }}>
-                        <Text size="sm" fw={600} style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        <Text
+                          size="sm"
+                          fw={600}
+                          style={{
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
                           {bill.name}
                         </Text>
-                        <Text size="xs" c="dimmed">Due {ensureYear(bill.dueDate)}</Text>
+                        <Text size="xs" c="dimmed">
+                          Due {ensureYear(bill.dueDate)}
+                        </Text>
                       </Stack>
                       <Group gap="xs" wrap="nowrap" style={{ flexShrink: 0 }}>
-                        <Badge color={getStatusColor(bill.status)} variant="light" size="sm">
+                        <Badge
+                          color={getStatusColor(bill.status)}
+                          variant="light"
+                          size="sm"
+                        >
                           {bill.status}
                         </Badge>
-                        <Text size="sm" fw={600}>₱{bill.amount.toFixed(2)}</Text>
+                        <Text size="sm" fw={600}>
+                          ₱{bill.amount.toFixed(2)}
+                        </Text>
                         <IconChevronRight size={16} color="#8E8E93" />
                       </Group>
                     </Group>
@@ -162,36 +185,33 @@ const Bills = ({ isLoading }: Loading) => {
             <Stack gap="md">
               <TextInput
                 label="Bill Name"
-                name="name"
-                value={editingBill ? editingBill.name : newBill.name}
-                onChange={handleInputChange}
                 required
+                {...form.getInputProps("name")}
+                key={form.key("name")}
               />
               <TextInput
                 label="Amount"
-                name="amount"
                 type="number"
-                value={editingBill ? editingBill.amount : newBill.amount}
-                onChange={handleInputChange}
                 required
+                {...form.getInputProps("amount")}
+                key={form.key("amount")}
               />
               <TextInput
                 label="Due Date"
-                name="dueDate"
-                value={editingBill ? editingBill.dueDate : newBill.dueDate}
-                onChange={handleInputChange}
                 placeholder="e.g., January 15, 2025"
                 required
+                {...form.getInputProps("dueDate")}
+                key={form.key("dueDate")}
               />
               <Select
                 label="Status"
-                value={editingBill ? editingBill.status : newBill.status}
-                onChange={handleStatusChange}
                 data={[
                   { value: "Unpaid", label: "Unpaid" },
                   { value: "Paid", label: "Paid" },
                 ]}
                 required
+                {...form.getInputProps("status")}
+                key={form.key("status")}
               />
               <Group justify="space-between">
                 {editingBill && (

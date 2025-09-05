@@ -1,18 +1,39 @@
 "use client";
 
 import { useState } from "react";
-import { SimpleGrid, TextInput, Button, Text, Container, ActionIcon, Stack, Group, useMantineTheme, Box } from "@mantine/core";
+import {
+  SimpleGrid,
+  TextInput,
+  Button,
+  Text,
+  Container,
+  ActionIcon,
+  Stack,
+  Group,
+  useMantineTheme,
+  Box,
+} from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { IconTablePlus } from "@tabler/icons-react";
 import { DatePickerInput } from "@mantine/dates";
-import '@mantine/dates/styles.css';
-import { showNotification } from '@mantine/notifications';
+import "@mantine/dates/styles.css";
+import { showNotification } from "@mantine/notifications";
 import PageContainer from "@/app/(DashboardLayout)/components/container/PageContainer";
 import { api } from "../../../../convex/_generated/api";
 import { useMutation, useQuery } from "convex/react";
 import { useUser } from "@clerk/clerk-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useForm } from "@mantine/form";
+import { zodResolver } from "mantine-form-zod-resolver";
+import { z } from "zod";
+const depositSchema = z.object({
+  amount: z.coerce.number().positive("Enter amount"),
+  dateRange: z.tuple([z.date(), z.date()]).refine(([s, e]) => s <= e, {
+    message: "Select a start and end date",
+  }),
+  note: z.string().max(100).optional(),
+});
 
 const DepositPage = () => {
   const { user } = useUser();
@@ -21,13 +42,19 @@ const DepositPage = () => {
   const createDeposit = useMutation(api.deposits.createDeposit);
   const createBalance = useMutation(api.balances.createBalance);
   const router = useRouter();
-  const [depositAmount, setDepositAmount] = useState(
-    Number(user?.unsafeMetadata.dailydeposit) || 0
-  );
-  // Mantine v8 DatePicker supports range mode. Store range as string tuple 'YYYY-MM-DD'.
-  // You can toggle to single DatePicker with type="range" if you prefer one input.
-  const [dateRange, setDateRange] = useState<[string | null, string | null]>([null, null]);
-  const [note, setNote] = useState<string>("");
+  const peso = new Intl.NumberFormat("en-PH", {
+    style: "currency",
+    currency: "PHP",
+  });
+  const form = useForm({
+    mode: "controlled",
+    initialValues: {
+      amount: Number(user?.unsafeMetadata.dailydeposit) || 0,
+      dateRange: [null, null] as [Date | null, Date | null],
+      note: "",
+    },
+    validate: zodResolver(depositSchema),
+  });
   const currentBalanceData = useQuery(api.balances.getCurrentBalance);
 
   let currentBalance = 0;
@@ -35,62 +62,58 @@ const DepositPage = () => {
     currentBalance = currentBalanceData.balanceAmount;
   }
 
-  const daysInRange = dateRange[0] && dateRange[1]
-  ? Math.ceil((new Date(dateRange[1]!).getTime() - new Date(dateRange[0]!).getTime()) / (1000 * 60 * 60 * 24)) + 1
-  : 1;
-const totalAmount = depositAmount * daysInRange;
+  const amount = Number(form.values.amount ?? 0);
+  const [start, end] = form.values.dateRange ?? [null, null];
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
- 
-    const [startStr, endStr] = dateRange;
-    if (startStr && endStr) {
-      const start = new Date(startStr);
-      const end = new Date(endStr);
- 
-      // Calculate inclusive number of days in the range
-      const daysInRange = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
- 
-      // Calculate daily deposit amount
-      const dailyAmount = depositAmount;
- 
-      // Create deposits for each day in the range (await each to ensure backend consistency)
+  const daysInRange =
+    start && end
+      ? Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1
+      : 1;
+  const totalAmount = amount * daysInRange;
+
+  const handleSubmit = form.onSubmit(async (values) => {
+    const [start, end] = values.dateRange;
+    if (start && end) {
+      const daysInRange =
+        Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) +
+        1;
+
+      const dailyAmount = Number(values.amount);
+
       for (let i = 0; i < daysInRange; i++) {
         const currentDate = new Date(start);
         currentDate.setDate(start.getDate() + i);
- 
-        // Backend stores full date with year to allow accurate comparisons
+
         const depositDateString = currentDate.toLocaleDateString("en-US", {
           month: "long",
           day: "numeric",
           year: "numeric",
         });
- 
+
         await createDeposit({
           name: user?.firstName ?? "User",
           email: String(user?.emailAddresses) ?? "User",
           depositAmount: dailyAmount,
           depositDate: depositDateString,
-          depositNote: note,
+          depositNote: values.note,
         });
- 
+
         await createBalance({
           balanceAmount: Number(currentBalance) + dailyAmount * (i + 1),
           balanceDate: depositDateString,
         });
       }
- 
-      // show success notification and redirect to dashboard after successful submission
+
       showNotification({
         title: "Deposit successful",
-        message: `Added ₱${totalAmount.toFixed(2)} to your balance`,
+        message: `Added ${peso.format(totalAmount)} to your balance`,
         color: "green",
       });
       router.push("/");
     } else {
       console.error("Date range not selected");
     }
-  };
+  });
 
   return (
     <PageContainer title="Deposit">
@@ -102,7 +125,8 @@ const totalAmount = depositAmount * daysInRange;
                 Deposit Funds
               </Text>
               <Text size="sm" c="dimmed">
-                Select a date range and enter the deposit details below. The amount will be distributed evenly across the selected days.
+                Select a date range and enter the deposit details below. The
+                amount will be distributed evenly across the selected days.
               </Text>
             </Box>
 
@@ -125,22 +149,25 @@ const totalAmount = depositAmount * daysInRange;
                   <TextInput
                     label="Amount"
                     type="number"
-                    value={depositAmount}
-                    onChange={(e) => setDepositAmount(Number(e.target.value))}
                     leftSection="₱"
                     required
+                    {...form.getInputProps("amount")}
+                    key={form.key("amount")}
                   />
 
                   <DatePickerInput
                     type="range"
                     label="Deposit Date Range"
                     placeholder="Pick date range"
-                    value={dateRange}
-                    onChange={setDateRange}
-                    allowSingleDateInRange
+                    {...form.getInputProps("dateRange")}
+                    key={form.key("dateRange")}
                   />
 
-                  <TextInput label="Note" value={note} onChange={(e) => setNote(e.target.value)} />
+                  <TextInput
+                    label="Note"
+                    {...form.getInputProps("note")}
+                    key={form.key("note")}
+                  />
                 </Stack>
               </Box>
 
@@ -151,7 +178,7 @@ const totalAmount = depositAmount * daysInRange;
                       Current Balance:
                     </Text>
                     <Text size="xl" fw={500}>
-                      ₱{currentBalance}
+                      {peso.format(currentBalance)}
                     </Text>
                   </Box>
                   <Box>
@@ -159,24 +186,30 @@ const totalAmount = depositAmount * daysInRange;
                       New Balance:
                     </Text>
                     <Text size="xl" fw={700} ta="right">
-                      ₱{currentBalance + totalAmount}
+                      {peso.format(currentBalance + totalAmount)}
                     </Text>
                   </Box>
                 </SimpleGrid>
                 <Box mt="sm">
-                  {dateRange[0] && dateRange[1] && (
+                  {start && end && (
                     <>
                       <Text size="sm">Total Amount to be added:</Text>
                     </>
                   )}
                   <Text size="lg" fw={700} c="green">
-                    +₱{totalAmount.toFixed(2)}
+                    +{peso.format(totalAmount)}
                   </Text>
                 </Box>
               </Box>
 
               <Stack mt="md">
-                <Button type="submit" variant="filled" color="blue" size={isMobile ? "md" : "lg"} fullWidth>
+                <Button
+                  type="submit"
+                  variant="filled"
+                  color="blue"
+                  size={isMobile ? "md" : "lg"}
+                  fullWidth
+                >
                   Deposit
                 </Button>
               </Stack>

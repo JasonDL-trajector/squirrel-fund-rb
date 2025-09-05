@@ -30,17 +30,19 @@ const Dashboard = () => {
     <PageContainer title="Squirrel Fund" description="Squirrel Fund">
       <Stack gap="lg">
         <Box>
-          <Text size="3xl" fw={800} mb="sm">Dashboard</Text>
+          <Text size="3xl" fw={800} mb="sm">
+            Dashboard
+          </Text>
         </Box>
         <Box>
           <Text size="xs" c="dimmed" mb={4}>
             Overview
           </Text>
-          <SimpleGrid cols={{ base: 1, sm: 2 }} spacing={'md'}>
-            <Box style={{ width: '100%' }}>
+          <SimpleGrid cols={{ base: 1, sm: 2 }} spacing={"md"}>
+            <Box style={{ width: "100%" }}>
               <CurrentBalance isLoading={isLoading} />
             </Box>
-            <Box style={{ width: '100%' }}>
+            <Box style={{ width: "100%" }}>
               <DailyDeposit isLoading={isLoading} />
             </Box>
           </SimpleGrid>
@@ -50,11 +52,11 @@ const Dashboard = () => {
           <Text size="xs" c="dimmed" mb={4}>
             Activity
           </Text>
-          <SimpleGrid cols={{ base: 1, md: 2 }} spacing='md'>
-            <Box style={{ width: '100%' }}>
+          <SimpleGrid cols={{ base: 1, md: 2 }} spacing="md">
+            <Box style={{ width: "100%" }}>
               <BalanceHistory isLoading={isLoading} />
             </Box>
-            <Box style={{ width: '100%' }}>
+            <Box style={{ width: "100%" }}>
               <TabularSummary isLoading={isLoading} />
             </Box>
           </SimpleGrid>
@@ -64,11 +66,11 @@ const Dashboard = () => {
           <Text size="xs" c="dimmed" mb={4}>
             Recent
           </Text>
-          <SimpleGrid cols={{ base: 1, md: 2 }} spacing='md'>
-            <Box style={{ width: '100%' }}>
+          <SimpleGrid cols={{ base: 1, md: 2 }} spacing="md">
+            <Box style={{ width: "100%" }}>
               <RecentDeposits isLoading={isLoading} />
             </Box>
-            <Box style={{ width: '100%' }}>
+            <Box style={{ width: "100%" }}>
               <RecentWithdrawals isLoading={isLoading} />
             </Box>
           </SimpleGrid>

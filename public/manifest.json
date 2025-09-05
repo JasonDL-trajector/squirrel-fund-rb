@@ -2,20 +2,61 @@
   "name": "Squirrel Fund",
   "short_name": "Squirrel Fund",
   "description": "Manage your finances with Squirrel Fund",
-  "start_url": "/",
+  "lang": "en-US",
+  "dir": "ltr",
+  "scope": "/",
+  "start_url": "/?source=pwa",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#1565c0",
+  "display_override": ["standalone", "fullscreen", "minimal-ui"],
+  "orientation": "portrait",
+  "background_color": "#FFFFFF",
+  "theme_color": "#0A84FF",
+  "categories": ["finance", "productivity"],
+  "protocol_handlers": [
+    { "protocol": "web+squirrel", "url": "/?q=%s" }
+  ],
   "icons": [
+    { "src": "/android-chrome-192x192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/android-chrome-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/apple-touch-icon.png", "sizes": "120x120", "type": "image/png" },
+    { "src": "/apple-touch-icon.png", "sizes": "152x152", "type": "image/png" },
+    { "src": "/apple-touch-icon.png", "sizes": "167x167", "type": "image/png" },
+    { "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }
+  ],
+  "shortcuts": [
     {
-      "src": "/android-chrome-192x192.png",
-      "sizes": "192x192",
-      "type": "image/png"
+      "name": "New Deposit",
+      "short_name": "Deposit",
+      "description": "Quickly add a deposit",
+      "url": "/deposit",
+      "icons": [{ "src": "/android-chrome-192x192.png", "sizes": "192x192", "type": "image/png" }]
     },
     {
-      "src": "/android-chrome-512x512.png",
-      "sizes": "512x512",
-      "type": "image/png"
+      "name": "New Withdrawal",
+      "short_name": "Withdraw",
+      "description": "Quickly add a withdrawal",
+      "url": "/withdraw",
+      "icons": [{ "src": "/android-chrome-192x192.png", "sizes": "192x192", "type": "image/png" }]
     }
-  ]
+  ],
+  "screenshots": [
+    {
+      "src": "/images/banner.png",
+      "type": "image/png",
+      "label": "Dashboard"
+    }
+  ],
+  "ios": {
+    "apple-touch-icon": [
+      { "src": "/apple-touch-icon.png", "sizes": "120x120" },
+      { "src": "/apple-touch-icon.png", "sizes": "152x152" },
+      { "src": "/apple-touch-icon.png", "sizes": "167x167" },
+      { "src": "/apple-touch-icon.png", "sizes": "180x180" }
+    ],
+    "statusBarStyle": "black-translucent",
+    "splash_screens": [
+      { "src": "/apple-touch-icon.png", "sizes": "828x1792", "media": "(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2)" },
+      { "src": "/apple-touch-icon.png", "sizes": "1640x2360", "media": "(device-width: 820px) and (device-height: 1180px) and (-webkit-device-pixel-ratio: 2)" }
+    ]
+  }
 }

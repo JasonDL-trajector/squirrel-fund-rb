@@ -51,6 +51,7 @@ const BottomNavbar = () => {
         borderTop: `0.5px solid ${theme.colors.gray[2]}`,
         paddingBottom: `calc(${theme.spacing.xs} + env(safe-area-inset-bottom))`,
       }}
+      className="safe-area-bottom"
     >
       <Group justify="space-around" p="sm">
         {navItems.map((item) => {
@@ -66,11 +67,12 @@ const BottomNavbar = () => {
               onClick={() => router.push(item.value)}
             >
               <ActionIcon
-                size={36}
+                size={40}
                 variant={isActive ? "filled" : "subtle"}
                 color={isActive ? "blue" : "gray"}
                 aria-label={item.label}
                 radius="xl"
+                className="tabbar-touch-target"
               >
                 <Icon size={22} stroke={1.6} />
               </ActionIcon>

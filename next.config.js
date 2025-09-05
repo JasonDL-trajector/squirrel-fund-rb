@@ -30,10 +30,12 @@ const nextConfig = {
           { key: 'Cache-Control', value: 'public, max-age=0, must-revalidate' },
         ],
       },
-      // Icons and static PWA assets (targeted to avoid staling dynamic media)
-      { source: '/favicon:all*', headers: [ { key: 'Cache-Control', value: 'public, max-age=604800, immutable' } ] },
-      { source: '/apple-touch-:all*', headers: [ { key: 'Cache-Control', value: 'public, max-age=604800, immutable' } ] },
-      { source: '/android-chrome-:all*', headers: [ { key: 'Cache-Control', value: 'public, max-age=604800, immutable' } ] },
+      // Icons and static PWA assets (targeted patterns)
+      { source: '/favicon.ico', headers: [ { key: 'Cache-Control', value: 'public, max-age=604800, immutable' } ] },
+      { source: '/favicon-:size.png', headers: [ { key: 'Cache-Control', value: 'public, max-age=604800, immutable' } ] },
+      { source: '/apple-touch-icon.png', headers: [ { key: 'Cache-Control', value: 'public, max-age=604800, immutable' } ] },
+      { source: '/apple-touch-icon-:size.png', headers: [ { key: 'Cache-Control', value: 'public, max-age=604800, immutable' } ] },
+      { source: '/android-chrome-:size.png', headers: [ { key: 'Cache-Control', value: 'public, max-age=604800, immutable' } ] },
       // Next.js build assets
       {
         source: '/_next/static/:path*',

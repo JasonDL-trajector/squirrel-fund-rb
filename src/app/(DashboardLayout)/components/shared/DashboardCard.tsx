@@ -32,11 +32,12 @@ const DashboardCard = ({
 
   return (
     <Card
-    
+      className={!isMobile ? "ios-card" : undefined}
       shadow={isMobile ? "sm" : "md"}
       radius={isMobile ? 0 : "lg"}
-      p={'md'}
-     
+      p={"md"}
+      withBorder
+      style={{ background: "#fff" }}
     >
       {cardheading ? (
         <Stack gap="xs">
@@ -54,7 +55,7 @@ const DashboardCard = ({
               justify="space-between"
               align="center"
               style={{
-                borderBottom: `1px solid ${theme.colors.gray[1]}`,
+                borderBottom: `0.5px solid ${theme.colors.gray[2]}`,
                 paddingBottom: isMobile ? theme.spacing.sm : theme.spacing.md,
                 paddingTop: isMobile ? theme.spacing.sm : theme.spacing.md,
                 // Always keep a consistent inner gutter so content doesn't touch edges
@@ -64,12 +65,12 @@ const DashboardCard = ({
             >
               <Stack gap="xs">
                 {title && (
-                  <Text size="xl" fw={600}>
+                  <Text size="xl" fw={600} className="ios-headline">
                     {title}
                   </Text>
                 )}
                 {subtitle && (
-                  <Text size="sm" c="dimmed">
+                  <Text size="sm" c="dimmed" className="text-secondary">
                     {subtitle}
                   </Text>
                 )}
@@ -77,13 +78,12 @@ const DashboardCard = ({
               {action}
             </Group>
           ) : null}
- 
-          <Box style={{ padding: theme.spacing.md }}>
+          <Box style={{ padding: theme.spacing.md }} className="safe-area-bottom">
             {children}
           </Box>
         </Stack>
       )}
- 
+
       {middlecontent}
       {footer}
     </Card>

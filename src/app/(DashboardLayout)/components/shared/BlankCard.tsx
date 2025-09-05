@@ -8,10 +8,11 @@ type Props = {
 const BlankCard = ({ children, className }: Props) => {
   return (
     <Paper
-      shadow="xl"
+      shadow="sm"
       p={0}
-      style={{ position: "relative" }}
-      className={className}
+      withBorder
+      style={{ position: "relative", background: "#fff" }}
+      className={["ios-card", className].filter(Boolean).join(" ")}
     >
       {children}
     </Paper>

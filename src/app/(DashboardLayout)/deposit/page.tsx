@@ -1,4 +1,5 @@
 "use client";
+import { useMemo, useState } from "react";
 import {
   SimpleGrid,
   TextInput,
@@ -41,8 +42,8 @@ const DepositPage = () => {
   const { user } = useUser();
   const theme = useMantineTheme();
   const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
-  const createDeposit = useMutation(api.deposits.createDeposit);
-  const createBalance = useMutation(api.balances.createBalance);
+  const createDepositsBatch = useMutation(api.deposits.createDepositsBatch);
+  const createBalancesBatch = useMutation(api.balances.createBalancesBatch);
   const router = useRouter();
   const peso = new Intl.NumberFormat("en-PH", {
     style: "currency",
@@ -58,6 +59,7 @@ const DepositPage = () => {
     validate: zodResolver(depositSchema),
   });
   const currentBalanceData = useQuery(api.balances.getCurrentBalance);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   let currentBalance = 0;
   if (currentBalanceData) {
@@ -67,14 +69,32 @@ const DepositPage = () => {
   const amount = Number(form.values.amount ?? 0);
   const [start, end] = form.values.dateRange ?? [null, null];
 
-  const daysInRange =
-    start instanceof Date && end instanceof Date
-      ? Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1
-      : 1;
-  const totalAmount = amount * daysInRange;
+  const { daysInRange, totalAmount } = useMemo(() => {
+    const [s, e] = form.values.dateRange ?? [null, null];
+    const toDate = (val: unknown): Date | null => {
+      if (!val) return null;
+      const d = val instanceof Date ? val : new Date(val as any);
+      return Number.isNaN(d.getTime()) ? null : d;
+    };
+    const sDate = toDate(s);
+    const eDate = toDate(e);
+    const amountVal = Number(form.values.amount ?? 0);
+    if (sDate && eDate) {
+      const startOnly = new Date(sDate);
+      startOnly.setHours(0, 0, 0, 0);
+      const endOnly = new Date(eDate);
+      endOnly.setHours(0, 0, 0, 0);
+      const msPerDay = 1000 * 60 * 60 * 24;
+      const diff = Math.floor((endOnly.getTime() - startOnly.getTime()) / msPerDay) + 1;
+      const days = Math.max(diff, 1);
+      return { daysInRange: days, totalAmount: amountVal * days };
+    }
+    return { daysInRange: 1, totalAmount: amountVal };
+  }, [form.values.amount, form.values.dateRange]);
 
   const handleSubmit = form.onSubmit(
     async (values) => {
+      setIsSubmitting(true);
       const [start, end] = values.dateRange;
       const startDate = start ? (start instanceof Date ? start : new Date(start as any)) : null;
       const endDate = end ? (end instanceof Date ? end : new Date(end as any)) : null;
@@ -94,39 +114,57 @@ const DepositPage = () => {
         !Number.isNaN(startDate.getTime()) &&
         !Number.isNaN(endDate.getTime())
       ) {
-        const daysInRange =
+        const daysInRangeLocal =
           Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
 
         const dailyAmount = Number(values.amount);
 
+        // Build batch payloads
+        const deposits: Array<{
+          name: string;
+          email: string;
+          depositAmount: number;
+          depositDate: string;
+          depositNote: string;
+        }> = [];
+        const balances: Array<{
+          balanceAmount: number;
+          balanceDate: string;
+        }> = [];
+
+        for (let i = 0; i < daysInRangeLocal; i++) {
+          const currentDate = new Date(startDate);
+          currentDate.setDate(startDate.getDate() + i);
+
+          const depositDateString = currentDate.toLocaleDateString("en-US", {
+            month: "long",
+            day: "numeric",
+            year: "numeric",
+          });
+
+          deposits.push({
+            name: user?.firstName ?? "User",
+            email: String(user?.emailAddresses?.[0]?.emailAddress ?? "") || "User",
+            depositAmount: dailyAmount,
+            depositDate: depositDateString,
+            depositNote: values.note ?? "",
+          });
+
+          balances.push({
+            balanceAmount: Number(currentBalance) + dailyAmount * (i + 1),
+            balanceDate: depositDateString,
+          });
+        }
+
         try {
-          for (let i = 0; i < daysInRange; i++) {
-            const currentDate = new Date(startDate);
-            currentDate.setDate(startDate.getDate() + i);
-
-            const depositDateString = currentDate.toLocaleDateString("en-US", {
-              month: "long",
-              day: "numeric",
-              year: "numeric",
-            });
-
-            await createDeposit({
-              name: user?.firstName ?? "User",
-              email: String(user?.emailAddresses) ?? "User",
-              depositAmount: dailyAmount,
-              depositDate: depositDateString,
-              depositNote: values.note,
-            });
-
-            await createBalance({
-              balanceAmount: Number(currentBalance) + dailyAmount * (i + 1),
-              balanceDate: depositDateString,
-            });
-          }
+          await Promise.all([
+            createDepositsBatch({ deposits }),
+            createBalancesBatch({ balances }),
+          ]);
 
           showNotification({
             title: "Deposit successful",
-            message: `Added ${peso.format(totalAmount)} to your balance`,
+            message: `Added ${peso.format(dailyAmount * daysInRangeLocal)} to your balance`,
             color: "green",
           });
           router.push("/");
@@ -137,8 +175,11 @@ const DepositPage = () => {
             message: err?.message || "Something went wrong while depositing.",
             color: "red",
           });
+        } finally {
+          setIsSubmitting(false);
         }
       } else {
+        setIsSubmitting(false);
         console.error("Date range not selected or invalid", { start, end, startDate, endDate });
         showNotification({
           title: "Validation error",
@@ -154,6 +195,7 @@ const DepositPage = () => {
         message: "Please fix the highlighted fields and try again.",
         color: "red",
       });
+      setIsSubmitting(false);
     }
   );
 
@@ -270,6 +312,7 @@ const DepositPage = () => {
                   color="blue"
                   size={isMobile ? "md" : "lg"}
                   fullWidth
+                  loading={isSubmitting}
                 >
                   Deposit
                 </Button>

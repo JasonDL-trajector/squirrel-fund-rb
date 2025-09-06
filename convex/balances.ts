@@ -14,6 +14,37 @@ export const createBalance = mutation({
   },
 });
 
+export const createBalancesBatch = mutation({
+  args: {
+    balances: v.array(
+      v.object({
+        balanceAmount: v.number(),
+        balanceDate: v.string(),
+      })
+    ),
+  },
+  async handler(ctx, args) {
+    try {
+      for (const b of args.balances) {
+        if (!Number.isFinite(b.balanceAmount)) {
+          throw new Error('Invalid balance amount');
+        }
+        if (!b.balanceDate || typeof b.balanceDate !== 'string') {
+          throw new Error('Invalid balance date');
+        }
+        await ctx.db.insert('balances', {
+          balanceAmount: b.balanceAmount,
+          balanceDate: b.balanceDate,
+        });
+      }
+      return { count: args.balances.length };
+    } catch (err) {
+      // Any error will cause Convex to roll back the entire mutation
+      throw err;
+    }
+  },
+});
+
 export const listBalances = query({
   args: {},
   async handler(ctx) {

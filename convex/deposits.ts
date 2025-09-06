@@ -30,6 +30,43 @@ export const createDeposit = mutation({
   },
 });
 
+export const createDepositsBatch = mutation({
+  args: {
+    deposits: v.array(
+      v.object({
+        name: v.string(),
+        email: v.string(),
+        depositAmount: v.number(),
+        depositDate: v.string(),
+        depositNote: v.string(),
+      })
+    ),
+  },
+  async handler(ctx, args) {
+    try {
+      for (const d of args.deposits) {
+        if (!Number.isFinite(d.depositAmount)) {
+          throw new Error('Invalid deposit amount');
+        }
+        if (!d.depositDate || typeof d.depositDate !== 'string') {
+          throw new Error('Invalid deposit date');
+        }
+        await ctx.db.insert('deposits', {
+          name: d.name,
+          email: d.email,
+          depositAmount: d.depositAmount,
+          depositDate: d.depositDate,
+          depositNote: d.depositNote,
+        });
+      }
+      return { count: args.deposits.length };
+    } catch (err) {
+      // Any error will cause Convex to roll back the entire mutation
+      throw err;
+    }
+  },
+});
+
 export const listDeposits = query({
   args: {},
   async handler(ctx) {

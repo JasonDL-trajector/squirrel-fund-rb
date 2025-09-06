@@ -12,6 +12,8 @@ import {
   Container,
   NumberInput,
 } from "@mantine/core";
+import { DatePickerInput } from "@mantine/dates";
+import "@mantine/dates/styles.css";
 import {
   IconChevronRight,
   IconTrash,
@@ -50,6 +52,7 @@ const BalanceHistory = () => {
   const deleteBalance = useMutation(api.balances.deleteBalance);
   const [openModal, setOpenModal] = useState(false);
   const [editingBalance, setEditingBalance] = useState<any | null>(null);
+  const [balanceDate, setBalanceDate] = useState<Date | null>(new Date());
 
   const form = useForm({
     mode: "controlled",
@@ -66,10 +69,14 @@ const BalanceHistory = () => {
 
   const handleOpenModal = (balance: any) => {
     setEditingBalance(balance);
+    const displayDate = ensureYear(balance.balanceDate);
     form.setValues({
       balanceAmount: balance.balanceAmount,
-      balanceDate: ensureYear(balance.balanceDate),
+      balanceDate: displayDate,
     });
+    // Keep a Date object for the date picker UI
+    const parsed = new Date(displayDate);
+    setBalanceDate(!isNaN(parsed.getTime()) ? parsed : new Date());
     form.clearErrors();
     form.setTouched({ balanceAmount: false, balanceDate: false });
     setOpenModal(true);
@@ -204,11 +211,35 @@ const BalanceHistory = () => {
                 {...form.getInputProps("balanceAmount")}
                 key={form.key("balanceAmount")}
               />
-              <TextInput
+              <DatePickerInput
                 label="Date"
+                placeholder="Pick date"
+                value={balanceDate}
+                dropdownType="popover"
+                popoverProps={{
+                  withinPortal: true,
+                  zIndex: 3001,
+                  position: "bottom-start",
+                }}
+                onChange={(d: any) => {
+                  const next = d instanceof Date ? d : d ? new Date(d) : null;
+                  setBalanceDate(next);
+                  const s = next
+                    ? next.toLocaleDateString("en-US", {
+                        month: "long",
+                        day: "numeric",
+                        year: "numeric",
+                      })
+                    : "";
+                  form.setFieldValue("balanceDate", s);
+                }}
+                required
+              />
+              {/* Hidden field to satisfy form schema */}
+              <TextInput
+                type="hidden"
                 {...form.getInputProps("balanceDate")}
                 key={form.key("balanceDate")}
-                placeholder="e.g., January 15, 2025"
               />
               <Group justify="flex-end" gap="sm">
                 {editingBalance && (

@@ -30,7 +30,7 @@ const Dashboard = () => {
     <PageContainer title="Squirrel Fund" description="Squirrel Fund">
       <Stack
         gap="lg"
-        pb="xl"
+        pb="3xl"
         styles={{ root: { backgroundColor: "var(--mantine-color-gray-0)" } }}
       >
         <Box>
@@ -90,7 +90,7 @@ const Dashboard = () => {
           </SimpleGrid>
         </Box>
 
-        <Box p="md" pb="xl">
+        <Box p="md" pb="3xl" mb="3xl">
           <Bills isLoading={isLoading} />
         </Box>
       </Stack>

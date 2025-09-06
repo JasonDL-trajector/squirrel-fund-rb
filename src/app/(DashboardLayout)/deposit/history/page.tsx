@@ -199,6 +199,7 @@ const DepositsHistory = () => {
               <TextInput
                 label="Amount"
                 name="depositAmount"
+                leftSection="₱"
                 type="number"
                 value={newDeposit.depositAmount}
                 onChange={handleInputChange}
@@ -214,7 +215,11 @@ const DepositsHistory = () => {
                     depositDate: date ?? new Date(),
                   })
                 }
-                popoverProps={{ withinPortal: true, zIndex: 3001, position: "bottom-start" }}
+                popoverProps={{
+                  withinPortal: true,
+                  zIndex: 3001,
+                  position: "bottom-start",
+                }}
                 required
               />
               <TextInput
@@ -223,13 +228,13 @@ const DepositsHistory = () => {
                 value={newDeposit.depositNote}
                 onChange={handleInputChange}
               />
-              <Group justify="flex-end" gap="sm">
+              <Group justify="flex-end" gap="sm" mt={"lg"}>
                 {editingDeposit && (
                   <Button
                     type="button"
                     variant="light"
                     color="red"
-                    leftSection={<IconTrash size={16} />}
+                    size="sm"
                     onClick={handleDeleteDeposit}
                   >
                     Delete
@@ -238,6 +243,7 @@ const DepositsHistory = () => {
                 <Button
                   type="submit"
                   color="blue"
+                  size="sm"
                   leftSection={<IconDeviceFloppy size={16} />}
                 >
                   {editingDeposit ? "Update" : "Add"}

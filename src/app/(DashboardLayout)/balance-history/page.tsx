@@ -204,7 +204,8 @@ const BalanceHistory = () => {
         >
           <form onSubmit={handleSubmit}>
             <Stack gap="md">
-              <NumberInput
+              <TextInput
+                type="number"
                 label="Amount"
                 leftSection="₱"
                 min={0}
@@ -235,19 +236,14 @@ const BalanceHistory = () => {
                 }}
                 required
               />
-              {/* Hidden field to satisfy form schema */}
-              <TextInput
-                type="hidden"
-                {...form.getInputProps("balanceDate")}
-                key={form.key("balanceDate")}
-              />
-              <Group justify="flex-end" gap="sm">
+
+              <Group justify="flex-end" gap="sm" mt={"lg"}>
                 {editingBalance && (
                   <Button
                     type="button"
                     variant="light"
                     color="red"
-                    leftSection={<IconTrash size={16} />}
+                    size="sm"
                     onClick={handleDeleteBalance}
                   >
                     Delete
@@ -256,6 +252,7 @@ const BalanceHistory = () => {
                 <Button
                   type="submit"
                   color="blue"
+                  size="sm"
                   leftSection={<IconDeviceFloppy size={16} />}
                 >
                   {editingBalance ? "Update" : "Add"}

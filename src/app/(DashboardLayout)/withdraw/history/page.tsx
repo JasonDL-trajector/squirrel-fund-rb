@@ -199,6 +199,7 @@ const WithdrawHistory = () => {
               <TextInput
                 label="Amount"
                 name="withdrawAmount"
+                leftSection="₱"
                 type="number"
                 value={newWithdrawal.withdrawAmount}
                 onChange={handleInputChange}
@@ -214,7 +215,11 @@ const WithdrawHistory = () => {
                     withdrawDate: date ?? new Date(),
                   })
                 }
-                popoverProps={{ withinPortal: true, zIndex: 3001, position: "bottom-start" }}
+                popoverProps={{
+                  withinPortal: true,
+                  zIndex: 3001,
+                  position: "bottom-start",
+                }}
                 required
               />
               <TextInput
@@ -223,13 +228,13 @@ const WithdrawHistory = () => {
                 value={newWithdrawal.withdrawNote}
                 onChange={handleInputChange}
               />
-              <Group justify="flex-end" gap="sm">
+              <Group justify="flex-end" gap="sm" mt={"lg"}>
                 {editingWithdrawal && (
                   <Button
                     type="button"
                     variant="light"
                     color="red"
-                    leftSection={<IconTrash size={16} />}
+                    size="sm"
                     onClick={handleDeleteWithdrawal}
                   >
                     Delete
@@ -238,6 +243,7 @@ const WithdrawHistory = () => {
                 <Button
                   type="submit"
                   color="blue"
+                  size="sm"
                   leftSection={<IconDeviceFloppy size={16} />}
                 >
                   {editingWithdrawal ? "Update" : "Add"}

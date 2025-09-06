@@ -1,5 +1,5 @@
 import React from "react";
-import Menuitems from "./MenuItems";
+import useMenuItems from "./MenuItems";
 import { usePathname } from "next/navigation";
 import { Box, Stack } from "@mantine/core";
 import NavItem from "./NavItem";
@@ -8,6 +8,7 @@ import NavGroup from "./NavGroup/NavGroup";
 const SidebarItems = ({ toggleMobileSidebar }: any) => {
   const pathname = usePathname();
   const pathDirect = pathname;
+  const Menuitems = useMenuItems();
 
   return (
     <Box>

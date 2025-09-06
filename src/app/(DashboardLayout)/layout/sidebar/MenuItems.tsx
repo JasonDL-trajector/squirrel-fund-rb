@@ -1,41 +1,41 @@
 import {
-  IconAperture,
-  IconCopy,
   IconLayoutDashboard,
   IconCoins,
   IconCornerRightDownDouble,
-  IconLogin,
-  IconMoodHappy,
-  IconTypography,
-  IconUserPlus,
-} from '@tabler/icons-react';
+} from "@tabler/icons-react";
+import { useId } from "@mantine/hooks";
 
-import { uniqueId } from 'lodash';
+const useMenuItems = () => {
+  const id = useId();
+  const prefix = `${id}-`;
 
-const Menuitems = [
-  {
-    navlabel: true,
-    subheader: 'Menu',
-  },
+  const Menuitems = [
+    {
+      navlabel: true,
+      subheader: "Menu",
+    },
 
-  {
-    id: uniqueId(),
-    title: 'Dashboard',
-    icon: IconLayoutDashboard,
-    href: '/',
-  },
-  {
-    id: uniqueId(),
-    title: 'Deposit',
-    icon: IconCoins,
-    href: '/deposit',
-  },
-  {
-    id: uniqueId(),
-    title: 'Withdraw',
-    icon: IconCornerRightDownDouble,
-    href: '/withdraw',
-  },
-];
+    {
+      id: `${prefix}dashboard`,
+      title: "Dashboard",
+      icon: IconLayoutDashboard,
+      href: "/",
+    },
+    {
+      id: `${prefix}deposit`,
+      title: "Deposit",
+      icon: IconCoins,
+      href: "/deposit",
+    },
+    {
+      id: `${prefix}withdraw`,
+      title: "Withdraw",
+      icon: IconCornerRightDownDouble,
+      href: "/withdraw",
+    },
+  ];
 
-export default Menuitems;
+  return Menuitems;
+};
+
+export default useMenuItems;

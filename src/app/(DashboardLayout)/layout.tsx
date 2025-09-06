@@ -59,12 +59,12 @@ export default function RootLayout({
               style={{
                 paddingTop: "8px",
                 paddingBottom: !lgUp
-                  ? "calc(84px + env(safe-area-inset-bottom))"
+                  ? "calc(120px + env(safe-area-inset-bottom))"
                   : "24px",
                 width: "100%",
               }}
             >
-              <Stack gap="md" style={{ minHeight: "calc(100vh - 170px)" }}>
+              <Stack gap="md" style={{ minHeight: "calc(100vh - 206px)" }}>
                 {children}
               </Stack>
             </Container>

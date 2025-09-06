@@ -21,7 +21,7 @@ export const metadata: Metadata = {
   },
   appleWebApp: {
     capable: true,
-    statusBarStyle: "black-translucent",
+    statusBarStyle: "default",
     title: "Squirrel Fund",
   },
   formatDetection: { telephone: false },
@@ -33,7 +33,7 @@ export const viewport: Viewport = {
   viewportFit: "cover",
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#FFFFFF" },
-    { media: "(prefers-color-scheme: dark)", color: "#000000" },
+    { media: "(prefers-color-scheme: dark)", color: "#F5F5F7" },
   ],
 };
 
@@ -47,9 +47,17 @@ export default function RootLayout({
       <head>
         {/* iOS/Apple specific meta */}
         <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-touch-fullscreen" content="yes" />
         <meta name="apple-mobile-web-app-title" content="Squirrel Fund" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="format-detection" content="telephone=no" />
+
+        {/* Viewport fine-tuning for iPhone 11 / iPad Air */}
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content"
+        />
 
         {/* Preconnect / DNS prefetch */}
         <link
@@ -60,6 +68,14 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+
+        {/* Preload background asset */}
+        <link
+          rel="preload"
+          as="image"
+          href="/images/backgrounds/squirrel.png"
+          imageSrcSet="/images/backgrounds/squirrel.png 1x"
+        />
       </head>
       <body>
         <Providers>{children}</Providers>

@@ -11,14 +11,20 @@
   "display_override": ["standalone", "fullscreen", "minimal-ui"],
   "orientation": "portrait",
   "background_color": "#FFFFFF",
-  "theme_color": "#0A84FF",
+  "theme_color": "#FFFFFF",
+  "prefer_related_applications": false,
+  "edge_side_panel": { "preferred_width": 450 },
   "categories": ["finance", "productivity"],
   "protocol_handlers": [
     { "protocol": "web+squirrel", "url": "/?q=%s" }
   ],
   "icons": [
     { "src": "/android-chrome-192x192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
-    { "src": "/android-chrome-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+    { "src": "/android-chrome-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/apple-touch-icon-120x120.png", "sizes": "120x120", "type": "image/png" },
+    { "src": "/apple-touch-icon-152x152.png", "sizes": "152x152", "type": "image/png" },
+    { "src": "/apple-touch-icon-167x167.png", "sizes": "167x167", "type": "image/png" },
+    { "src": "/apple-touch-icon-180x180.png", "sizes": "180x180", "type": "image/png" }
   ],
   "shortcuts": [
     {

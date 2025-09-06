@@ -1,5 +1,6 @@
 "use client";
 
+import React, { Suspense } from "react";
 import { Stack, Button, useMantineTheme, Title } from "@mantine/core";
 import PageContainer from "@/app/(DashboardLayout)/components/container/PageContainer";
 import GlassmorphismCard from "@/components/GlassmorphismCard";
@@ -34,23 +35,25 @@ const Login2 = () => {
               </Title>
             </Stack>
 
-            <SignIn.Root>
-              <SignIn.Step name="start">
-                <Stack gap="md" mt="lg">
-                  {/* Google OAuth */}
-                  <Clerk.Connection name="google" asChild>
-                    <Button
-                      size="md"
-                      variant="default"
-                      leftSection={<IconBrandGoogle size={20} />}
-                      fullWidth
-                    >
-                      Continue with Google
-                    </Button>
-                  </Clerk.Connection>
-                </Stack>
-              </SignIn.Step>
-            </SignIn.Root>
+            <Suspense fallback={<div />}>
+              <SignIn.Root>
+                <SignIn.Step name="start">
+                  <Stack gap="md" mt="lg">
+                    {/* Google OAuth */}
+                    <Clerk.Connection name="google" asChild>
+                      <Button
+                        size="md"
+                        variant="default"
+                        leftSection={<IconBrandGoogle size={20} />}
+                        fullWidth
+                      >
+                        Continue with Google
+                      </Button>
+                    </Clerk.Connection>
+                  </Stack>
+                </SignIn.Step>
+              </SignIn.Root>
+            </Suspense>
           </GlassmorphismCard>
         </Stack>
       </div>

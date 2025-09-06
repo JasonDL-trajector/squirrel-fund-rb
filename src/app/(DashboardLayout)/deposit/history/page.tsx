@@ -23,6 +23,8 @@ import { api } from "../../../../../convex/_generated/api";
 import Link from "next/link";
 import PageContainer from "@/app/(DashboardLayout)/components/container/PageContainer";
 import { formatDisplayDate, ensureYear } from "@/utils/date";
+import { DatePickerInput } from "@mantine/dates";
+import "@mantine/dates/styles.css";
 
 const DepositsHistory = () => {
   const deposits = useQuery(api.deposits.listDeposits);
@@ -33,11 +35,7 @@ const DepositsHistory = () => {
   const [newDeposit, setNewDeposit] = useState<Omit<any, "_id">>({
     name: "",
     depositAmount: 0,
-    depositDate: new Date().toLocaleDateString("en-US", {
-      month: "long",
-      day: "numeric",
-      year: "numeric",
-    }),
+    depositDate: new Date(),
     depositNote: "",
   });
 
@@ -46,7 +44,8 @@ const DepositsHistory = () => {
     setNewDeposit({
       name: deposit.name,
       depositAmount: deposit.depositAmount,
-      depositDate: deposit.depositDate,
+      // Convert stored string date to Date object for DatePicker
+      depositDate: new Date(deposit.depositDate),
       depositNote: deposit.depositNote,
     });
     setOpenModal(true);
@@ -205,14 +204,17 @@ const DepositsHistory = () => {
                 onChange={handleInputChange}
                 required
               />
-              <TextInput
+              <DatePickerInput
                 label="Deposit Date"
-                name="depositDate"
-                value={newDeposit.depositDate}
-                onChange={(e) =>
-                  setNewDeposit({ ...newDeposit, depositDate: e.target.value })
+                placeholder="Select date"
+                value={newDeposit.depositDate as Date}
+                onChange={(date) =>
+                  setNewDeposit({
+                    ...newDeposit,
+                    depositDate: date ?? new Date(),
+                  })
                 }
-                placeholder="e.g., January 15, 2025"
+                popoverProps={{ withinPortal: true, zIndex: 3001, position: "bottom-start" }}
                 required
               />
               <TextInput

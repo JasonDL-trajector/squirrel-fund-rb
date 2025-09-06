@@ -23,6 +23,8 @@ import { api } from "../../../../../convex/_generated/api";
 import Link from "next/link";
 import PageContainer from "@/app/(DashboardLayout)/components/container/PageContainer";
 import { formatDisplayDate, ensureYear } from "@/utils/date";
+import { DatePickerInput } from "@mantine/dates";
+import "@mantine/dates/styles.css";
 
 const WithdrawHistory = () => {
   const withdraws = useQuery(api.withdraws.listWithdraws);
@@ -33,11 +35,7 @@ const WithdrawHistory = () => {
   const [newWithdrawal, setNewWithdrawal] = useState<Omit<any, "_id">>({
     name: "User",
     withdrawAmount: 0,
-    withdrawDate: new Date().toLocaleDateString("en-US", {
-      month: "long",
-      day: "numeric",
-      year: "numeric",
-    }),
+    withdrawDate: new Date(),
     withdrawNote: "",
   });
 
@@ -46,7 +44,8 @@ const WithdrawHistory = () => {
     setNewWithdrawal({
       name: withdraw.name,
       withdrawAmount: withdraw.withdrawAmount,
-      withdrawDate: withdraw.withdrawDate,
+      // Convert stored string date to Date object for DatePicker
+      withdrawDate: new Date(withdraw.withdrawDate),
       withdrawNote: withdraw.withdrawNote,
     });
     setOpenModal(true);
@@ -205,17 +204,17 @@ const WithdrawHistory = () => {
                 onChange={handleInputChange}
                 required
               />
-              <TextInput
+              <DatePickerInput
                 label="Withdrawal Date"
-                name="withdrawDate"
-                value={newWithdrawal.withdrawDate}
-                onChange={(e) =>
+                placeholder="Select date"
+                value={newWithdrawal.withdrawDate as Date}
+                onChange={(date) =>
                   setNewWithdrawal({
                     ...newWithdrawal,
-                    withdrawDate: e.target.value,
+                    withdrawDate: date ?? new Date(),
                   })
                 }
-                placeholder="e.g., January 15, 2025"
+                popoverProps={{ withinPortal: true, zIndex: 3001, position: "bottom-start" }}
                 required
               />
               <TextInput

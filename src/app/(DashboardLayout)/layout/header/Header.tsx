@@ -1,5 +1,5 @@
 import React from "react";
-import { Group, ActionIcon, Text, useMantineTheme } from "@mantine/core";
+import { Group, ActionIcon, useMantineTheme, Box } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import Profile from "./Profile";
 import { IconBellRinging } from "@tabler/icons-react";
@@ -58,9 +58,9 @@ const Header = ({ toggleMobileSidebar }: ItemType) => {
         </>
       ) : (
         <>
-          <Text fw={700} size="xl" c="var(--mantine-color-text)">
-            Squirrel Fund
-          </Text>
+          <Box style={{ marginRight: "auto", display: "flex", alignItems: "center" }}>
+            <Logo />
+          </Box>
           <Profile />
         </>
       )}

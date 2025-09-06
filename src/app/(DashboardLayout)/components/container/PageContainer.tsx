@@ -1,5 +1,4 @@
-// import { Helmet } from 'react-helmet';
-import { Helmet, HelmetProvider } from 'react-helmet-async';
+import Head from 'next/head';
 import { Box } from '@mantine/core';
 
 
@@ -10,15 +9,15 @@ type Props = {
 };
 
 const PageContainer = ({ title, description, children }: Props) => (
-  <HelmetProvider>
+  <>
+    <Head>
+      <title>{title}</title>
+      <meta name="description" content={description} />
+    </Head>
     <Box>
-      <Helmet>
-        <title>{title}</title>
-        <meta name="description" content={description} />
-      </Helmet>
       {children}
     </Box>
-  </HelmetProvider>
+  </>
 );
 
 export default PageContainer;

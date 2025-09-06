@@ -1,4 +1,4 @@
-import dynamic from "next/dynamic";
+import { Sparkline } from "@mantine/charts";
 import { useState } from "react";
 import {
   Stack,
@@ -21,8 +21,6 @@ import DashboardCard from "@/app/(DashboardLayout)/components/shared/DashboardCa
 import EmptyState from "../shared/EmptyState";
 import { useUser } from "@clerk/nextjs";
 import type { Loading } from "../../types/loading";
-
-const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
 const DailyDeposit = ({ isLoading }: Loading) => {
   const { user } = useUser();
@@ -55,44 +53,6 @@ const DailyDeposit = ({ isLoading }: Loading) => {
     }
   };
 
-  const optionscolumnchart: any = {
-    chart: {
-      type: "area",
-      fontFamily: "'Plus Jakarta Sans', sans-serif;",
-      foreColor: "#adb0bb",
-      toolbar: {
-        show: false,
-      },
-      height: 60,
-      sparkline: {
-        enabled: true,
-      },
-      group: "sparklines",
-    },
-    stroke: {
-      curve: "smooth",
-      width: 2,
-    },
-    fill: {
-      colors: [secondarylight],
-      type: "solid",
-      opacity: 0.05,
-    },
-    markers: {
-      size: 0,
-    },
-    tooltip: {
-      theme: "light",
-    },
-  };
-  const seriescolumnchart: any = [
-    {
-      name: "",
-      color: secondary,
-      data: [25, 66, 20, 40, 12, 58, 20],
-    },
-  ];
-
   return (
     <>
       <DashboardCard
@@ -109,12 +69,13 @@ const DailyDeposit = ({ isLoading }: Loading) => {
           </ActionIcon>
         }
         footer={
-          <Chart
-            options={optionscolumnchart}
-            series={seriescolumnchart}
-            type="area"
-            height={60}
-            width={"100%"}
+          <Sparkline
+            w="100%"
+            h={60}
+            data={[25, 66, 20, 40, 12, 58, 20]}
+            color={secondary}
+            fillOpacity={0.1}
+            strokeWidth={2}
           />
         }
       >

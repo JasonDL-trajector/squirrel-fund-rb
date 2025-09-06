@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-import dynamic from "next/dynamic";
-const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
+import { DonutChart } from "@mantine/charts";
 import {
   Group,
   Stack,
@@ -66,44 +65,11 @@ const CurrentBalance = ({ isLoading }: Loading) => {
     }
   };
 
-  const optionscolumnchart: any = {
-    chart: {
-      type: "donut",
-      fontFamily: theme.fontFamily,
-      foreColor: "var(--mantine-color-gray-6)",
-      toolbar: { show: false },
-      height: 160,
-    },
-    colors: [
-      "var(--mantine-color-blue-6)",
-      "var(--mantine-color-blue-0)",
-      "var(--mantine-color-gray-1)",
-    ],
-    plotOptions: {
-      pie: {
-        startAngle: 0,
-        endAngle: 360,
-        donut: {
-          size: "76%",
-          background: "transparent",
-        },
-      },
-    },
-    tooltip: {
-      theme: "light",
-      fillSeriesColor: false,
-    },
-    stroke: { show: false },
-    dataLabels: { enabled: false },
-    legend: { show: false },
-    responsive: [
-      {
-        breakpoint: 991,
-        options: { chart: { width: 120 } },
-      },
-    ],
-  };
-  const seriescolumnchart: any = [38, 40, 25];
+  const chartData = [
+    { name: "Primary", value: 38, color: "var(--mantine-color-blue-6)" },
+    { name: "Secondary", value: 40, color: "var(--mantine-color-blue-0)" },
+    { name: "Tertiary", value: 25, color: "var(--mantine-color-gray-1)" },
+  ];
 
   return (
     <DashboardCard title="Current Balance">
@@ -197,12 +163,12 @@ const CurrentBalance = ({ isLoading }: Loading) => {
           {isLoading ? (
             <Skeleton height={150} width={150} radius="50%" />
           ) : (
-            <Chart
-              options={optionscolumnchart}
-              series={seriescolumnchart}
-              type="donut"
-              height={150}
-              width={"100%"}
+            <DonutChart
+              data={chartData}
+              size={150}
+              thickness={24}
+              withTooltip={false}
+              withLabels={false}
             />
           )}
         </Box>

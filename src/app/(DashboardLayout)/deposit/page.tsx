@@ -1,6 +1,4 @@
 "use client";
-
-import { useState } from "react";
 import {
   SimpleGrid,
   TextInput,
@@ -30,9 +28,12 @@ import { zodResolver } from "mantine-form-zod-resolver";
 import { z } from "zod";
 const depositSchema = z.object({
   amount: z.coerce.number().positive("Enter amount"),
-  dateRange: z.tuple([z.date(), z.date()]).refine(([s, e]) => s <= e, {
-    message: "Select a start and end date",
-  }),
+  dateRange: z
+    .array(z.coerce.date().nullable())
+    .length(2, { message: "Select a start and end date" })
+    .refine(([s, e]) => !!s && !!e && s.getTime() <= e.getTime(), {
+      message: "Select a start and end date",
+    }),
   note: z.string().max(100).optional(),
 });
 
@@ -67,54 +68,94 @@ const DepositPage = () => {
   const [start, end] = form.values.dateRange ?? [null, null];
 
   const daysInRange =
-    start && end
+    start instanceof Date && end instanceof Date
       ? Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1
       : 1;
   const totalAmount = amount * daysInRange;
 
-  const handleSubmit = form.onSubmit(async (values) => {
-    const [start, end] = values.dateRange;
-    if (start && end) {
-      const daysInRange =
-        Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) +
-        1;
+  const handleSubmit = form.onSubmit(
+    async (values) => {
+      const [start, end] = values.dateRange;
+      const startDate = start ? (start instanceof Date ? start : new Date(start as any)) : null;
+      const endDate = end ? (end instanceof Date ? end : new Date(end as any)) : null;
 
-      const dailyAmount = Number(values.amount);
+      console.log("Submitting deposit:", {
+        values,
+        start,
+        end,
+        startDate,
+        endDate,
+        currentBalance,
+      });
 
-      for (let i = 0; i < daysInRange; i++) {
-        const currentDate = new Date(start);
-        currentDate.setDate(start.getDate() + i);
+      if (
+        startDate &&
+        endDate &&
+        !Number.isNaN(startDate.getTime()) &&
+        !Number.isNaN(endDate.getTime())
+      ) {
+        const daysInRange =
+          Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
 
-        const depositDateString = currentDate.toLocaleDateString("en-US", {
-          month: "long",
-          day: "numeric",
-          year: "numeric",
-        });
+        const dailyAmount = Number(values.amount);
 
-        await createDeposit({
-          name: user?.firstName ?? "User",
-          email: String(user?.emailAddresses) ?? "User",
-          depositAmount: dailyAmount,
-          depositDate: depositDateString,
-          depositNote: values.note,
-        });
+        try {
+          for (let i = 0; i < daysInRange; i++) {
+            const currentDate = new Date(startDate);
+            currentDate.setDate(startDate.getDate() + i);
 
-        await createBalance({
-          balanceAmount: Number(currentBalance) + dailyAmount * (i + 1),
-          balanceDate: depositDateString,
+            const depositDateString = currentDate.toLocaleDateString("en-US", {
+              month: "long",
+              day: "numeric",
+              year: "numeric",
+            });
+
+            await createDeposit({
+              name: user?.firstName ?? "User",
+              email: String(user?.emailAddresses) ?? "User",
+              depositAmount: dailyAmount,
+              depositDate: depositDateString,
+              depositNote: values.note,
+            });
+
+            await createBalance({
+              balanceAmount: Number(currentBalance) + dailyAmount * (i + 1),
+              balanceDate: depositDateString,
+            });
+          }
+
+          showNotification({
+            title: "Deposit successful",
+            message: `Added ${peso.format(totalAmount)} to your balance`,
+            color: "green",
+          });
+          router.push("/");
+        } catch (err: any) {
+          console.error("Deposit failed", err);
+          showNotification({
+            title: "Deposit failed",
+            message: err?.message || "Something went wrong while depositing.",
+            color: "red",
+          });
+        }
+      } else {
+        console.error("Date range not selected or invalid", { start, end, startDate, endDate });
+        showNotification({
+          title: "Validation error",
+          message: "Please select a valid start and end date.",
+          color: "red",
         });
       }
-
+    },
+    (validationErrors) => {
+      console.error("Form validation errors", validationErrors);
       showNotification({
-        title: "Deposit successful",
-        message: `Added ${peso.format(totalAmount)} to your balance`,
-        color: "green",
+        title: "Validation error",
+        message: "Please fix the highlighted fields and try again.",
+        color: "red",
       });
-      router.push("/");
-    } else {
-      console.error("Date range not selected");
     }
-  });
+  );
 
   return (
     <PageContainer title="Deposit">
@@ -167,6 +208,7 @@ const DepositPage = () => {
 
                   <DatePickerInput
                     type="range"
+                    allowSingleDateInRange
                     label="Deposit Date Range"
                     placeholder="Pick date range"
                     {...form.getInputProps("dateRange")}

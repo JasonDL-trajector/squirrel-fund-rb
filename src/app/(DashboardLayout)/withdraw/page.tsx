@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import {
   SimpleGrid,
   TextInput,
@@ -19,9 +18,7 @@ import PageContainer from "@/app/(DashboardLayout)/components/container/PageCont
 import { api } from "../../../../convex/_generated/api";
 import { useMutation, useQuery } from "convex/react";
 import { useUser } from "@clerk/clerk-react";
-//
 import Link from "next/link";
-// Schema factory will be defined inside component
 import { useRouter } from "next/navigation";
 import { showNotification } from "@mantine/notifications";
 import { IconTableMinus } from "@tabler/icons-react";
@@ -79,7 +76,6 @@ const WithdrawPage = () => {
   });
 
   const amount = Number(form.values.amount ?? 0);
-  const withdrawDate = form.values.withdrawDate;
 
   const totalAmount = amount;
 
@@ -96,7 +92,7 @@ const WithdrawPage = () => {
 
       await createWithdraw({
         name: user?.firstName ?? "User",
-        withdrawAmount: values.amount,
+        withdrawAmount: Number(values.amount),
         withdrawDate: withdrawDateString,
         withdrawNote: values.note,
       });
